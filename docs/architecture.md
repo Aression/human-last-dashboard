@@ -2,7 +2,7 @@
 
 ## 1. Current scaffold
 
-The repository begins as a Next.js App Router application with TypeScript and Tailwind CSS. The first UI is intentionally static and uses clearly labeled demo content. No ingestion or model calls are implied.
+The repository is a Next.js App Router application with TypeScript and Tailwind CSS. The UI renders a clearly labeled, fictional demonstration dataset held in the repository; no ingestion, persistence, or model calls exist. Routes, components, data flow, and the client-side stage gate are described in [frontend.md](frontend.md).
 
 ## 2. Logical components
 
@@ -55,8 +55,8 @@ Sources
 
 ## 6. Initial implementation order
 
-1. Static dashboard and docs.
-2. Typed domain schemas and database migration.
+1. Static dashboard and docs. *(Done: four views plus detail pages over demo data; see [frontend.md](frontend.md).)*
+2. Typed domain schemas and database migration. *(TypeScript types exist in `lib/types.ts`; no database migration yet.)*
 3. Manual source/claim/evidence entry.
 4. Search and provenance views.
 5. Assisted extraction with validation.

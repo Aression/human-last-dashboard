@@ -46,7 +46,7 @@ Each level must be assessed against explicit criteria, operational evidence, lim
 
 ## Repository status
 
-This is the initial scaffold. The current dashboard is a static product shell; ingestion, persistence, model calls, authentication, and scheduled workflows are not implemented yet.
+The dashboard frontend is implemented over a **fictional demonstration dataset**. It has four views (Overview, Progress, Evidence Explorer, Research & Attribution) plus capability and record detail pages. Ingestion, persistence, model calls, authentication, and scheduled workflows are not implemented. Demo records are labeled on every page and must not be read as evidence about real systems. See [Frontend](docs/frontend.md).
 
 ## Development
 
@@ -59,10 +59,13 @@ npm run dev
 
 Open http://localhost:3000.
 
+Other scripts: `npm run build`, `npm run typecheck`. `npm run lint` currently fails because of an eslint-config-next version mismatch; see [Frontend §8](docs/frontend.md#8-known-limitations).
+
 ## Documentation
 
 - [Product requirements](docs/PRD.md)
 - [Architecture](docs/architecture.md)
+- [Frontend](docs/frontend.md)
 - [Evidence model](docs/evidence-model.md)
 - [Stage taxonomy and gates](docs/stage-taxonomy.md)
 - [Agent workflows](docs/agent-workflows.md)
