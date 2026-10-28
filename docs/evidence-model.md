@@ -100,6 +100,17 @@ Preserve the original prediction and its probability; do not rewrite it after se
 - An Attribution links an event to evidence and alternative hypotheses.
 - A Forecast is resolved against evidence under criteria defined before resolution.
 
+## Presentation-layer extensions
+
+The TypeScript types in `lib/types.ts` add the following fields. They are proposals made while building the UI and should be confirmed before a database schema is written.
+
+- `provenance` (`demo` or `curated`) on every record: distinguishes fictional demonstration data from real records.
+- `generated_by` (`model`, `workflow_version`), optional: present when a model produced the record. Required by the output contract in [agent-workflows.md](agent-workflows.md).
+- `Source.developer_affiliated` (boolean): the reporting party built or operates the system reported on. Source tier alone cannot express this, and the stage gate needs it to separate developer-reported results from independent validation.
+- `Evidence.claim_ids` and `Evidence.capability_ids`: the many-to-many links described under Relationships, stored directly for display.
+- `AssessmentProposal`: a proposed status change held outside the accepted assessment history until a reviewer decides. Gate results are derived, not stored.
+- `Capability.criteria` items have stable ids (`crit-l3-2`), and `non_criteria` / `known_bottlenecks` are camelCase (`nonCriteria`, `knownBottlenecks`) in `lib/capabilities.ts`, which is the source of truth for capability definitions.
+
 ## Provenance requirements
 
 Every derived record should identify its origin, creation time, processing method, and relevant model/workflow version. Corrections should create an audit event or new version instead of erasing material history.

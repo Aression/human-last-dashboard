@@ -8,8 +8,34 @@
   --border: #263344;
   --text: #e8edf4;
   --muted: #91a0b4;
-  --accent: #8bd5ca;
-  --warning: #e8c879;
+
+  /* Epistemic palette: each hue marks one kind of statement or verdict. */
+  --accent: #8bd5ca; /* observed / supported */
+  --warning: #e8c879; /* interpretation / qualified / partial */
+  --hypothesis: #b9a7f0; /* speculation / hypothesis */
+  --forecast: #8ab8f0; /* forecast */
+  --danger: #f09a9a; /* contradicted */
+
+  --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-raised: var(--surface-raised);
+  --color-line: var(--border);
+  --color-ink: var(--text);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-warn: var(--warning);
+  --color-hyp: var(--hypothesis);
+  --color-fc: var(--forecast);
+  --color-danger: var(--danger);
+  --font-serif: var(--font-serif);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 }
 
 * {
@@ -24,10 +50,8 @@ html {
 body {
   margin: 0;
   color: var(--text);
-  background:
-    radial-gradient(ellipse at 80% 0%, rgba(55, 94, 113, 0.14), transparent 36rem),
-    var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--background);
+  font-family: var(--font-sans);
   font-size: 14px;
   line-height: 1.6;
 }
@@ -37,12 +61,101 @@ a {
   text-decoration: none;
 }
 
+h1,
+h2,
+h3 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
 button,
 a {
   -webkit-tap-highlight-color: transparent;
 }
 
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 ::selection {
   color: #06110f;
   background: var(--accent);
+}
+
+/* ------------------------------------------------------------------
+   Epistemic grammar.
+   The border style of a statement tells the reader what kind of statement
+   it is, independent of colour:
+     solid  = observed fact
+     dashed = author interpretation
+     dotted = speculation or hypothesis
+     double = forecast
+   A diagonal hatch marks text that was produced by a model.
+------------------------------------------------------------------- */
+.ep {
+  border-left: 2px solid var(--ep, var(--accent));
+  padding-left: 0.85rem;
+}
+.ep-fact {
+  --ep: var(--accent);
+  border-left-style: solid;
+}
+.ep-interp {
+  --ep: var(--warning);
+  border-left-style: dashed;
+}
+.ep-spec {
+  --ep: var(--hypothesis);
+  border-left-style: dotted;
+  border-left-width: 3px;
+  font-style: italic;
+}
+.ep-forecast {
+  --ep: var(--forecast);
+  border-left-style: double;
+  border-left-width: 4px;
+}
+.ep-model {
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0 7px,
+    rgba(255, 255, 255, 0.04) 7px 8px
+  );
+}
+
+/* Demo records carry a hatched edge so they can never be mistaken for live data. */
+.demo-hatch {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(232, 200, 121, 0.16) 0 6px,
+    transparent 6px 12px
+  );
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .reveal-details[open] > .reveal-body {
+    animation: reveal 160ms ease-out;
+  }
+  @keyframes reveal {
+    from {
+      opacity: 0;
+      transform: translateY(-3px);
+    }
+  }
+}
+
+details > summary {
+  cursor: pointer;
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
 }
