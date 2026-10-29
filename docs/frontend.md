@@ -4,9 +4,9 @@ This document describes the dashboard UI as implemented: routes, the visual gram
 
 ## 1. Status
 
-The UI renders a **fictional demonstration dataset** from `lib/demo-data.ts`. There is no database, ingestion, authentication, or model call. Every page shows a demo banner, and every demo record carries a `Demo` tag. Do not cite demo content as evidence about any real system (AGENTS.md rules 2 and 10).
+The UI renders a **fictional demonstration dataset** from `data/demo/dataset.ts`. There is no database, ingestion, authentication, or model call. Every page shows a demo banner, and every demo record carries a `Demo` tag. Do not cite demo content as evidence about any real system (AGENTS.md rules 2 and 10).
 
-The dataset is checked at two levels: `lib/types.ts` for compile-time shapes, and `lib/validate.ts` for runtime integrity (unique prefixed ids, resolving references, one unbroken assessment version chain per capability, demo records that claim no observed URL or content hash, forecast resolutions that record when and why). Validation runs on every build and in `npm run validate:data`; the gate, selectors, and validator have behavioural tests in `npm test`.
+The dataset is checked at two levels: `lib/types.ts` for compile-time shapes, and `lib/validate.ts` for runtime integrity (unique prefixed ids, resolving references, one unbroken assessment version chain per capability, demo records that claim no observed URL or content hash, assessments pinned to the dataset's taxonomy version, forecast resolutions that record when and why). Validation runs on every build and in `npm run validate:data`; the gate, selectors, and validator have behavioural tests in `npm test`.
 
 ## 2. Routes
 
@@ -46,17 +46,17 @@ Implemented in `components/Statement.tsx` and the `.ep-*` classes in `app/global
 ## 4. Data flow
 
 ```text
-lib/capabilities.ts ─┐
-lib/demo-data.ts ────┴─> lib/selectors.ts ──> server components (pages)
-                              │                     │
-                              └─> lib/gate.ts       └─> components/EvidenceExplorer.tsx (client, via props)
+data/capabilities.ts ─┐
+data/demo/dataset.ts ─┴─> lib/data/index.ts ─> lib/selectors.ts ──> server components (pages)
+   (loadDataset)            createSelectors(ds)      │                     │
+                                                     └─> lib/gate.ts       └─> components/EvidenceExplorer.tsx (client, via props)
 ```
 
 - `lib/types.ts` mirrors [evidence-model.md](evidence-model.md) in TypeScript.
-- `lib/capabilities.ts` is framework content (L0–L7 definitions with stable criterion ids such as `crit-l3-2`). It is not demo data and is the source of truth for capability definitions.
-- `lib/demo-data.ts` exports one `dataset` object. It is the only module that pages should treat as replaceable.
+- `data/capabilities.ts` is framework content (L0–L7 definitions with stable criterion ids such as `crit-l3-2`). It is not demo data and is the source of truth for capability definitions. It carries `TAXONOMY_VERSION`; each assessment pins the version it was made under, and `data/capabilities.test.ts` fails on any edit to the definitions until the version and a content hash are updated together.
+- `data/demo/dataset.ts` exports one `dataset` object. `lib/data/index.ts` (`loadDataset`) is the only module that chooses which dataset the pages render; pages import selectors from `@/lib/data` and never from a concrete dataset. See [data/README.md](../data/README.md).
 - `lib/validate.ts` checks a `Dataset` at runtime and aggregates every violation into one message; `scripts/validate-data.ts` runs it as `npm run validate:data`, and `npm run build` calls that first. It exists because types only guard code compiled against them, not records loaded from JSON or a database.
-- `lib/selectors.ts` builds id lookups and derived views (current assessment, history, tallies, recent activity). Selectors throw on dangling references so broken demo data fails the build instead of rendering silently.
+- `lib/selectors.ts` exports `createSelectors(dataset)`, which builds id lookups and derived views (current assessment, history, tallies, recent activity) for whatever dataset it is given. Selectors throw on dangling references so broken data fails the build instead of rendering silently. `loadDataset` is synchronous today; a database loader will be async and will change how pages obtain their selectors.
 - `lib/labels.ts` holds display labels and date formatting.
 
 ## 5. Stage gate (`lib/gate.ts`)
@@ -86,7 +86,7 @@ The demo proposal `p-01` (L3) is blocked on purpose: its only support is a devel
 ## 7. Replacing the demo data
 
 1. Keep the shapes in `lib/types.ts`. If a real model needs a different shape, change `types.ts` and `docs/evidence-model.md` together.
-2. Replace `lib/demo-data.ts` with a loader that returns the same `Dataset`. Use `provenance: "curated"` for real records so the `Demo` tag disappears for them; keep fictional records tagged `demo`.
+2. Put real records in `data/curated/` and have `loadDataset` in `lib/data/index.ts` return them. Use `provenance: "curated"` for real records so the `Demo` tag disappears for them; keep fictional records tagged `demo` and in `data/demo/`. Validate each dataset with `expectedProvenance` set to its kind so the two cannot mix.
 3. Remove or reword the demo banner in `app/layout.tsx` only when no demo record can reach the UI.
 4. Real sources need an observed `canonical_url`, `retrieved_at`, and `content_hash`. Never fill these in for a source that was not retrieved.
 5. When data moves to a database, keep the selectors' contract (throw on dangling ids) and move the gate to the server so it is enforced where changes are written.

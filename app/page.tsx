@@ -8,7 +8,7 @@ import {
   evidenceStats,
   pendingReviews,
   recentActivity,
-} from "@/lib/selectors";
+} from "@/lib/data";
 import { formatDate } from "@/lib/labels";
 
 const kindMarker = {

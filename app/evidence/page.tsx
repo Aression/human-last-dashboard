@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { EvidenceExplorer } from "@/components/EvidenceExplorer";
 import { Legend } from "@/components/Legend";
 import { PageHeader } from "@/components/PageHeader";
-import { ds } from "@/lib/selectors";
+import { ds } from "@/lib/data";
 
 export const metadata: Metadata = { title: "Evidence Explorer" };
 

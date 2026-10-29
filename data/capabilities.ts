@@ -1,4 +1,17 @@
-import type { Capability } from "./types";
+import type { Capability } from "../lib/types";
+
+/**
+ * Version of the capability definitions below. Every assessment pins the version
+ * it was made under (`Assessment.taxonomy_version`), so editing a criterion
+ * cannot silently change what an existing assessment meant.
+ *
+ * Changing any criterion, non-criterion, or level definition requires bumping
+ * this string AND the hash in `capabilities.test.ts`; the validator then requires
+ * the latest assessment of every capability to be re-made under the new version.
+ * Definitions of superseded versions are not retained here yet; keep them in git
+ * history until a taxonomy archive exists.
+ */
+export const TAXONOMY_VERSION = "taxonomy-1";
 
 /**
  * Working capability taxonomy (L0–L7).

@@ -1,4 +1,4 @@
-import { dataset } from "../lib/demo-data";
+import { dataset } from "../data/demo/dataset";
 import { validateDataset } from "../lib/validate";
 
 /**
@@ -9,7 +9,8 @@ import { validateDataset } from "../lib/validate";
  * otherwise.
  */
 
-const violations = validateDataset(dataset);
+// The demo fixture may only hold demo records; curated records live in data/curated/.
+const violations = validateDataset(dataset, { expectedProvenance: "demo" });
 
 const counts: Array<[string, number]> = [
   ["sources", dataset.sources.length],

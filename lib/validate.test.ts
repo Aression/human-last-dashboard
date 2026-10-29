@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { dataset as demoDataset } from "./demo-data";
+import { dataset as demoDataset } from "../data/demo/dataset";
 import type { Dataset } from "./types";
 import { assertValidDataset, validateDataset } from "./validate";
 
@@ -117,4 +117,55 @@ test("violations aggregate and assertValidDataset throws one message with all of
       return true;
     },
   );
+});
+
+test("the demo dataset passes with expectedProvenance demo and fails as curated", () => {
+  assert.deepEqual(validateDataset(clone(), { expectedProvenance: "demo" }), []);
+
+  const asCurated = validateDataset(clone(), { expectedProvenance: "curated" });
+  expectViolation(asCurated, /source s-01: provenance is "demo", but this dataset only holds "curated" records/);
+  expectViolation(asCurated, /assessment a-l1-v1: provenance is "demo"/);
+});
+
+test("a curated record inside a demo-only dataset is reported", () => {
+  const ds = clone();
+  ds.claims[0].provenance = "curated";
+  expectViolation(
+    validateDataset(ds, { expectedProvenance: "demo" }),
+    /claim c-01: provenance is "curated", but this dataset only holds "demo" records/,
+  );
+  // Without the option, mixed provenance is not this check's concern.
+  assert.deepEqual(validateDataset(ds), []);
+});
+
+test("an assessment without a taxonomy_version is reported", () => {
+  const violations = violationsFor((ds) => {
+    (ds.assessments[0] as { taxonomy_version: unknown }).taxonomy_version = "";
+  });
+  expectViolation(violations, /assessment a-l1-v1: taxonomy_version must be a non-empty string/);
+});
+
+test("a dataset without a taxonomy_version is reported", () => {
+  const violations = violationsFor((ds) => {
+    (ds as { taxonomy_version: unknown }).taxonomy_version = undefined;
+  });
+  expectViolation(violations, /dataset: taxonomy_version must be a non-empty string/);
+});
+
+test("a current assessment pinned to an older taxonomy must be re-assessed", () => {
+  const violations = violationsFor((ds) => {
+    ds.taxonomy_version = "taxonomy-2";
+  });
+  expectViolation(
+    violations,
+    /assessment a-l1-v2: current assessment of cap-l1 is pinned to taxonomy "taxonomy-1", but the dataset is on "taxonomy-2"/,
+  );
+});
+
+test("superseded assessments may stay pinned to the taxonomy they were made under", () => {
+  const ds = clone();
+  const older = ds.assessments.find((a) => a.id === "a-l1-v1");
+  assert.ok(older);
+  older.taxonomy_version = "taxonomy-0";
+  assert.deepEqual(validateDataset(ds), []);
 });

@@ -9,6 +9,7 @@ import type {
   Forecast,
   ObservedEvent,
   OpenQuestion,
+  Provenance,
   Source,
 } from "./types";
 
@@ -29,7 +30,14 @@ import type {
  *  - a resolved forecast records when and why it resolved, an open one records
  *    neither;
  *  - capabilities have unique criteria, and gate items recorded on a proposal
- *    are real GateItemIds.
+ *    are real GateItemIds;
+ *  - every assessment pins the taxonomy version it was made under, and the
+ *    current assessment of each capability matches the dataset's taxonomy
+ *    version, so a changed criterion forces a re-review instead of silently
+ *    changing what an assessment meant;
+ *  - when `expectedProvenance` is given, every record carries exactly that
+ *    provenance, which keeps demo fixtures and curated records from mixing
+ *    (AGENTS.md rule 10).
  *
  * `validateDataset` aggregates every violation it finds; nothing short-circuits.
  */
@@ -213,7 +221,12 @@ function asArray<T>(items: unknown, kind: string, err: Err): T[] {
   return items as T[];
 }
 
-export function validateDataset(ds: Dataset): string[] {
+export interface ValidateOptions {
+  /** Require every record in the dataset to have this provenance. */
+  expectedProvenance?: Provenance;
+}
+
+export function validateDataset(ds: Dataset, options: ValidateOptions = {}): string[] {
   const errors: string[] = [];
   const err: Err = (message) => errors.push(message);
 
@@ -222,6 +235,9 @@ export function validateDataset(ds: Dataset): string[] {
   }
   if (typeof ds.label !== "string" || !ds.label.trim()) {
     err("dataset: label must be a non-empty string");
+  }
+  if (typeof ds.taxonomy_version !== "string" || !ds.taxonomy_version.trim()) {
+    err("dataset: taxonomy_version must be a non-empty string");
   }
 
   const sources = asArray<Source>(ds.sources, "source", err);
@@ -320,6 +336,9 @@ export function validateDataset(ds: Dataset): string[] {
     checkEnum("assessment", a.id, "status", a.status, ASSESSMENT_STATUSES, err);
     checkEnum("assessment", a.id, "confidence", a.confidence, CONFIDENCES, err);
     checkDate("assessment", a.id, "reviewed_at", a.reviewed_at, false, err);
+    if (typeof a.taxonomy_version !== "string" || !a.taxonomy_version.trim()) {
+      err(`assessment ${a.id}: taxonomy_version must be a non-empty string`);
+    }
     checkRefs("assessment", a.id, "capability_id", [a.capability_id], capabilityIds, err);
     checkRefs(
       "assessment",
@@ -401,6 +420,14 @@ export function validateDataset(ds: Dataset): string[] {
         `capability ${capabilityId}: expected exactly one current assessment, found ${heads.length} (${heads
           .map((a) => a.id)
           .join(", ") || "none"})`,
+      );
+    } else if (
+      typeof heads[0].taxonomy_version === "string" &&
+      heads[0].taxonomy_version.trim() &&
+      heads[0].taxonomy_version !== ds.taxonomy_version
+    ) {
+      err(
+        `assessment ${heads[0].id}: current assessment of ${capabilityId} is pinned to taxonomy ${JSON.stringify(heads[0].taxonomy_version)}, but the dataset is on ${JSON.stringify(ds.taxonomy_version)}; re-assess under the current taxonomy`,
       );
     }
   }
@@ -498,11 +525,36 @@ export function validateDataset(ds: Dataset): string[] {
     }
   }
 
+  // ------------------------------------------------ provenance by location
+  if (options.expectedProvenance !== undefined) {
+    const expected = options.expectedProvenance;
+    const collections: Array<[string, Array<{ id: string; provenance: Provenance }>]> = [
+      ["source", sources],
+      ["claim", claims],
+      ["evidence", evidence],
+      ["assessment", assessments],
+      ["proposal", proposals],
+      ["event", events],
+      ["attribution", attributions],
+      ["forecast", forecasts],
+      ["question", questions],
+    ];
+    for (const [kind, records] of collections) {
+      for (const r of records) {
+        if (r.provenance !== expected) {
+          err(
+            `${kind} ${r.id}: provenance is ${JSON.stringify(r.provenance)}, but this dataset only holds ${JSON.stringify(expected)} records`,
+          );
+        }
+      }
+    }
+  }
+
   return errors;
 }
 
-export function assertValidDataset(ds: Dataset): void {
-  const violations = validateDataset(ds);
+export function assertValidDataset(ds: Dataset, options: ValidateOptions = {}): void {
+  const violations = validateDataset(ds, options);
   if (violations.length > 0) {
     throw new Error(
       `Dataset validation failed with ${violations.length} violation(s):\n - ${violations.join("\n - ")}`,

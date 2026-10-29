@@ -68,8 +68,8 @@ Other scripts:
 | `npm run build` | Validates the dataset, then builds all routes as static pages. |
 | `npm run typecheck` | `tsc --noEmit`. |
 | `npm run lint` | ESLint over the whole repository. |
-| `npm test` | Behavioural tests for `lib/gate.ts`, `lib/selectors.ts`, and `lib/validate.ts`. |
-| `npm run validate:data` | Runs `lib/validate.ts` against the dataset alone; prints counts and every violation. |
+| `npm test` | Behavioural tests for `lib/gate.ts`, `lib/selectors.ts`, `lib/validate.ts`, and the pinned capability taxonomy in `data/`. |
+| `npm run validate:data` | Runs `lib/validate.ts` against the demo dataset (requiring demo provenance on every record); prints counts and every violation. |
 
 `npm run build` refuses to build a dataset whose ids, references, assessment version chains, provenance, or forecast resolutions are inconsistent.
 

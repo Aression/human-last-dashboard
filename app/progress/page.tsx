@@ -4,7 +4,7 @@ import { Legend } from "@/components/Legend";
 import { PageHeader } from "@/components/PageHeader";
 import { EvidenceSquare, StatusChip } from "@/components/chips";
 import { evaluateGate } from "@/lib/gate";
-import { ds, currentAssessment, evidenceForCapability, proposalsFor } from "@/lib/selectors";
+import { ds, currentAssessment, evidenceForCapability, proposalsFor } from "@/lib/data";
 
 export const metadata: Metadata = { title: "Progress" };
 
