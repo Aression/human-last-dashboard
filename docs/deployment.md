@@ -51,3 +51,14 @@ The project had Vercel's SSO deployment protection enabled, which makes every pr
 
 - **Custom domain:** add it under project settings → Domains, then point the DNS record at Vercel. The build does not need to change.
 - **Rollback:** promote an earlier deployment (`npx vercel@latest rollback`, or roll back in the dashboard). Because every route is static and the dataset is versioned in git, redeploying an earlier commit reproduces the earlier site exactly.
+
+## 6. Deployment history
+
+| Commit | Deployment | State |
+| --- | --- | --- |
+| `8ec9ebe` (initial dashboard) | `dpl_56NxTQDLUXBy2diM4psmNTL2zLwa` | READY, alias assigned |
+| `80edd41` (validation, tests, URL filters, provenance panel) | `dpl_AdMG8wu5XpcB61ZqXsTVHVKHRpxC` | READY, production alias, `meta.githubCommitSha` matches the pushed commit |
+
+Verified for the second entry: `readyState: READY`, `target: production`, aliases `human-last-dashboard.vercel.app` and `human-last-dashboard-lvdifine-3768s-projects.vercel.app`, `source: cli` with `githubCommitSha: 80edd41827edc35185f43e0a1c97f1a330d7a218`. Content was confirmed against the live URL from a network that can reach it: `/evidence` served the explorer including the new "Copy link" control and the note about filters applying after load, and `/evidence/s-01` served the provenance panel with its "Not observed"/"Not recorded" rows.
+
+The table names the commit whose built output a deployment serves. A documentation-only commit after it does not change that output, but the site is redeployed anyway so the live deployment's commit sha always equals `HEAD`.
