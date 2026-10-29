@@ -4,10 +4,16 @@ import type {
   EvidenceType,
   ForecastStatus,
   Polarity,
+  Provenance,
   ReviewStatus,
   SourceTier,
   SourceType,
 } from "./types";
+
+export const provenanceLabel: Record<Provenance, string> = {
+  demo: "Demo (fictional)",
+  curated: "Curated",
+};
 
 export const claimTypeLabel: Record<ClaimType, string> = {
   "observed-fact": "Observed fact",

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import type { Claim, Evidence, Source } from "@/lib/types";
 import {
   claimTypeLabel,
@@ -24,6 +24,72 @@ interface Props {
 }
 
 const ALL = "all";
+
+const TABS: Tab[] = ["evidence", "claims", "sources"];
+
+/**
+ * The explorer's whole state, so it can live in the query string and a filtered
+ * view can be linked to. `/evidence?tab=claims&tier=independent&q=benchmark`.
+ */
+interface ExplorerState {
+  tab: Tab;
+  q: string;
+  tier: string;
+  polarity: string;
+  review: string;
+  claimType: string;
+}
+
+/** Defaults are omitted from the URL, so a link only carries what was chosen. */
+const DEFAULT_STATE: ExplorerState = {
+  tab: "evidence",
+  q: "",
+  tier: ALL,
+  polarity: ALL,
+  review: ALL,
+  claimType: ALL,
+};
+
+/** A facet is only read back from the URL when it names a value this build knows. */
+function facet<T extends string>(raw: string | null, options: Record<T, string>): string {
+  return raw && Object.prototype.hasOwnProperty.call(options, raw) ? raw : ALL;
+}
+
+function parseState(search: string): ExplorerState {
+  const params = new URLSearchParams(search);
+  const tab = params.get("tab") as Tab | null;
+  return {
+    tab: tab && TABS.includes(tab) ? tab : DEFAULT_STATE.tab,
+    q: params.get("q") ?? "",
+    tier: facet(params.get("tier"), sourceTierLabel),
+    polarity: facet(params.get("polarity"), polarityLabel),
+    review: facet(params.get("review"), reviewStatusLabel),
+    claimType: facet(params.get("claimType"), claimTypeLabel),
+  };
+}
+
+function serializeState(state: ExplorerState): string {
+  const params = new URLSearchParams();
+  if (state.tab !== DEFAULT_STATE.tab) params.set("tab", state.tab);
+  if (state.q) params.set("q", state.q);
+  if (state.tier !== ALL) params.set("tier", state.tier);
+  if (state.polarity !== ALL) params.set("polarity", state.polarity);
+  if (state.review !== ALL) params.set("review", state.review);
+  if (state.claimType !== ALL) params.set("claimType", state.claimType);
+  return params.toString();
+}
+
+/** The query keys this explorer owns; everything else in the URL is left alone. */
+const STATE_KEYS = ["tab", "q", "tier", "polarity", "review", "claimType"] as const;
+
+/** Writes the state over `params`, dropping keys it no longer sets and keeping the rest. */
+function writeState(params: URLSearchParams, state: ExplorerState): URLSearchParams {
+  const next = new URLSearchParams(params);
+  for (const key of STATE_KEYS) next.delete(key);
+  const own = new URLSearchParams(serializeState(state));
+  own.forEach((value, key) => next.set(key, value));
+  return next;
+}
 
 function Select<T extends string>({
   label,
@@ -60,15 +126,58 @@ function Select<T extends string>({
 }
 
 export function EvidenceExplorer({ sources, claims, evidence }: Props) {
-  const [tab, setTab] = useState<Tab>("evidence");
-  const [q, setQ] = useState("");
+  const [state, setState] = useState<ExplorerState>(DEFAULT_STATE);
+  const [copied, setCopied] = useState<"idle" | "copied" | "failed">("idle");
+  const copyTimer = useRef<number | undefined>(undefined);
   const searchId = useId();
 
-  // facets
-  const [polarity, setPolarity] = useState(ALL);
-  const [review, setReview] = useState(ALL);
-  const [tier, setTier] = useState(ALL);
-  const [claimType, setClaimType] = useState(ALL);
+  const { tab, q, tier, polarity, review, claimType } = state;
+
+  // The page is prerendered with the default state, so the query string can only
+  // be applied in the browser. Reading it here (rather than with useSearchParams)
+  // keeps the whole record list in the prerendered HTML and needs no Suspense
+  // boundary, so /evidence stays statically rendered with its content.
+  useEffect(() => {
+    const apply = () => setState(parseState(window.location.search));
+    apply();
+    window.addEventListener("popstate", apply);
+    return () => window.removeEventListener("popstate", apply);
+  }, []);
+
+  useEffect(() => () => window.clearTimeout(copyTimer.current), []);
+
+  /**
+   * Every state change is mirrored into the URL. `replaceState` rather than the
+   * router: this page is prerendered, so there is no server state to refetch and a
+   * soft navigation per keystroke would be wasted. Replacing (not pushing) keeps
+   * Back pointing at the previous page instead of walking through filters, and the
+   * entry's existing history state is passed through so Next's own restoration of
+   * this page on Back/Forward keeps working.
+   */
+  const commit = (next: ExplorerState) => {
+    setState(next);
+    const { pathname, search: current, hash } = window.location;
+    const search = writeState(new URLSearchParams(current), next).toString();
+    window.history.replaceState(
+      window.history.state,
+      "",
+      `${pathname}${search ? `?${search}` : ""}${hash}`,
+    );
+  };
+
+  const copyLink = async () => {
+    const search = writeState(new URLSearchParams(window.location.search), state).toString();
+    const { origin, pathname, hash } = window.location;
+    const url = `${origin}${pathname}${search ? `?${search}` : ""}${hash}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied("copied");
+    } catch {
+      setCopied("failed");
+    }
+    window.clearTimeout(copyTimer.current);
+    copyTimer.current = window.setTimeout(() => setCopied("idle"), 4000);
+  };
 
   const sourceById = useMemo(() => new Map(sources.map((s) => [s.id, s])), [sources]);
   const needle = q.trim().toLowerCase();
@@ -126,13 +235,7 @@ export function EvidenceExplorer({ sources, claims, evidence }: Props) {
     { id: "sources", label: "Sources" },
   ];
 
-  const clear = () => {
-    setQ("");
-    setPolarity(ALL);
-    setReview(ALL);
-    setTier(ALL);
-    setClaimType(ALL);
-  };
+  const clear = () => commit({ ...DEFAULT_STATE, tab });
   const filtered = needle || polarity !== ALL || review !== ALL || tier !== ALL || claimType !== ALL;
 
   return (
@@ -145,7 +248,7 @@ export function EvidenceExplorer({ sources, claims, evidence }: Props) {
             id={`tab-${t.id}`}
             aria-selected={tab === t.id}
             aria-controls="explorer-panel"
-            onClick={() => setTab(t.id)}
+            onClick={() => commit({ ...state, tab: t.id })}
             className={`-mb-px border-b-2 px-4 py-2 text-sm transition-colors ${
               tab === t.id
                 ? "border-accent text-ink"
@@ -166,34 +269,75 @@ export function EvidenceExplorer({ sources, claims, evidence }: Props) {
             id={searchId}
             type="search"
             value={q}
-            onChange={(e) => setQ(e.target.value)}
+            onChange={(e) => commit({ ...state, q: e.target.value })}
             placeholder="Observation, method, source, id"
             className="mt-1 w-full rounded-md border border-line bg-surface px-2.5 py-1.5 text-sm placeholder:text-muted/70"
           />
         </div>
-        <Select label="Source tier" value={tier} onChange={setTier} options={sourceTierLabel} />
+        <Select
+          label="Source tier"
+          value={tier}
+          onChange={(v) => commit({ ...state, tier: v })}
+          options={sourceTierLabel}
+        />
         {tab === "evidence" && (
           <>
-            <Select label="Polarity" value={polarity} onChange={setPolarity} options={polarityLabel} />
-            <Select label="Review status" value={review} onChange={setReview} options={reviewStatusLabel} />
+            <Select
+              label="Polarity"
+              value={polarity}
+              onChange={(v) => commit({ ...state, polarity: v })}
+              options={polarityLabel}
+            />
+            <Select
+              label="Review status"
+              value={review}
+              onChange={(v) => commit({ ...state, review: v })}
+              options={reviewStatusLabel}
+            />
           </>
         )}
         {tab === "claims" && (
-          <Select label="Claim type" value={claimType} onChange={setClaimType} options={claimTypeLabel} />
+          <Select
+            label="Claim type"
+            value={claimType}
+            onChange={(v) => commit({ ...state, claimType: v })}
+            options={claimTypeLabel}
+          />
         )}
       </div>
 
-      <div className="mt-2 flex items-center justify-between text-xs text-muted" aria-live="polite">
-        <span>
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-2 text-xs text-muted">
+        <span aria-live="polite">
           {counts[tab]} of{" "}
           {tab === "evidence" ? evidence.length : tab === "claims" ? claims.length : sources.length} shown
         </span>
-        {filtered && (
-          <button onClick={clear} className="underline underline-offset-4 hover:text-ink">
-            Clear filters
+        <span className="flex items-center gap-3">
+          <span role="status" aria-live="polite" className="text-accent">
+            {copied === "copied"
+              ? "Link copied"
+              : copied === "failed"
+                ? "Copy failed — copy the address bar instead"
+                : ""}
+          </span>
+          <button
+            type="button"
+            onClick={copyLink}
+            title="Copy a link that restores these filters"
+            className="rounded-md border border-line bg-surface px-2.5 py-1 text-xs text-muted hover:text-ink"
+          >
+            Copy link
           </button>
-        )}
+          {filtered && (
+            <button onClick={clear} className="underline underline-offset-4 hover:text-ink">
+              Clear filters
+            </button>
+          )}
+        </span>
       </div>
+
+      <p className="mt-1 text-xs text-muted">
+        A shared link carries its filters in the URL; they are applied once the page has loaded.
+      </p>
 
       <div id="explorer-panel" role="tabpanel" aria-labelledby={`tab-${tab}`} className="mt-4 space-y-3">
         {counts[tab] === 0 && (

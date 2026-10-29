@@ -56,9 +56,9 @@ Sources
 ## 6. Initial implementation order
 
 1. Static dashboard and docs. *(Done: four views plus detail pages over demo data; see [frontend.md](frontend.md).)*
-2. Typed domain schemas and database migration. *(TypeScript types exist in `lib/types.ts`; no database migration yet.)*
+2. Typed domain schemas and database migration. *(Half done: `lib/types.ts` defines the shapes and `lib/validate.ts` enforces them at runtime — ids, references, version chains, provenance, forecast resolution — run on every build via `npm run validate:data`. No database migration yet; that needs a persistence decision.)*
 3. Manual source/claim/evidence entry.
-4. Search and provenance views.
+4. Search and provenance views. *(Started: the Evidence Explorer keeps its search and facet state in the URL so a filtered view is linkable, and every record page renders a provenance panel that shows only stored fields and states what the record does not establish. Still demo data; no server-side search.)*
 5. Assisted extraction with validation.
 6. Counterevidence discovery and review queue.
 7. Versioned assessments and forecast scoring.

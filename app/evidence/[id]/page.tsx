@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageHeader, SectionTitle } from "@/components/PageHeader";
 import { DemoTag, ModelTag, PolarityChip, ReviewChip, TierChip } from "@/components/chips";
+import { ProvenancePanel } from "@/components/ProvenancePanel";
 import { Statement, kindFromClaimType } from "@/components/Statement";
 import {
   claimTypeLabel,
@@ -82,7 +83,6 @@ export default async function RecordPage({ params }: { params: Promise<Params> }
           <Field label="Method">{evidence.method}</Field>
           <Field label="Limitations">{evidence.limitations}</Field>
           <Field label="Reproducibility">{evidence.reproducibility_notes}</Field>
-          <Field label="Recorded">{formatDate(evidence.created_at)}</Field>
         </dl>
 
         <section className="space-y-3">
@@ -139,6 +139,8 @@ export default async function RecordPage({ params }: { params: Promise<Params> }
             )}
           </ul>
         </section>
+
+        <ProvenancePanel kind="evidence" record={evidence} />
       </div>
     );
   }
@@ -209,6 +211,8 @@ export default async function RecordPage({ params }: { params: Promise<Params> }
             </ul>
           )}
         </section>
+
+        <ProvenancePanel kind="claim" record={claim} />
       </div>
     );
   }
@@ -233,18 +237,6 @@ export default async function RecordPage({ params }: { params: Promise<Params> }
       <dl className="grid max-w-3xl gap-5 sm:grid-cols-2">
         <Field label="Publisher">{s.publisher}</Field>
         <Field label="Published">{formatDate(s.published_at)}</Field>
-        <Field label="Retrieved by this system">{formatDate(s.retrieved_at)}</Field>
-        <Field label="Status">{s.status}</Field>
-        <Field label="Canonical URL">
-          {s.canonical_url ?? <span className="text-muted">None observed (demo source)</span>}
-        </Field>
-        <Field label="Content hash">
-          {s.content_hash ? (
-            <code className="font-mono text-xs">{s.content_hash}</code>
-          ) : (
-            <span className="text-muted">Not captured</span>
-          )}
-        </Field>
       </dl>
 
       {s.source_tier === "lead" && (
@@ -292,6 +284,8 @@ export default async function RecordPage({ params }: { params: Promise<Params> }
           {evs.length === 0 && <li className="text-sm text-muted">No evidence records.</li>}
         </ul>
       </section>
+
+      <ProvenancePanel kind="source" record={s} />
     </div>
   );
 }

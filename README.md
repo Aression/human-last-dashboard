@@ -46,7 +46,9 @@ Each level must be assessed against explicit criteria, operational evidence, lim
 
 ## Repository status
 
-The dashboard frontend is implemented over a **fictional demonstration dataset**. It has four views (Overview, Progress, Evidence Explorer, Research & Attribution) plus capability and record detail pages. Ingestion, persistence, model calls, authentication, and scheduled workflows are not implemented. Demo records are labeled on every page and must not be read as evidence about real systems. See [Frontend](docs/frontend.md).
+The dashboard frontend is implemented over a **fictional demonstration dataset**. It has four views (Overview, Progress, Evidence Explorer, Research & Attribution) plus capability and record detail pages. The Evidence Explorer keeps its filters in the URL, and record pages show a provenance panel that reports only what each record stores. Ingestion, persistence, model calls, authentication, and scheduled workflows are not implemented. Demo records are labeled on every page and must not be read as evidence about real systems. See [Frontend](docs/frontend.md).
+
+A production build is deployed at https://human-last-dashboard.vercel.app; see [Deployment](docs/deployment.md).
 
 ## Development
 
@@ -59,7 +61,17 @@ npm run dev
 
 Open http://localhost:3000.
 
-Other scripts: `npm run build`, `npm run typecheck`. `npm run lint` currently fails because of an eslint-config-next version mismatch; see [Frontend §8](docs/frontend.md#8-known-limitations).
+Other scripts:
+
+| Script | What it does |
+| --- | --- |
+| `npm run build` | Validates the dataset, then builds all routes as static pages. |
+| `npm run typecheck` | `tsc --noEmit`. |
+| `npm run lint` | ESLint over the whole repository. |
+| `npm test` | Behavioural tests for `lib/gate.ts`, `lib/selectors.ts`, and `lib/validate.ts`. |
+| `npm run validate:data` | Runs `lib/validate.ts` against the dataset alone; prints counts and every violation. |
+
+`npm run build` refuses to build a dataset whose ids, references, assessment version chains, provenance, or forecast resolutions are inconsistent.
 
 ## Documentation
 
@@ -69,6 +81,7 @@ Other scripts: `npm run build`, `npm run typecheck`. `npm run lint` currently fa
 - [Evidence model](docs/evidence-model.md)
 - [Stage taxonomy and gates](docs/stage-taxonomy.md)
 - [Agent workflows](docs/agent-workflows.md)
+- [Deployment](docs/deployment.md)
 - [Engineering instructions](AGENTS.md)
 
 ## Scope and limitations

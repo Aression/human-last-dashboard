@@ -6,6 +6,8 @@ This document describes the dashboard UI as implemented: routes, the visual gram
 
 The UI renders a **fictional demonstration dataset** from `lib/demo-data.ts`. There is no database, ingestion, authentication, or model call. Every page shows a demo banner, and every demo record carries a `Demo` tag. Do not cite demo content as evidence about any real system (AGENTS.md rules 2 and 10).
 
+The dataset is checked at two levels: `lib/types.ts` for compile-time shapes, and `lib/validate.ts` for runtime integrity (unique prefixed ids, resolving references, one unbroken assessment version chain per capability, demo records that claim no observed URL or content hash, forecast resolutions that record when and why). Validation runs on every build and in `npm run validate:data`; the gate, selectors, and validator have behavioural tests in `npm test`.
+
 ## 2. Routes
 
 | Route | View | Purpose |
@@ -13,11 +15,15 @@ The UI renders a **fictional demonstration dataset** from `lib/demo-data.ts`. Th
 | `/` | Overview | Counts, proposed changes waiting on review, recent changes, bottlenecks in view, legend. |
 | `/progress` | Progress | One row per capability: current status, confidence, evidence tally, version. No aggregate score. |
 | `/progress/[id]` | Capability detail | Criteria and non-criteria, current assessment, proposed change with gate checklist, linked evidence, version history. |
-| `/evidence` | Evidence Explorer | Tabs for evidence, claims, and sources with search and facet filters. |
-| `/evidence/[id]` | Record detail | A source (`s-`), claim (`c-`), or evidence (`e-`) record, resolved by id, with cross-links. |
+| `/evidence` | Evidence Explorer | Tabs for evidence, claims, and sources with search and facet filters; state is kept in the URL. |
+| `/evidence/[id]` | Record detail | A source (`s-`), claim (`c-`), or evidence (`e-`) record, resolved by id, with cross-links and a provenance panel. |
 | `/research` | Research & Attribution | Observed events with competing explanations, forecasts, unresolved questions. |
 
 All routes are statically generated. `/evidence` is the only route with client-side state (search and filters); it receives its data as props so the dataset is not imported into the client bundle separately.
+
+**Explorer state in the URL.** The explorer mirrors `tab`, `q`, `tier`, `polarity`, `review`, and `claimType` into the query string — `?tab=claims&tier=independent&q=benchmark` — and omits defaults, so a copied link carries only what was chosen. Writes use `window.history.replaceState`, not the router, because the page is prerendered: there is no server state to refetch, and one soft navigation per keystroke would be wasted work. Replacing rather than pushing keeps Back pointing at the previous page instead of walking through filter states. Because the URL can only be read in the browser, a shared link renders the unfiltered list for one frame before the filter applies; the page says so next to the filters. Unrelated query keys and the hash are preserved.
+
+**Provenance panel.** Record detail pages end with `components/ProvenancePanel.tsx`, which lists only fields the record actually stores — id, provenance, creation date, model/workflow attribution, and for sources the canonical URL, retrieval time, content hash, snapshot, status, type, tier, and developer affiliation. A field with no value reads "not observed" or "not recorded" rather than being omitted or shown as unavailable, and every panel closes with what that kind of record does not establish. This is the UI counterpart of the rule that a record must never imply a retrieval, snapshot, or verification it does not have (AGENTS.md rules 2, 3, 4).
 
 ## 3. Visual grammar
 
@@ -49,6 +55,7 @@ lib/demo-data.ts ────┴─> lib/selectors.ts ──> server components 
 - `lib/types.ts` mirrors [evidence-model.md](evidence-model.md) in TypeScript.
 - `lib/capabilities.ts` is framework content (L0–L7 definitions with stable criterion ids such as `crit-l3-2`). It is not demo data and is the source of truth for capability definitions.
 - `lib/demo-data.ts` exports one `dataset` object. It is the only module that pages should treat as replaceable.
+- `lib/validate.ts` checks a `Dataset` at runtime and aggregates every violation into one message; `scripts/validate-data.ts` runs it as `npm run validate:data`, and `npm run build` calls that first. It exists because types only guard code compiled against them, not records loaded from JSON or a database.
 - `lib/selectors.ts` builds id lookups and derived views (current assessment, history, tallies, recent activity). Selectors throw on dangling references so broken demo data fails the build instead of rendering silently.
 - `lib/labels.ts` holds display labels and date formatting.
 
@@ -74,7 +81,7 @@ The demo proposal `p-01` (L3) is blocked on purpose: its only support is a devel
 | UI distinguishes observed facts from model-generated inference | §3 | Implemented |
 | Changes preserve prior versions and a rationale | Assessment history on `/progress/[id]` | Displayed; versioning is not enforced because nothing is written yet |
 | Demo records are visibly labeled | Banner on every page, `Demo` tag on records, footer | Implemented |
-| App builds and type-checks in a clean environment | `npm run build`, `npm run typecheck` | Verified once locally; see §8 |
+| App builds and type-checks in a clean environment | `npm run build`, `npm run typecheck`, `npm run lint`, `npm test` | All pass locally; `next build` re-runs lint and type checks. See §8 |
 
 ## 7. Replacing the demo data
 
@@ -86,9 +93,10 @@ The demo proposal `p-01` (L3) is blocked on purpose: its only support is a devel
 
 ## 8. Known limitations
 
-- Data is static and in-repo; filters are client-side only and not reflected in the URL.
+- Data is static and in-repo. Filters run in the browser and are reflected in the URL, but a shared link applies them after load, and search is a substring match over rendered fields — there is no index, ranking, or server-side query.
 - No numeric calibration is displayed for forecasts. The page states that two resolved forecasts are too few; add a calibration view only when the sample supports it.
 - Pages are English only.
 - The gate runs in the UI layer. It demonstrates the rules but does not enforce them.
-- No automated tests exist yet. Validation to date is type-checking, a production build, and manual review of screenshots at desktop (1360 px) and phone (390 px) widths.
-- `npm run lint` does not currently run: `eslint.config.mjs` imports `eslint-config-next/core-web-vitals` in the form used by eslint-config-next 16, while `package.json` pins `^15.5.0`. Align the two (upgrade the package or adapt the config) before relying on lint in CI. `next build` prints the same error in its lint step but completes.
+- There is no persistence, no review queue, and no authentication: nothing writes a record, so the audit trail exists only as far as the dataset itself.
+- Tests cover the pure functions (`lib/gate.ts`, `lib/selectors.ts`, `lib/validate.ts`). There is no browser or rendering test; UI verification is a production build plus review of the generated HTML at desktop (1360 px) and phone (390 px) widths.
+- Automated checks are local only. There is no CI configuration in the repository, so lint, type checks, tests, and validation run only when someone runs them or when a deployment builds.
