@@ -1,7 +1,16 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import {
+import { dataset as demoDataset } from "../data/demo/dataset";
+import { createSelectors } from "./selectors";
+
+/**
+ * Selectors are the only read path the pages use, so their invariants matter:
+ * lookups resolve by id, the current assessment is the newest version, and
+ * recent activity is ordered by date.
+ */
+
+const {
   assessmentHistory,
   claimsForEvidence,
   currentAssessment,
@@ -9,13 +18,22 @@ import {
   recentActivity,
   sourceOf,
   sourcesById,
-} from "./selectors";
+} = createSelectors(demoDataset);
 
-/**
- * Selectors are the only read path the pages use, so their invariants matter:
- * lookups resolve by id, the current assessment is the newest version, and
- * recent activity is ordered by date.
- */
+test("selectors are built from the dataset they are given, not from a fixed import", () => {
+  const trimmed = structuredClone(demoDataset);
+  trimmed.assessments = trimmed.assessments.filter((a) => a.capability_id !== "cap-l1");
+  trimmed.sources = trimmed.sources.filter((s) => s.id !== "s-01");
+
+  const custom = createSelectors(trimmed);
+  assert.equal(custom.currentAssessment("cap-l1"), null);
+  assert.equal(custom.sourcesById.get("s-01"), undefined);
+  assert.throws(() => custom.sourceOf({ source_id: "s-01" }), /Dangling source reference: s-01/);
+
+  // The default instance is unaffected by a second one.
+  assert.ok(currentAssessment("cap-l1"));
+  assert.ok(sourcesById.get("s-01"));
+});
 
 test("id lookups resolve the demo records", () => {
   const source = sourcesById.get("s-01");

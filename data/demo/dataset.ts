@@ -1,5 +1,5 @@
-import { CAPABILITIES } from "./capabilities";
-import type { Dataset, GeneratedBy } from "./types";
+import { CAPABILITIES, TAXONOMY_VERSION } from "../capabilities";
+import type { Dataset, GeneratedBy } from "../../lib/types";
 
 /**
  * DEMONSTRATION DATA — FICTIONAL.
@@ -8,7 +8,9 @@ import type { Dataset, GeneratedBy } from "./types";
  * paper, benchmark, result, or date refers to a real event, and no source has a
  * URL because none was observed. Do not cite, quote, or treat any of it as
  * evidence about real AI systems. Replace this module with real records loaded
- * through the ingestion pipeline (see docs/architecture.md, step 3).
+ * through the ingestion pipeline (see docs/architecture.md, step 3). Curated records
+ * belong in `data/curated/`, never here: the validator requires every record in this
+ * fixture to have provenance "demo".
  */
 
 const demoModel: GeneratedBy = {
@@ -20,6 +22,7 @@ const base = { provenance: "demo" as const };
 
 export const dataset: Dataset = {
   label: "Demonstration dataset · fictional records",
+  taxonomy_version: TAXONOMY_VERSION,
 
   // ---------------------------------------------------------------- sources
   sources: [
@@ -412,7 +415,7 @@ export const dataset: Dataset = {
     },
   ],
 
-  // Capability definitions are framework content, not demo data: see lib/capabilities.ts.
+  // Capability definitions are framework content, not demo data: see data/capabilities.ts.
   capabilities: CAPABILITIES,
 
   // ------------------------------------------------------------ assessments
@@ -423,6 +426,7 @@ export const dataset: Dataset = {
       created_at: "2026-03-14",
       capability_id: "cap-l1",
       version: 1,
+      taxonomy_version: TAXONOMY_VERSION,
       status: "unverified",
       confidence: "low",
       supporting_evidence_ids: ["e-01"],
@@ -441,6 +445,7 @@ export const dataset: Dataset = {
       created_at: "2026-06-20",
       capability_id: "cap-l1",
       version: 2,
+      taxonomy_version: TAXONOMY_VERSION,
       status: "demonstrated-under-conditions",
       confidence: "moderate",
       supporting_evidence_ids: ["e-01", "e-02"],
@@ -461,6 +466,7 @@ export const dataset: Dataset = {
       created_at: "2026-03-14",
       capability_id: "cap-l2",
       version: 1,
+      taxonomy_version: TAXONOMY_VERSION,
       status: "insufficient-evidence",
       confidence: "low",
       supporting_evidence_ids: ["e-05"],
@@ -478,6 +484,7 @@ export const dataset: Dataset = {
       created_at: "2026-07-12",
       capability_id: "cap-l2",
       version: 2,
+      taxonomy_version: TAXONOMY_VERSION,
       status: "partial",
       confidence: "low",
       supporting_evidence_ids: ["e-05"],
@@ -497,6 +504,7 @@ export const dataset: Dataset = {
       created_at: "2026-05-10",
       capability_id: "cap-l3",
       version: 1,
+      taxonomy_version: TAXONOMY_VERSION,
       status: "insufficient-evidence",
       confidence: "low",
       supporting_evidence_ids: ["e-07"],
@@ -515,6 +523,7 @@ export const dataset: Dataset = {
       created_at: "2026-08-22",
       capability_id: "cap-l4",
       version: 1,
+      taxonomy_version: TAXONOMY_VERSION,
       status: "unverified",
       confidence: "low",
       supporting_evidence_ids: [],
@@ -532,6 +541,7 @@ export const dataset: Dataset = {
       created_at: "2026-09-05",
       capability_id: "cap-l4",
       version: 2,
+      taxonomy_version: TAXONOMY_VERSION,
       status: "contradicted",
       confidence: "moderate",
       supporting_evidence_ids: [],

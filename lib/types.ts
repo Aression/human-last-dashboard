@@ -131,6 +131,8 @@ export type AssessmentStatus =
 export interface Assessment extends BaseRecord {
   capability_id: string;
   version: number;
+  /** Version of the capability definitions this assessment was made under. */
+  taxonomy_version: string;
   status: AssessmentStatus;
   /** Qualitative; see docs/stage-taxonomy.md. No numeric score is implied. */
   confidence: "low" | "moderate" | "high";
@@ -218,6 +220,8 @@ export interface OpenQuestion {
 
 export interface Dataset {
   label: string;
+  /** Version of `capabilities`; see TAXONOMY_VERSION in data/capabilities.ts. */
+  taxonomy_version: string;
   sources: Source[];
   claims: Claim[];
   evidence: Evidence[];

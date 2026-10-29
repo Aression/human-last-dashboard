@@ -45,7 +45,7 @@ Two independent sources of truth, because one of them is not reachable from ever
 
 ## 4. Access and data
 
-The project had Vercel's SSO deployment protection enabled, which makes every preview and production URL require a Vercel login. It is disabled for this demo (`ssoProtection: null`) so the public URL answers without authentication. The site publishes only the fictional demonstration dataset committed in `lib/demo-data.ts`; if the site ever carries non-public or real curated records, re-enable protection and add authentication before deploying.
+The project had Vercel's SSO deployment protection enabled, which makes every preview and production URL require a Vercel login. It is disabled for this demo (`ssoProtection: null`) so the public URL answers without authentication. The site publishes only the fictional demonstration dataset committed in `data/demo/dataset.ts`; if the site ever carries non-public or real curated records, re-enable protection and add authentication before deploying.
 
 ## 5. Domains and rollback
 

@@ -16,7 +16,7 @@ import {
   evidenceForCapability,
   proposalsFor,
   sourceOf,
-} from "@/lib/selectors";
+} from "@/lib/data";
 
 type Params = { id: string };
 

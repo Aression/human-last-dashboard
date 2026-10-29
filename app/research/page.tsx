@@ -5,7 +5,7 @@ import { PageHeader, SectionTitle } from "@/components/PageHeader";
 import { DemoTag, ForecastChip, ModelTag } from "@/components/chips";
 import { Statement } from "@/components/Statement";
 import { formatDate } from "@/lib/labels";
-import { capabilitiesById, ds } from "@/lib/selectors";
+import { capabilitiesById, ds } from "@/lib/data";
 
 export const metadata: Metadata = { title: "Research & Attribution" };
 

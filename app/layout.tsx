@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import "./globals.css";
 import { Nav } from "@/components/Nav";
-import { ds } from "@/lib/selectors";
+import { ds } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: {

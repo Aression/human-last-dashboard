@@ -61,7 +61,7 @@ Fields:
 A versioned judgement of a capability against its criteria.
 
 Fields:
-- `id`, `capability_id`, `version`.
+- `id`, `capability_id`, `version`, `taxonomy_version` (the version of the capability definitions the assessment was made under; the current assessment of each capability must match the dataset's `taxonomy_version`).
 - `status`: unverified, partial, demonstrated-under-conditions, independently-reproduced, contradicted, or insufficient-evidence.
 - `confidence`: qualitative or calibrated numeric value with documented semantics.
 - `supporting_evidence_ids`, `counterevidence_ids`.
@@ -109,7 +109,7 @@ The TypeScript types in `lib/types.ts` add the following fields. They are propos
 - `Source.developer_affiliated` (boolean): the reporting party built or operates the system reported on. Source tier alone cannot express this, and the stage gate needs it to separate developer-reported results from independent validation.
 - `Evidence.claim_ids` and `Evidence.capability_ids`: the many-to-many links described under Relationships, stored directly for display.
 - `AssessmentProposal`: a proposed status change held outside the accepted assessment history until a reviewer decides. Gate results are derived, not stored.
-- `Capability.criteria` items have stable ids (`crit-l3-2`), and `non_criteria` / `known_bottlenecks` are camelCase (`nonCriteria`, `knownBottlenecks`) in `lib/capabilities.ts`, which is the source of truth for capability definitions.
+- `Capability.criteria` items have stable ids (`crit-l3-2`), and `non_criteria` / `known_bottlenecks` are camelCase (`nonCriteria`, `knownBottlenecks`) in `data/capabilities.ts`, which is the source of truth for capability definitions.
 
 ## Provenance requirements
 

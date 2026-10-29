@@ -88,6 +88,7 @@ function proposal(over: Partial<AssessmentProposal> = {}): AssessmentProposal {
 function dataset(sources: Source[], records: Evidence[]): Dataset {
   return {
     label: "test dataset",
+    taxonomy_version: "taxonomy-test",
     sources,
     claims: [],
     evidence: records,

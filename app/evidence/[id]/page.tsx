@@ -21,7 +21,7 @@ import {
   relatedForecasts,
   sourceOf,
   sourcesById,
-} from "@/lib/selectors";
+} from "@/lib/data";
 
 type Params = { id: string };
 

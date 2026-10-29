@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "node --import tsx --test \"lib/**/*.test.ts\"",
+    "test": "node --import tsx --test \"lib/**/*.test.ts\" \"data/**/*.test.ts\"",
     "validate:data": "node --import tsx scripts/validate-data.ts"
   },
   "dependencies": {
