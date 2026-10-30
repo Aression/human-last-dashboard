@@ -58,7 +58,9 @@ The project had Vercel's SSO deployment protection enabled, which makes every pr
 | --- | --- | --- |
 | `8ec9ebe` (initial dashboard) | `dpl_56NxTQDLUXBy2diM4psmNTL2zLwa` | READY, alias assigned |
 | `80edd41` (validation, tests, URL filters, provenance panel) | `dpl_AdMG8wu5XpcB61ZqXsTVHVKHRpxC` | READY, production alias, `meta.githubCommitSha` matches the pushed commit |
+| `bcc4eac` (deployment docs) | `dpl_3HGwGWt6FqygCMvZ8xEhbFBNmiHd` | READY, production alias, `source: cli`, sha matches |
+| `d013f4f` (discovery and audit automation, docs) | `dpl_2Cd6AZKhk2oK3QGp2J2Qov62qWGc` | READY, production alias, sha matches `HEAD` |
 
-Verified for the second entry: `readyState: READY`, `target: production`, aliases `human-last-dashboard.vercel.app` and `human-last-dashboard-lvdifine-3768s-projects.vercel.app`, `source: cli` with `githubCommitSha: 80edd41827edc35185f43e0a1c97f1a330d7a218`. Content was confirmed against the live URL from a network that can reach it: `/evidence` served the explorer including the new "Copy link" control and the note about filters applying after load, and `/evidence/s-01` served the provenance panel with its "Not observed"/"Not recorded" rows.
+Verified for the `d013f4f` entry: `readyState: READY`, `target: production`, aliases `human-last-dashboard.vercel.app` and `human-last-dashboard-lvdifine-3768s-projects.vercel.app`, `githubCommitSha: d013f4fe833acec52d50518f40f8f57f0cc32597` equal to `git rev-parse HEAD`. `*.vercel.app` is unreachable from the workstation that deploys, so the live body was rendered through a third-party fetch service instead: `/evidence/s-01` returned 28,501 characters containing "Not observed — no URL is stored for this source." twice, "What this record does not establish." twice, and "Fictional demonstration record" six times.
 
 The table names the commit whose built output a deployment serves. A documentation-only commit after it does not change that output, but the site is redeployed anyway so the live deployment's commit sha always equals `HEAD`.
