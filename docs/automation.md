@@ -107,7 +107,7 @@ pwsh -File scripts\evidence-daemon-stop.ps1      # stop it
 pwsh -File scripts\install-evidence-daemon-task.ps1   # start it at logon (Windows Task Scheduler)
 ```
 
-`npm run evidence:daemon` runs the scheduler in the foreground; `-- --once quality` runs one task and exits.
+`npm run evidence:daemon` runs the scheduler in the foreground; `-- --once quality` runs one task and exits. `scripts\evidence-daemon-run.ps1` refuses to start a second scheduler while a live daemon holds the state file, so the logon task and a manual start cannot both fire every job.
 
 The shipped schedule is `17 */6 * * *` for discovery and `42 3 * * *` for the audit, in local time. The daemon writes a heartbeat every 15 seconds and ticks every 20; a task that is already running is never started twice, and the store locks enforce the same rule across processes.
 
