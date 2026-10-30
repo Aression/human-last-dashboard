@@ -46,7 +46,7 @@ Each level must be assessed against explicit criteria, operational evidence, lim
 
 ## Repository status
 
-The dashboard frontend is implemented over a **fictional demonstration dataset**. It has four views (Overview, Progress, Evidence Explorer, Research & Attribution) plus capability and record detail pages. The Evidence Explorer keeps its filters in the URL, and record pages show a provenance panel that reports only what each record stores. Ingestion, persistence, model calls, authentication, and scheduled workflows are not implemented. Demo records are labeled on every page and must not be read as evidence about real systems. See [Frontend](docs/frontend.md).
+The dashboard frontend is implemented over a **fictional demonstration dataset**. It has four views (Overview, Progress, Evidence Explorer, Research & Attribution) plus capability and record detail pages. The Evidence Explorer keeps its filters in the URL, and record pages show a provenance panel that reports only what each record stores. Ingestion and persistence are not implemented. Scheduled source discovery and the quality audit are: `tools/evidence-mcp/` finds candidate sources, stores them as leads, and audits the dataset on a cron schedule — it never promotes a lead into the dataset. See [Evidence automation](docs/automation.md). Model calls, authentication, and a durable workflow queue are not implemented. Demo records are labeled on every page and must not be read as evidence about real systems. See [Frontend](docs/frontend.md).
 
 A production build is deployed at https://human-last-dashboard.vercel.app; see [Deployment](docs/deployment.md).
 
@@ -70,6 +70,9 @@ Other scripts:
 | `npm run lint` | ESLint over the whole repository. |
 | `npm test` | Behavioural tests for `lib/gate.ts`, `lib/selectors.ts`, `lib/validate.ts`, and the pinned capability taxonomy in `data/`. |
 | `npm run validate:data` | Runs `lib/validate.ts` against the demo dataset (requiring demo provenance on every record); prints counts and every violation. |
+| `npm run evidence:run -- <cmd>` | Source discovery, candidate triage, and the quality audit from the command line; see [Evidence automation](docs/automation.md). |
+| `npm run evidence:daemon` | Runs the discovery and audit scheduler in the foreground (cron schedule in `tools/evidence-mcp/config/discovery.json`). |
+| `npm run mcp:evidence` | Runs the evidence automation MCP server over stdio, for a local agent. |
 
 `npm run build` refuses to build a dataset whose ids, references, assessment version chains, provenance, or forecast resolutions are inconsistent.
 
@@ -82,6 +85,7 @@ Other scripts:
 - [Stage taxonomy and gates](docs/stage-taxonomy.md)
 - [Agent workflows](docs/agent-workflows.md)
 - [Deployment](docs/deployment.md)
+- [Evidence automation](docs/automation.md)
 - [Engineering instructions](AGENTS.md)
 
 ## Scope and limitations

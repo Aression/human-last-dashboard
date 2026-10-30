@@ -60,6 +60,6 @@ Sources
 3. Manual source/claim/evidence entry.
 4. Search and provenance views. *(Started: the Evidence Explorer keeps its search and facet state in the URL so a filtered view is linkable, and every record page renders a provenance panel that shows only stored fields and states what the record does not establish. Still demo data; no server-side search.)*
 5. Assisted extraction with validation.
-6. Counterevidence discovery and review queue.
+6. Counterevidence discovery and review queue. *(Half started: `tools/evidence-mcp/` discovers candidate sources from arXiv, the GitHub search API, and configured RSS/Atom feeds, stores each as a lead with its retrieval facts, and records a triage decision with a required reason. There is no review queue in the dashboard yet, and nothing is promoted automatically; see [automation.md](automation.md).)*
 7. Versioned assessments and forecast scoring.
-8. Scheduled ingestion and durable workflows.
+8. Scheduled ingestion and durable workflows. *(Half started: a local daemon runs discovery every six hours and the quality audit nightly, with a heartbeat, run log, single-flight locks, and a Windows logon task. It is a scheduler over a state file, not a durable queue: an interrupted run is recorded as failed, not resumed, and there is no database to ingest into.)*

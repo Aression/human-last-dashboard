@@ -85,3 +85,14 @@ Each analysis artifact should include:
 ## Human review
 
 Human review is required for material stage changes, contested claims, high-impact attribution, and publication of conclusions that could be mistaken for established fact. Reviewers should be able to inspect the underlying source without relying on the model's summary.
+
+## Local tooling for Workflow A and dataset upkeep
+
+`tools/evidence-mcp/` implements the mechanical half of Workflow A and a dataset audit, as MCP tools a local agent calls. It covers steps 1-3 and 5 of Workflow A (fetch, store metadata and retrieval time, normalize and hash, label as candidate) and leaves step 4's semantic deduplication and step 6's judgement to the agent.
+
+- `discovery_run` fetches the configured queries and stores each item as a candidate with `provenance: "discovered"` and `source_tier: "lead"`.
+- `discovery_triage` records `accept-for-review`, `reject`, or `duplicate` with a reason. It changes candidate status only.
+- Promoting an accepted candidate into the dashboard stays a reviewed edit to `data/`, citing the stored candidate id. No tool performs it.
+- `quality_audit` reports bookkeeping problems in the dataset and the candidate store with a remediation each. It never edits either.
+
+The tool takes no view on whether a page's content is true, and a passing audit is not a verification of any claim. See [automation.md](automation.md) for the tools, the store layout, and the schedule.
