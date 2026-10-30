@@ -1,0 +1,24 @@
+# DSH (DeepSeek Harness) registration for the evidence automation MCP server.
+#
+# Copy this block into the `plugins: insert:` list of the DSH profile patch file
+# (default: C:\Users\<you>\.dsh\profiles\desktop\cordis.patch.yml), next to the
+# existing mcp-comfyui entry, then restart DSH. The server's tools appear as
+# evidence_automation__<tool>.
+#
+# Paths below are absolute on purpose: DSH starts the process from its own
+# working directory, so a relative script path would not resolve.
+- id: mcp-evidence-automation
+  name: '@deepseek-ai/dsh-mcp-client'
+  config:
+    serverName: evidence_automation
+    transport: stdio
+    command: node
+    args:
+      - '--import'
+      - 'tsx'
+      - 'D:/dev/human-last-dashboard/tools/evidence-mcp/src/server.ts'
+    cwd: 'D:/dev/human-last-dashboard'
+    env:
+      EVIDENCE_MCP_ROOT: 'D:/dev/human-last-dashboard'
+    toolCallTimeoutMs: 180000
+    failOnStartupError: false

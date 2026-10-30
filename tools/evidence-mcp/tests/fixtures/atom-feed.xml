@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Safety Signals Feed</title>
+  <subtitle>Commentary on capability and safety evaluation.</subtitle>
+  <link href="https://example.net/feed" rel="self"/>
+  <link href="https://example.net/"/>
+  <id>urn:uuid:0f0e1d2c-3b4a-5968-7788-99aabbccddee</id>
+  <updated>2024-03-02T12:00:00Z</updated>
+  <entry>
+    <title>A survey of capability evaluation practice</title>
+    <id>urn:uuid:1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d</id>
+    <link rel="alternate" href="https://example.net/posts/capability-evaluation-survey"/>
+    <link rel="edit" href="https://example.net/posts/capability-evaluation-survey/edit"/>
+    <published>2024-03-01T08:00:00Z</published>
+    <updated>2024-03-02T09:15:00Z</updated>
+    <summary>A survey of current evaluation practice, with a discussion of
+    what a benchmark result does and does not show.</summary>
+    <author>
+      <name>Ifeoma Nwosu</name>
+    </author>
+  </entry>
+  <entry>
+    <title>Notes on a self-improvement claim we could not reproduce</title>
+    <id>urn:uuid:2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e</id>
+    <link rel="alternate" href="https://example.net/posts/unreproduced-self-improvement"/>
+    <content type="html">&lt;p&gt;We describe an attempted reproduction and the
+    discrepancy we observed.&lt;/p&gt;</content>
+    <author>
+      <name>Mark Delacroix</name>
+    </author>
+  </entry>
+</feed>

@@ -8,8 +8,11 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "node --import tsx --test \"lib/**/*.test.ts\" \"data/**/*.test.ts\"",
-    "validate:data": "node --import tsx scripts/validate-data.ts"
+    "test": "node --import tsx --test \"lib/**/*.test.ts\" \"data/**/*.test.ts\" \"tools/evidence-mcp/tests/**/*.test.ts\"",
+    "validate:data": "node --import tsx scripts/validate-data.ts",
+    "mcp:evidence": "node --import tsx tools/evidence-mcp/src/server.ts",
+    "evidence:daemon": "node --import tsx tools/evidence-mcp/src/daemon.ts",
+    "evidence:run": "node --import tsx tools/evidence-mcp/src/cli.ts"
   },
   "dependencies": {
     "next": "^15.5.0",
@@ -17,6 +20,7 @@
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
     "@tailwindcss/postcss": "^4.1.0",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
@@ -25,6 +29,7 @@
     "eslint-config-next": "^16.4.3",
     "tailwindcss": "^4.1.0",
     "tsx": "^4.23.15",
-    "typescript": "^5.8.0"
+    "typescript": "^5.8.0",
+    "zod": "^4.6.7"
   }
 }

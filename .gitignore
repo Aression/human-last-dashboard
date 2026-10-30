@@ -16,3 +16,7 @@ next-env.d.ts
 
 # TypeScript incremental build cache
 *.tsbuildinfo
+
+# Evidence automation store: fetched pages, discovery candidates, audit runs.
+# External content, never part of the published site or the dataset.
+.evidence-mcp/

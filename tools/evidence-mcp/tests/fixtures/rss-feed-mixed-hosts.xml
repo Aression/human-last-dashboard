@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Mixed Host Feed</title>
+    <link>https://example.org/mixed</link>
+    <description>Entries that point at a mix of fetchable and non-fetchable hosts.</description>
+    <item>
+      <title>Internal mirror we must never fetch</title>
+      <link>http://127.0.0.1:8080/private/benchmark</link>
+      <guid>mixed-internal-mirror</guid>
+      <description>An internal URL that the tool must refuse.</description>
+      <pubDate>Wed, 14 Feb 2024 08:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Public benchmark release notes</title>
+      <link>https://example.org/mixed/public-release-notes</link>
+      <guid>mixed-public-release-notes</guid>
+      <description>Release notes for a public benchmark, hosted on example.org.</description>
+      <pubDate>Thu, 15 Feb 2024 08:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>

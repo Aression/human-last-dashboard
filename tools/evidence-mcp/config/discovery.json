@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "userAgent": "human-last-dashboard-evidence-mcp/0.1 (+local agent; contact via repository)",
+  "request_timeout_ms": 20000,
+  "max_items_per_query": 10,
+  "queries": [
+    {
+      "id": "q-self-improvement-repos",
+      "title": "Software self-improvement repositories",
+      "intent": "Find repositories whose description claims the system modifies or improves itself, as leads for L4-L5 assessments.",
+      "adapters": ["github"],
+      "keywords": ["\"recursive self-improvement\" in:name,description"],
+      "capability_ids": ["cap-l4", "cap-l5"],
+      "limit": 8
+    },
+    {
+      "id": "q-agent-benchmarks",
+      "title": "Agent benchmark releases",
+      "intent": "Find newly published agent benchmark suites; a benchmark page is a lead about measurement, not evidence about a model.",
+      "adapters": ["github", "rss"],
+      "keywords": ["\"agent benchmark\" in:name,description"],
+      "capability_ids": ["cap-l1", "cap-l2"],
+      "limit": 8,
+      "feeds": [
+        "https://deepmind.google/blog/rss.xml",
+        "https://www.alignmentforum.org/feed.xml"
+      ]
+    },
+    {
+      "id": "q-papers-self-improvement",
+      "title": "Papers on self-improving systems",
+      "intent": "Find papers about automated improvement loops; publication is a lead, not a validation of the claim inside it.",
+      "adapters": ["arxiv"],
+      "keywords": ["recursive self-improvement", "self-improving language models", "automated research loop"],
+      "capability_ids": ["cap-l2", "cap-l3", "cap-l5"],
+      "limit": 8
+    },
+    {
+      "id": "q-governance-signals",
+      "title": "Safety and governance commentary",
+      "intent": "Find commentary that may contradict or qualify capability claims; commentary never counts as direct evidence.",
+      "adapters": ["rss"],
+      "keywords": ["capability evaluation", "safety evaluation", "self-improvement risk"],
+      "capability_ids": ["cap-l0"],
+      "limit": 6,
+      "feeds": [
+        "https://www.lesswrong.com/feed.xml",
+        "https://www.alignmentforum.org/feed.xml"
+      ]
+    }
+  ],
+  "schedule": [
+    { "task": "discovery", "cron": "17 */6 * * *", "enabled": true },
+    { "task": "quality", "cron": "42 3 * * *", "enabled": true }
+  ],
+  "quality": {
+    "candidate_max_age_days": 30,
+    "unreviewed_evidence_days": 120,
+    "source_recheck_days": 14,
+    "integrity_batch": 5,
+    "deny_hosts": ["localhost", "127.0.0.1", "0.0.0.0", "169.254.169.254", "metadata.google.internal"]
+  }
+}

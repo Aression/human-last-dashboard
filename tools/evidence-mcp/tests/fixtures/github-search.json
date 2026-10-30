@@ -1,0 +1,33 @@
+{
+  "total_count": 2,
+  "incomplete_results": false,
+  "items": [
+    {
+      "id": 81112233,
+      "name": "self-improving-agent",
+      "full_name": "acme/self-improving-agent",
+      "html_url": "https://github.com/acme/self-improving-agent",
+      "description": "An agent runtime that rewrites its own planner between episodes.",
+      "owner": { "login": "acme", "type": "Organization" },
+      "pushed_at": "2024-02-11T08:30:00Z",
+      "created_at": "2023-05-01T10:00:00Z",
+      "stargazers_count": 412,
+      "language": "Python",
+      "topics": ["agents", "self-improvement", "planning"],
+      "archived": false
+    },
+    {
+      "id": 81112244,
+      "name": "eval-harness",
+      "full_name": "bench-labs/eval-harness",
+      "html_url": "https://github.com/bench-labs/eval-harness",
+      "description": null,
+      "owner": { "login": "bench-labs" },
+      "pushed_at": "2024-01-30T22:15:00Z",
+      "stargazers_count": 57,
+      "language": null,
+      "topics": [],
+      "archived": false
+    }
+  ]
+}
