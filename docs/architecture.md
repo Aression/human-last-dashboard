@@ -55,11 +55,13 @@ Sources
 
 ## 6. Initial implementation order
 
-1. Static dashboard and docs. *(Done: four views plus detail pages over demo data; see [frontend.md](frontend.md).)*
+1. Static dashboard and docs. *(Done: five views plus detail pages, and since the curated dataset landed the pages render agent-maintained records rather than the demo fixture; see [frontend.md](frontend.md).)*
 2. Typed domain schemas and database migration. *(Half done: `lib/types.ts` defines the shapes and `lib/validate.ts` enforces them at runtime — ids, references, version chains, provenance, forecast resolution — run on every build via `npm run validate:data`. No database migration yet; that needs a persistence decision.)*
-3. Manual source/claim/evidence entry.
-4. Search and provenance views. *(Started: the Evidence Explorer keeps its search and facet state in the URL so a filtered view is linkable, and every record page renders a provenance panel that shows only stored fields and states what the record does not establish. Still demo data; no server-side search.)*
+3. Manual source/claim/evidence entry. *(Half done, and not the way round the plan expected: the entry path is the agent's — `npm run evidence:run -- curation` writes a working copy and `publish` validates it with the same validator the build runs before it becomes `data/curated/records.json`. There is no human data-entry form, and nothing is human-reviewed yet: every published evidence record is `review_status: "unreviewed"`.)*
+4. Search and provenance views. *(Started: the Evidence Explorer keeps its search and facet state in the URL so a filtered view is linkable, and every record page renders a provenance panel that shows only stored fields and states what the record does not establish. The records are now curated rather than fictional, so those panels show real URLs, retrieval times and content hashes. Search is still client-side.)*
 5. Assisted extraction with validation.
 6. Counterevidence discovery and review queue. *(Half started: `tools/evidence-mcp/` discovers candidate sources from arXiv, the GitHub search API, and configured RSS/Atom feeds, stores each as a lead with its retrieval facts, and records a triage decision with a required reason. `/automation` renders a committed snapshot of that store, so what was discovered is visible and its age is stated. There is no review queue in the dashboard yet — triage happens through the tool — and nothing is promoted automatically; see [automation.md](automation.md).)*
 7. Versioned assessments and forecast scoring.
 8. Scheduled ingestion and durable workflows. *(Half started: a local daemon runs discovery every six hours and the quality audit nightly, with a heartbeat, run log, single-flight locks, and a Windows logon task. It is a scheduler over a state file, not a durable queue: an interrupted run is recorded as failed, not resumed, and there is no database to ingest into.)*
+
+The list does not name internationalisation, which arrived as a cross-cutting change: every route is now under `/en` or `/zh`, chrome strings live in `lib/i18n/`, and record prose plus the L0–L7 taxonomy are translated by validated overlays in `data/i18n/`. Quotations are never translated. See [frontend.md](frontend.md) §2.
