@@ -1,0 +1,18 @@
+{
+  "out_path": "data/curated/records.json",
+  "published_at": "2026-11-04T12:43:04.764Z",
+  "content_hash": "9fad42291075bc4714594cdef920c2ea0c60504d40e1b0a6a267dfaa1927b3eb",
+  "counts": {
+    "sources": 13,
+    "claims": 20,
+    "evidence": 17,
+    "capabilities": 8,
+    "assessments": 8,
+    "proposals": 0,
+    "events": 1,
+    "attributions": 1,
+    "forecasts": 2,
+    "questions": 2,
+    "total": 72
+  }
+}

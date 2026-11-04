@@ -9,7 +9,7 @@
  */
 import path from "node:path";
 
-import { dataset } from "../../../data/demo/dataset";
+import { ds as dataset } from "../../../lib/data";
 import { currentAssessment, evidenceForCapability, evidenceStats } from "../../../lib/data";
 import { validateDataset } from "../../../lib/validate";
 import { defaultConfigPath, isFetchableUrl, loadConfig } from "./config";
@@ -335,11 +335,11 @@ export function toolDefinitions(): ToolDefinition[] {
       name: "dataset_validate",
       title: "Validate the dashboard dataset",
       description:
-        "Run the repository's own runtime validation (lib/validate.ts) and reference build (lib/data/index.ts) over the demo dataset in data/demo/dataset.ts, requiring demo provenance the way the build does. Read-only: reports violations, changes nothing.",
+        "Run the repository's own runtime validation (lib/validate.ts) and reference build (lib/data/index.ts) over the records the dashboard renders (data/curated/records.json + data/capabilities.ts), requiring curated provenance the way the build does. Read-only: reports violations, changes nothing.",
       inputSchema: objectSchema({}),
       mutating: false,
       async handler() {
-        const violations = validateDataset(dataset, { expectedProvenance: "demo" });
+        const violations = validateDataset(dataset, { expectedProvenance: "curated" });
         let selectorError: string | null = null;
         let derived: { capabilities: number; current_assessments: number; evidence: unknown } | null = null;
         try {

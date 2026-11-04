@@ -1,17 +1,33 @@
-import { dataset } from "../data/demo/dataset";
+import { CAPABILITIES, TAXONOMY_VERSION } from "../data/capabilities";
+import curatedRecords from "../data/curated/records.json";
 import { loadAutomationSnapshot } from "../lib/automation";
+import type { Dataset } from "../lib/types";
 import { validateDataset } from "../lib/validate";
 
 /**
  * CLI wrapper around lib/validate.ts, wired into `npm run build` so a broken
  * dataset fails the build instead of rendering an inconsistent dashboard.
  *
- * Prints "OK" plus record counts on success; prints every violation and exits 1
- * otherwise.
+ * Input 1 is the committed curated records file, composed with the taxonomy from
+ * data/capabilities.ts exactly the way lib/data/index.ts composes it. The file
+ * deliberately does not import lib/data: that module validates at import time and
+ * throws, which would hide the readable violation list this script exists to
+ * print. Input 2 is the automation snapshot rendered on /automation.
+ *
+ * Prints one line per input; prints every violation and exits 1 otherwise.
  */
 
-// The demo fixture may only hold demo records; curated records live in data/curated/.
-const violations = validateDataset(dataset, { expectedProvenance: "demo" });
+const published = curatedRecords as unknown as Omit<Dataset, "capabilities">;
+const dataset: Dataset = { ...published, capabilities: CAPABILITIES };
+
+const violations = validateDataset(dataset, { expectedProvenance: "curated" });
+if (dataset.taxonomy_version !== TAXONOMY_VERSION) {
+  violations.unshift(
+    `dataset taxonomy_version is ${JSON.stringify(
+      dataset.taxonomy_version,
+    )}, but data/capabilities.ts is on ${JSON.stringify(TAXONOMY_VERSION)}`,
+  );
+}
 
 const counts: Array<[string, number]> = [
   ["sources", dataset.sources.length],
@@ -26,32 +42,36 @@ const counts: Array<[string, number]> = [
   ["questions", dataset.questions.length],
 ];
 
+let failed = false;
+
 if (violations.length > 0) {
-  console.error(`Dataset validation FAILED with ${violations.length} violation(s):`);
+  console.error(`Curated records FAILED with ${violations.length} violation(s):`);
   for (const violation of violations) console.error(` - ${violation}`);
-  process.exit(1);
+  failed = true;
+} else {
+  console.log(`Curated records: ${dataset.label} (taxonomy ${dataset.taxonomy_version})`);
+  const width = Math.max(...counts.map(([name]) => name.length));
+  for (const [name, count] of counts) {
+    console.log(`  ${name.padEnd(width)}  ${count}`);
+  }
+  console.log(
+    `Curated records OK: ${counts.reduce((sum, [, count]) => sum + count, 0)} records across ${counts.length} collections, no violations.`,
+  );
 }
 
 // The automation snapshot is rendered verbatim on /automation, so it is data too:
 // a stale or hand-edited file must fail the build rather than ship a broken page.
-let snapshot;
+let snapshot: ReturnType<typeof loadAutomationSnapshot> | null = null;
 try {
   snapshot = loadAutomationSnapshot();
+  console.log(
+    `Automation snapshot OK: ${snapshot.candidates.total} lead(s) stored, ${snapshot.candidates.items.length} published as rows, newest audit ${
+      snapshot.audit?.run_id ?? "none"
+    }.`,
+  );
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));
-  process.exit(1);
+  failed = true;
 }
 
-console.log(`Dataset: ${dataset.label}`);
-const width = Math.max(...counts.map(([name]) => name.length));
-for (const [name, count] of counts) {
-  console.log(`  ${name.padEnd(width)}  ${count}`);
-}
-console.log(
-  `Dataset OK: ${counts.reduce((sum, [, count]) => sum + count, 0)} records across ${counts.length} collections, no violations.`,
-);
-console.log(
-  `Automation snapshot OK: ${snapshot.candidates.total} lead(s) stored, ${snapshot.candidates.items.length} published as rows, newest audit ${
-    snapshot.audit?.run_id ?? "none"
-  }.`,
-);
+if (failed) process.exit(1);

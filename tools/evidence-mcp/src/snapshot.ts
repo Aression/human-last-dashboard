@@ -9,7 +9,7 @@
  * can tell how old the view is.
  *
  * This module reads candidates and audit runs and writes one JSON file. It never
- * promotes a lead, never touches `data/demo/dataset.ts`, and never calls a model.
+ * promotes a lead, never touches `data/curated/records.json`, and never calls a model.
  */
 import { readdir } from "node:fs/promises";
 import path from "node:path";

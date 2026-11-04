@@ -72,7 +72,7 @@ test("server advertises its instruction text and the full tool list", async () =
   }
 });
 
-test("dataset_validate reports the shipped demo dataset as valid", async () => {
+test("dataset_validate reports the published curated dataset as valid", async () => {
   const result = await client.callTool({ name: "dataset_validate", arguments: {} });
   assert.equal(result.isError, false);
   const text = (result.content as Array<{ type: string; text: string }>)[0].text;

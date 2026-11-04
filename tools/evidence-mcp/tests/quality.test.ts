@@ -401,7 +401,7 @@ test("candidate-duplicate-hash warns on shared content and stops once one is mar
   await resetCandidates();
 });
 
-test("evidence-unreviewed only flags old unreviewed demo evidence and says it is demo data", async () => {
+test("evidence-unreviewed flags old unreviewed evidence, demo and curated alike", async () => {
   const ds = emptyDataset();
   ds.sources = [source({ id: "s-01" })];
   ds.claims = [claim({ id: "c-01" })];
@@ -414,11 +414,19 @@ test("evidence-unreviewed only flags old unreviewed demo evidence and says it is
 
   const outcome = await audit(["evidence-unreviewed"], ds);
   const findings = findingsFor(outcome, "evidence-unreviewed");
-  assert.equal(findings.length, 1, JSON.stringify(findings, null, 2));
-  assert.equal(findings[0].subject.kind, "evidence");
-  assert.equal(findings[0].subject.id, "e-old");
-  assert.equal(findings[0].severity, "warn");
-  assert.match(findings[0].detail, /fictional demo data/);
+  assert.deepEqual(
+    findings.map((finding) => finding.subject.id).sort(),
+    ["e-curated", "e-old"],
+  );
+  for (const finding of findings) assert.equal(finding.severity, "warn");
+
+  // The fiction disclaimer belongs to demo data only; a published record says
+  // what a reader actually needs to know — nobody has reviewed it.
+  const demo = findings.find((finding) => finding.subject.id === "e-old")!;
+  const curated = findings.find((finding) => finding.subject.id === "e-curated")!;
+  assert.match(demo.detail, /fictional demo data/);
+  assert.doesNotMatch(curated.detail, /fictional demo data/);
+  assert.match(curated.detail, /no human has set a review status/);
 });
 
 test("forecast-overdue flags open forecasts past their date, capped at two", async () => {
@@ -613,8 +621,8 @@ test("rule selection restricts the run and an unknown rule id fails loudly", asy
   );
 });
 
-test("the repository's demo dataset passes the dataset rules (no invented findings)", async () => {
-  // No dataset override: this is lib/demo-data.ts, the records the dashboard shows.
+test("the published curated dataset passes the dataset rules (no invented findings)", async () => {
+  // No dataset override: this is data/curated/records.json, the records the dashboard shows.
   const outcome = await runQuality({
     rules: ["dataset-valid", "dataset-selectors", "provenance-gaps"],
     config: testConfig(),

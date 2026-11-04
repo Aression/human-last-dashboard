@@ -30,7 +30,7 @@ What it produces:
 What it cannot do (by design):
 - It cannot add a source, claim, evidence record or assessment to the dashboard.
   Triage changes a candidate's status only. Promoting a lead into the dataset needs a
-  reviewed edit to lib/demo-data.ts (or a future database), citing the stored record.
+  reviewed edit to data/curated/records.json (or a future database), citing the stored record.
 - It cannot assert that a claim is true. A discovered page stating something is a
   lead, never evidence; a hash proves bytes were fetched, not that they are correct.
 

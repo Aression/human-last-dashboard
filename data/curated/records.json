@@ -1,0 +1,1390 @@
+{
+  "label": "Curated from published sources (agent-maintained)",
+  "taxonomy_version": "taxonomy-1",
+  "sources": [
+    {
+      "id": "s-aide2",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "canonical_url": "https://arxiv.org/abs/2609.26457",
+      "retrieved_at": "2026-11-04T12:15:59.921Z",
+      "content_hash": "13f9787be57f7ebfeb851451c51b85a01685ef216c7841fd8b223a8c34808a5b",
+      "title": "Recursive self-improvement of AI research agents",
+      "publisher": "arXiv",
+      "authors": [
+        "Dhruv Srikanth",
+        "Bingchen Zhao",
+        "Dixing Xu",
+        "Yuxiang Wu",
+        "Zhengyao Jiang"
+      ],
+      "published_at": "2026-09-22",
+      "source_type": "paper",
+      "source_tier": "primary",
+      "developer_affiliated": false,
+      "status": "reviewed"
+    },
+    {
+      "id": "s-rrsi",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "canonical_url": "https://arxiv.org/abs/2609.24972",
+      "retrieved_at": "2026-11-04T12:16:01.184Z",
+      "content_hash": "d4465ffbb1df1fba35dbf8e102546863942a864c284b3946bffb0a03511e2e0e",
+      "title": "RRSI: Regularized Recursive Self-Improvement of Agent Harnesses",
+      "publisher": "arXiv",
+      "authors": [
+        "Peng Xia",
+        "Rujun Han",
+        "Zifeng Wang",
+        "Yanfei Chen",
+        "Yufan Zhuang",
+        "Yoonho Lee",
+        "Chengsong Huang",
+        "Han Yu",
+        "Zhongying CuiZhu",
+        "Yifei Ming",
+        "Huaxiu Yao",
+        "Burak Gokturk"
+      ],
+      "published_at": "2026-09-21",
+      "source_type": "paper",
+      "source_tier": "primary",
+      "developer_affiliated": false,
+      "status": "reviewed"
+    },
+    {
+      "id": "s-swarmrsi",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "canonical_url": "https://arxiv.org/abs/2610.20431",
+      "retrieved_at": "2026-11-04T12:16:02.016Z",
+      "content_hash": "7796bdbe2d8a672892fcdc3926d4ea6d9fbe1f32fed14daa4414101a57507ff6",
+      "title": "SwarmRSI: Recursive Self-Improvement through Evolving Scientific Agent Swarm",
+      "publisher": "arXiv",
+      "authors": [
+        "Qianru Meng",
+        "Xi Zhang",
+        "Konstantinos Papakostas",
+        "Congfeng Cao",
+        "Wenxiang Hu",
+        "Tianyi Lu",
+        "Xiao Zhang",
+        "Lun Zhou",
+        "Zaiqiao Meng",
+        "Zhaochun Ren",
+        "Xiaohui Yan",
+        "Yougang Lyu"
+      ],
+      "published_at": "2026-10-14",
+      "source_type": "paper",
+      "source_tier": "primary",
+      "developer_affiliated": false,
+      "status": "reviewed"
+    },
+    {
+      "id": "s-coevo",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "canonical_url": "https://arxiv.org/abs/2609.33398",
+      "retrieved_at": "2026-11-04T12:16:02.334Z",
+      "content_hash": "9bf5652145e989a4d60229081f5b68ed2d6a29956756ef70ac5bcd0a828e9c76",
+      "title": "COEVO: Co-Evolving Context and Parameters for Recursive Self-Improvement",
+      "publisher": "arXiv",
+      "authors": [
+        "Siwei Chen",
+        "Xinping Bao",
+        "Xinyu Cai",
+        "Yuan Cao",
+        "Wan Jiang",
+        "Shaohong Chen"
+      ],
+      "published_at": "2026-09-27",
+      "source_type": "paper",
+      "source_tier": "primary",
+      "developer_affiliated": false,
+      "status": "reviewed"
+    },
+    {
+      "id": "s-rsi-economics",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "canonical_url": "https://arxiv.org/abs/2609.15802",
+      "retrieved_at": "2026-11-04T12:16:02.609Z",
+      "content_hash": "c99b362b6fc78a9b6371c112825e2b2aa242b4e86291d4314c0c2dd356b4c672",
+      "title": "The Economics of Recursive Self-Improvement",
+      "publisher": "arXiv",
+      "authors": [
+        "Tom Cunningham",
+        "Lukas Althoff",
+        "Basil Halperin",
+        "Brian Jabarian",
+        "Andrew Koh",
+        "Arjun Ramani",
+        "Phil Trammell",
+        "Parker Whitfill",
+        "Cheryl Wu"
+      ],
+      "published_at": "2026-09-14",
+      "source_type": "paper",
+      "source_tier": "independent",
+      "developer_affiliated": false,
+      "status": "reviewed"
+    },
+    {
+      "id": "s-sahoo",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "canonical_url": "https://arxiv.org/abs/2603.06333",
+      "retrieved_at": "2026-11-04T12:16:02.916Z",
+      "content_hash": "7f4974fb836a510121c1629ded763bbc75e304325887cd1961be743f4c84754e",
+      "title": "SAHOO: Safeguarded Alignment for High-Order Optimization Objectives in Recursive Self-Improvement",
+      "publisher": "arXiv",
+      "authors": [
+        "Subramanyam Sahoo",
+        "Aman Chadha",
+        "Vinija Jain",
+        "Divya Chaudhary"
+      ],
+      "published_at": "2026-03-06",
+      "source_type": "paper",
+      "source_tier": "independent",
+      "developer_affiliated": false,
+      "status": "reviewed"
+    },
+    {
+      "id": "s-bounded-rsi",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "canonical_url": "https://arxiv.org/abs/1312.6764",
+      "retrieved_at": "2026-11-04T12:16:03.179Z",
+      "content_hash": "c8a39ac0d49e7f2f3af329fbdf25a110d9abb1f55722a7122a68d3964fd4a36c",
+      "title": "Bounded Recursive Self-Improvement",
+      "publisher": "arXiv",
+      "authors": [
+        "E. Nivel",
+        "K. R. Thórisson",
+        "B. R. Steunebrink",
+        "H. Dindo",
+        "G. Pezzulo",
+        "M. Rodriguez",
+        "C. Hernandez",
+        "D. Ognibene",
+        "J. Schmidhuber",
+        "R. Sanz",
+        "H. P. Helgason",
+        "A. Chella"
+      ],
+      "published_at": "2013-12-24",
+      "source_type": "paper",
+      "source_tier": "primary",
+      "developer_affiliated": false,
+      "status": "reviewed"
+    },
+    {
+      "id": "s-formulation",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "canonical_url": "https://arxiv.org/abs/1805.06610",
+      "retrieved_at": "2026-11-04T12:16:03.479Z",
+      "content_hash": "81cf81299d8ae19c097facecc244703929dd15daea59e526df77d9d92951c488",
+      "title": "A Formulation of Recursive Self-Improvement and Its Possible Efficiency",
+      "publisher": "arXiv",
+      "authors": [
+        "Wenyi Wang"
+      ],
+      "published_at": "2018-05-17",
+      "source_type": "paper",
+      "source_tier": "primary",
+      "developer_affiliated": false,
+      "status": "reviewed"
+    },
+    {
+      "id": "s-gemini4-argon",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "canonical_url": "https://deepmind.google/blog/introducing-gemini-4-argon",
+      "retrieved_at": "2026-11-04T12:16:03.720Z",
+      "content_hash": "866f52f015e9765a547113a16da7727ed667c9841a63eacdb80651b5d02e49d3",
+      "title": "Gemini 4 Argon: Built to solve your hardest problems",
+      "publisher": "Google DeepMind",
+      "authors": [
+        "Google DeepMind"
+      ],
+      "published_at": "2026-10-13",
+      "source_type": "announcement",
+      "source_tier": "primary",
+      "developer_affiliated": true,
+      "status": "reviewed"
+    },
+    {
+      "id": "s-gemini4-carbon",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "canonical_url": "https://deepmind.google/blog/gemini-4-carbon-our-next-frontier-model",
+      "retrieved_at": "2026-11-04T12:16:08.078Z",
+      "content_hash": "54277b0c1c70eb953803e68898c5e63edcba4cac4e37dc62c3e3c1505f872aab",
+      "title": "Gemini 4 Carbon: Our next frontier model",
+      "publisher": "Google DeepMind",
+      "authors": [
+        "Google DeepMind"
+      ],
+      "published_at": "2026-10-28",
+      "source_type": "announcement",
+      "source_tier": "primary",
+      "developer_affiliated": true,
+      "status": "reviewed"
+    },
+    {
+      "id": "s-repo-harnessevogym",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "canonical_url": "https://api.github.com/repos/autocosm-ai/HarnessEvoGym",
+      "retrieved_at": "2026-11-04T12:16:10.164Z",
+      "content_hash": "fd18d1bac04e5092f96f352cb9cbeadcb4f24075dcf702f3908e36647ea9729a",
+      "title": "autocosm-ai/HarnessEvoGym",
+      "publisher": "GitHub",
+      "authors": [
+        "autocosm-ai"
+      ],
+      "published_at": "2026-09-30",
+      "source_type": "repository",
+      "source_tier": "lead",
+      "developer_affiliated": true,
+      "status": "candidate"
+    },
+    {
+      "id": "s-repo-benchlab",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "canonical_url": "https://api.github.com/repos/Ethant35/agent-benchmark-lab",
+      "retrieved_at": "2026-11-04T12:16:09.126Z",
+      "content_hash": "742fd13e0dadfe696c3dffd6de94ef15c3c024f67104da560708085422df279e",
+      "title": "Ethant35/agent-benchmark-lab",
+      "publisher": "GitHub",
+      "authors": [
+        "Ethant35"
+      ],
+      "published_at": "2026-10-01",
+      "source_type": "repository",
+      "source_tier": "lead",
+      "developer_affiliated": true,
+      "status": "candidate"
+    },
+    {
+      "id": "s-repo-localeval",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "canonical_url": "https://api.github.com/repos/siimtolk/local-llm-eval",
+      "retrieved_at": "2026-11-04T12:16:09.750Z",
+      "content_hash": "7bb55aaac42a3004ca9941930d1f7df209412d0932767c80dc525dc339c86397",
+      "title": "siimtolk/local-llm-eval",
+      "publisher": "GitHub",
+      "authors": [
+        "siimtolk"
+      ],
+      "published_at": "2026-10-05",
+      "source_type": "repository",
+      "source_tier": "lead",
+      "developer_affiliated": true,
+      "status": "candidate"
+    }
+  ],
+  "claims": [
+    {
+      "id": "c-aide2-loop",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-aide2",
+      "statement": "AIDE^2 proposes changes to its own code, benchmarks the modified versions of itself on AI R&D tasks, and keeps the changes that perform best on hidden evaluations.",
+      "extraction_status": "source-supported",
+      "claim_type": "observed-fact",
+      "source_span": "It proposes changes to its own code, benchmarks modified versions of itself on a suite of AI R&D tasks, and keeps the changes that perform best on hidden evaluations.",
+      "conditions": "Applies to the AIDE^2 system as described by its authors; the hidden evaluations are not published.",
+      "limitations": "The selection signal is author-controlled: an unreleased hidden evaluation set decides which rewrites survive."
+    },
+    {
+      "id": "c-aide2-run",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-aide2",
+      "statement": "In a single autonomous 8-day run AIDE^2 discovered seven successive improvements, from a new search policy to memory mechanisms that compress and manage the agent's context.",
+      "extraction_status": "source-supported",
+      "claim_type": "observed-fact",
+      "source_span": "In an autonomous 8-day run, AIDE^2 discovered seven successive improvements, ranging from a new search policy to memory mechanisms that compress and manage the agent's growing context.",
+      "conditions": "One run, one system, reported by the authors.",
+      "limitations": "No independent replication is recorded; the run's logs and the hidden evaluation set are not available."
+    },
+    {
+      "id": "c-aide2-generalize",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-aide2",
+      "statement": "On all four held-out benchmarks, including a physics-based weather-forecasting task out of distribution from the selection tasks, the strongest discovered agent matches or exceeds a human-engineered production research agent.",
+      "extraction_status": "source-supported",
+      "claim_type": "observed-fact",
+      "source_span": "On all four, the strongest discovered agent matches or exceeds a human-engineered production research agent that ranks among the strongest on FML-Bench.",
+      "conditions": "Four benchmarks chosen by the authors; the comparison agent is described as a human-engineered production research agent.",
+      "limitations": "Held-out from the selection loop but not from the authors. Benchmark choice and reporting are unverified."
+    },
+    {
+      "id": "c-aide2-hacking",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-aide2",
+      "statement": "On a separate held-out task family the reward-hacking rate fell from 55% to 32% during the run, a property the loop never explicitly optimised for.",
+      "extraction_status": "source-supported",
+      "claim_type": "observed-fact",
+      "source_span": "the rate falls from 55% to 32% during the run, 7 percentage points below the human-engineered agent.",
+      "conditions": "One task family, one run.",
+      "limitations": "A single measured family; no mechanism is established for why the rate moved."
+    },
+    {
+      "id": "c-rrsi-overfit",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-rrsi",
+      "statement": "Recursive evolution of an agent harness can overfit by memorising the training tasks, showing large in-distribution gains that shrink or vanish on out-of-distribution benchmarks.",
+      "extraction_status": "source-supported",
+      "claim_type": "author-interpretation",
+      "source_span": "such recursive evolution may overfit by memorizing the training tasks, showing large in-distribution gains that shrink or even vanish on out-of-distribution benchmarks",
+      "conditions": "Stated as a general failure mode of harness self-improvement methods.",
+      "limitations": "The authors sell a fix, so the framing is not neutral; the magnitude of the overfitting in other systems is not measured here."
+    },
+    {
+      "id": "c-rrsi-gains",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-rrsi",
+      "statement": "RRSI reports gains up to 6.0 points on the split it evolves against and up to 4.3 points across five out-of-distribution benchmarks, while running on 30% fewer policy tokens than unregularised evolution.",
+      "extraction_status": "source-supported",
+      "claim_type": "observed-fact",
+      "source_span": "RRSI gains up to 6.0 points on the split it evolves against and up to 4.3 points on the five out-of-distribution benchmarks, while producing a harness that runs on 30% fewer policy tokens than the unregularized evolution.",
+      "conditions": "Eight benchmarks spanning coding, agentic workspace and engineering design tasks.",
+      "limitations": "Author-run benchmarks; no independent evaluation; 'up to' figures are best-case."
+    },
+    {
+      "id": "c-swarmrsi-sota",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-swarmrsi",
+      "statement": "SwarmRSI reports state-of-the-art performance on OpenProblems, NatureBench and MLE-Bench Lite, with accumulated research experience improving held-out performance.",
+      "extraction_status": "source-supported",
+      "claim_type": "observed-fact",
+      "source_span": "Experiments on OpenProblems, NatureBench and MLE-Bench Lite demonstrate SwarmRSI's state-of-the-art (SOTA) performance. Further evaluations show that accumulated research experience improves performance on held-out tasks.",
+      "conditions": "Three named benchmarks.",
+      "limitations": "State of the art is asserted by the authors at publication time; leaderboards move and are not checked here."
+    },
+    {
+      "id": "c-swarmrsi-repro",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-swarmrsi",
+      "statement": "Biologists reproduced SwarmRSI's programs for follow-up biological analyses.",
+      "extraction_status": "source-supported",
+      "claim_type": "observed-fact",
+      "source_span": "Biologists also reproduce its programs for follow-up biological analyses.",
+      "conditions": "Reproduction of the produced programs, not of the improvement loop.",
+      "limitations": "No record of how many programs, by whom, or with what result; this is not an independent evaluation of the loop."
+    },
+    {
+      "id": "c-coevo-formulation",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-coevo",
+      "statement": "Recursive self-improvement is formulated as parameter–context co-evolution, where model parameters update from on-policy experience while the learning context adapts inside the same feedback loop.",
+      "extraction_status": "source-supported",
+      "claim_type": "author-interpretation",
+      "source_span": "We therefore formulate RSI as a problem of parameter--context co-evolution, where model parameters and the learning context adapt within a shared feedback loop.",
+      "conditions": "A framing choice for the authors' framework.",
+      "limitations": "A reformulation, not a measurement."
+    },
+    {
+      "id": "c-econ-elasticity",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-rsi-economics",
+      "statement": "Net acceleration in AI capabilities depends on the product of elasticities across each feedback loop modelled in the paper.",
+      "extraction_status": "source-supported",
+      "claim_type": "author-interpretation",
+      "source_span": "We represent our models as directed graphs and show that net acceleration in AI capabilities depends on the product of elasticities across each feedback loop.",
+      "conditions": "Holds within the paper's model class.",
+      "limitations": "Model result; parameter values are estimated from existing literature."
+    },
+    {
+      "id": "c-econ-not-selfsustaining",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-rsi-economics",
+      "statement": "A back-of-the-envelope calibration suggests feedback loops are not currently strong enough to generate self-sustaining acceleration.",
+      "extraction_status": "source-supported",
+      "claim_type": "author-interpretation",
+      "source_span": "A back-of-the-envelope calculation suggests that feedback loops are not currently strong enough to generate",
+      "conditions": "Depends on the authors' published parameter estimates.",
+      "limitations": "A calibration, not a measurement of current systems; the authors list the data they wish AI companies would publish."
+    },
+    {
+      "id": "c-sahoo-drift",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-sahoo",
+      "statement": "Iterative self-modification risks subtle alignment drift, which SAHOO monitors with a learned Goal Drift Index, constraint-preservation checks, and regression-risk quantification.",
+      "extraction_status": "source-supported",
+      "claim_type": "author-interpretation",
+      "source_span": "iterative self-modification risks subtle alignment drift",
+      "conditions": "Stated for recursive self-improvement systems that critique and revise their own outputs.",
+      "limitations": "The drift detector is itself a learned model; its failure modes are not characterised here."
+    },
+    {
+      "id": "c-sahoo-gains",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-sahoo",
+      "statement": "Across 189 tasks SAHOO reports an 18.3% improvement in code tasks and 16.8% in reasoning while preserving constraints in two domains.",
+      "extraction_status": "source-supported",
+      "claim_type": "observed-fact",
+      "source_span": "Across 189 tasks in code generation, mathematical reasoning, and truthfulness, SAHOO produces substantial quality gains, including 18.3 percent improvement in code tasks and 16.8 percent in reasoning",
+      "conditions": "189 tasks across three domains.",
+      "limitations": "Author-reported; constraint preservation holds in two domains only."
+    },
+    {
+      "id": "c-bounded-blueprint",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-bounded-rsi",
+      "statement": "A 2013 architectural blueprint describes a seed system that improves on the job within designer-set boundaries, with a prototype learning real-time multimodal dialogue by online observation.",
+      "extraction_status": "source-supported",
+      "claim_type": "author-interpretation",
+      "source_span": "the system achieves recursive self-improvement after it leaves the lab, within the boundaries imposed by its designers",
+      "conditions": "A design proposal with a prototype demonstration.",
+      "limitations": "Thirteen years old; claims a dialogue prototype, not measurable capability gains."
+    },
+    {
+      "id": "c-formulation-efficiency",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-formulation",
+      "statement": "A formal definition of one class of RSI systems is given, with simulation evidence of logarithmic runtime with respect to search-space size on a restricted version.",
+      "extraction_status": "source-supported",
+      "claim_type": "author-interpretation",
+      "source_span": "We use simulation to empirically show that we achieve logarithmic runtime complexity with respect to the size of the search space",
+      "conditions": "Restricted class of systems; simulation only.",
+      "limitations": "Simulation on a restricted model; no deployed system is measured."
+    },
+    {
+      "id": "c-gemini4-argon",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-gemini4-argon",
+      "statement": "Google DeepMind announced Gemini 4 Argon on 2026-10-13 as a frontier model built for its hardest problems.",
+      "extraction_status": "source-supported",
+      "claim_type": "observed-fact",
+      "source_span": "Gemini 4 Argon",
+      "conditions": "A vendor announcement.",
+      "limitations": "Developer-affiliated: the announcement cannot serve as independent evidence of capability."
+    },
+    {
+      "id": "c-gemini4-carbon",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-gemini4-carbon",
+      "statement": "Google DeepMind announced Gemini 4 Carbon on 2026-10-28 as its next frontier model.",
+      "extraction_status": "source-supported",
+      "claim_type": "observed-fact",
+      "source_span": "Gemini 4 Carbon",
+      "conditions": "A vendor announcement.",
+      "limitations": "Developer-affiliated: not independent evidence."
+    },
+    {
+      "id": "c-repo-harnessevogym",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-repo-harnessevogym",
+      "statement": "The HarnessEvoGym repository describes itself as adapter-based recursive self-improvement orchestration for coding agents (JavaScript, MIT).",
+      "extraction_status": "source-supported",
+      "claim_type": "observed-fact",
+      "source_span": "Adapter-based recursive self-improvement orchestration for coding agents.",
+      "conditions": "Repository metadata read through the GitHub API.",
+      "limitations": "A self-description; the code was not read and no results are claimed."
+    },
+    {
+      "id": "c-repo-benchlab",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-repo-benchlab",
+      "statement": "The agent-benchmark-lab repository describes itself as end-to-end benchmarking for AI models and agents (Python, MIT).",
+      "extraction_status": "source-supported",
+      "claim_type": "observed-fact",
+      "source_span": "End-to-end benchmarking for AI models and agents",
+      "conditions": "Repository metadata read through the GitHub API.",
+      "limitations": "A self-description; no results are claimed."
+    },
+    {
+      "id": "c-repo-localeval",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-repo-localeval",
+      "statement": "The local-llm-eval repository describes an automated nightly pipeline in which a coding agent benchmarks new open-weight models against production.",
+      "extraction_status": "source-supported",
+      "claim_type": "observed-fact",
+      "source_span": "Automated nightly LLM testing pipeline: a coding agent benchmarks new open-weight models against production while you sleep",
+      "conditions": "Repository metadata read through the GitHub API.",
+      "limitations": "A self-description; the pipeline was not run here."
+    }
+  ],
+  "evidence": [
+    {
+      "id": "e-aide2-loop",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-aide2",
+      "review_status": "unreviewed",
+      "claim_ids": [
+        "c-aide2-loop",
+        "c-aide2-run"
+      ],
+      "capability_ids": [
+        "cap-l3",
+        "cap-l5"
+      ],
+      "evidence_type": "direct-result",
+      "polarity": "supports",
+      "observation": "The paper describes a closed loop in which the agent rewrites its own code and keeps rewrites that score best on held-out evaluations.",
+      "method": "Read the abstract of arXiv:2609.26457 (retrieved 2026-11-04, content hash recorded).",
+      "limitations": "Author-reported system description; the hidden evaluation set and run logs are not public.",
+      "reproducibility_notes": "Reproduction would require the authors' evaluation harness and the code of the agent under test."
+    },
+    {
+      "id": "e-aide2-generalize",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-aide2",
+      "review_status": "unreviewed",
+      "claim_ids": [
+        "c-aide2-generalize"
+      ],
+      "capability_ids": [
+        "cap-l5"
+      ],
+      "evidence_type": "benchmark-result",
+      "polarity": "supports",
+      "observation": "Discovered agents matched or beat a human-engineered production research agent on four held-out benchmarks, one of them out of distribution.",
+      "method": "Read the abstract of arXiv:2609.26457 (retrieved 2026-11-04, content hash recorded).",
+      "limitations": "Benchmarks and baseline were chosen by the authors; no third party has re-run them.",
+      "reproducibility_notes": "Needs the four benchmark suites, the discovered agent checkpoints, and the baseline agent."
+    },
+    {
+      "id": "e-aide2-hacking",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-aide2",
+      "review_status": "unreviewed",
+      "claim_ids": [
+        "c-aide2-hacking"
+      ],
+      "capability_ids": [
+        "cap-l5"
+      ],
+      "evidence_type": "benchmark-result",
+      "polarity": "qualifies",
+      "observation": "Reward-hacking on a separate task family fell from 55% to 32% over the run — a side effect the loop never optimised for, which complicates a simple 'more self-improvement, more reward hacking' expectation.",
+      "method": "Read the abstract of arXiv:2609.26457 (retrieved 2026-11-04).",
+      "limitations": "One task family; the causal path from the loop to the drop is not established.",
+      "reproducibility_notes": "Needs the held-out task family and the agents at both ends of the run."
+    },
+    {
+      "id": "e-rrsi-overfit",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-rrsi",
+      "review_status": "unreviewed",
+      "claim_ids": [
+        "c-rrsi-overfit"
+      ],
+      "capability_ids": [
+        "cap-l5"
+      ],
+      "evidence_type": "expert-analysis",
+      "polarity": "qualifies",
+      "observation": "A second group reports that harness evolution tends to overfit selection tasks, with gains that shrink or vanish out of distribution — a general caution against reading in-distribution gains as capability.",
+      "method": "Read the abstract of arXiv:2609.24972 (retrieved 2026-11-04, content hash recorded).",
+      "limitations": "The claim motivates the authors' own method; the size of the effect across other systems is not measured.",
+      "reproducibility_notes": "The paper's regularised loop and benchmark set would need to be run on a third-party agent."
+    },
+    {
+      "id": "e-rrsi-gains",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-rrsi",
+      "review_status": "unreviewed",
+      "claim_ids": [
+        "c-rrsi-gains"
+      ],
+      "capability_ids": [
+        "cap-l4"
+      ],
+      "evidence_type": "benchmark-result",
+      "polarity": "supports",
+      "observation": "A regularised harness-evolution loop reports up to 4.3 points out of distribution with 30% fewer policy tokens, i.e. measured outcomes plus a cost side.",
+      "method": "Read the abstract of arXiv:2609.24972 (retrieved 2026-11-04).",
+      "limitations": "Author-run across eight benchmarks; 'up to' figures are best case.",
+      "reproducibility_notes": "Code and project page are referenced by the paper but were not fetched here."
+    },
+    {
+      "id": "e-swarmrsi-sota",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-swarmrsi",
+      "review_status": "unreviewed",
+      "claim_ids": [
+        "c-swarmrsi-sota"
+      ],
+      "capability_ids": [
+        "cap-l2",
+        "cap-l3"
+      ],
+      "evidence_type": "benchmark-result",
+      "polarity": "supports",
+      "observation": "SwarmRSI reports state-of-the-art results on three scientific benchmarks and improved held-out performance from accumulated experience.",
+      "method": "Read the abstract of arXiv:2610.20431 (retrieved 2026-11-04, content hash recorded).",
+      "limitations": "SOTA is asserted at publication time; leaderboards were not checked.",
+      "reproducibility_notes": "Needs OpenProblems, NatureBench and MLE-Bench Lite plus the swarm implementation."
+    },
+    {
+      "id": "e-swarmrsi-repro",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-swarmrsi",
+      "review_status": "unreviewed",
+      "claim_ids": [
+        "c-swarmrsi-repro"
+      ],
+      "capability_ids": [
+        "cap-l5"
+      ],
+      "evidence_type": "reproduction",
+      "polarity": "qualifies",
+      "observation": "Biologists reused the swarm's programs for follow-up analyses — an outside team reproducing artifacts, though not the improvement loop itself.",
+      "method": "Read the abstract of arXiv:2610.20431 (retrieved 2026-11-04).",
+      "limitations": "Reproducing a program is not reproducing the loop's improvement or measuring its generality; no counts or outcomes are given.",
+      "reproducibility_notes": "No protocol for the biological follow-up is described in the abstract."
+    },
+    {
+      "id": "e-coevo",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-coevo",
+      "review_status": "unreviewed",
+      "claim_ids": [
+        "c-coevo-formulation"
+      ],
+      "capability_ids": [
+        "cap-l4"
+      ],
+      "evidence_type": "expert-analysis",
+      "polarity": "contextualizes",
+      "observation": "Frames self-improvement as joint movement of parameters and context, which matters when attributing a gain to 'the model' versus 'the loop'.",
+      "method": "Read the abstract of arXiv:2609.33398 (retrieved 2026-11-04, content hash recorded).",
+      "limitations": "A framing paper; no comparable capability measurement.",
+      "reproducibility_notes": "Not applicable: no experiment to reproduce in this record."
+    },
+    {
+      "id": "e-econ-elasticity",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-rsi-economics",
+      "review_status": "unreviewed",
+      "claim_ids": [
+        "c-econ-elasticity"
+      ],
+      "capability_ids": [
+        "cap-l5"
+      ],
+      "evidence_type": "expert-analysis",
+      "polarity": "contextualizes",
+      "observation": "Models the feedback loops explicitly and shows that acceleration depends on the product of elasticities, i.e. a weak link anywhere caps the loop.",
+      "method": "Read the abstract of arXiv:2609.15802 (retrieved 2026-11-04, content hash recorded).",
+      "limitations": "A model with estimated parameters, not a measurement of a system.",
+      "reproducibility_notes": "The calibration inputs are listed in the paper; recomputing requires the published estimates."
+    },
+    {
+      "id": "e-econ-not-selfsustaining",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-rsi-economics",
+      "review_status": "unreviewed",
+      "claim_ids": [
+        "c-econ-not-selfsustaining"
+      ],
+      "capability_ids": [
+        "cap-l5",
+        "cap-l7"
+      ],
+      "evidence_type": "expert-analysis",
+      "polarity": "contradicts",
+      "observation": "An independent calibration concludes current feedback loops are not strong enough for self-sustaining acceleration — a direct counterweight to papers that report successful self-improvement runs.",
+      "method": "Read the abstract of arXiv:2609.15802 (retrieved 2026-11-04).",
+      "limitations": "A back-of-the-envelope calibration whose inputs are guesses where companies publish nothing.",
+      "reproducibility_notes": "Reproducible only up to the authors' published parameter estimates."
+    },
+    {
+      "id": "e-sahoo-drift",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-sahoo",
+      "review_status": "unreviewed",
+      "claim_ids": [
+        "c-sahoo-drift"
+      ],
+      "capability_ids": [
+        "cap-l5"
+      ],
+      "evidence_type": "expert-analysis",
+      "polarity": "contradicts",
+      "observation": "Identifies alignment drift as a risk of iterative self-modification and requires external safeguards to bound it — counterevidence to a 'self-improvement is safe by construction' reading.",
+      "method": "Read the abstract of arXiv:2603.06333 (retrieved 2026-11-04, content hash recorded).",
+      "limitations": "A risk argument plus a detector; the detector's own reliability is unmeasured here.",
+      "reproducibility_notes": "Needs the authors' 189-task suite and the drift monitor."
+    },
+    {
+      "id": "e-sahoo-gains",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-sahoo",
+      "review_status": "unreviewed",
+      "claim_ids": [
+        "c-sahoo-gains"
+      ],
+      "capability_ids": [
+        "cap-l3"
+      ],
+      "evidence_type": "benchmark-result",
+      "polarity": "supports",
+      "observation": "Reports 18.3% code and 16.8% reasoning gains across 189 tasks while holding constraints in two of three domains.",
+      "method": "Read the abstract of arXiv:2603.06333 (retrieved 2026-11-04).",
+      "limitations": "Author-reported, and constraint preservation is incomplete across domains.",
+      "reproducibility_notes": "Task suite is named; artifacts were not fetched."
+    },
+    {
+      "id": "e-bounded-blueprint",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-bounded-rsi",
+      "review_status": "unreviewed",
+      "claim_ids": [
+        "c-bounded-blueprint"
+      ],
+      "capability_ids": [
+        "cap-l1"
+      ],
+      "evidence_type": "other",
+      "polarity": "contextualizes",
+      "observation": "A 2013 blueprint already described bounded self-improvement with a dialogue prototype; it is context for the idea, not a measurement of today's systems.",
+      "method": "Read the abstract of arXiv:1312.6764 (retrieved 2026-11-04, content hash recorded).",
+      "limitations": "Thirteen years old; prototype-scale.",
+      "reproducibility_notes": "No artifacts are available for the prototype."
+    },
+    {
+      "id": "e-formulation-efficiency",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-formulation",
+      "review_status": "unreviewed",
+      "claim_ids": [
+        "c-formulation-efficiency"
+      ],
+      "capability_ids": [
+        "cap-l3"
+      ],
+      "evidence_type": "other",
+      "polarity": "contextualizes",
+      "observation": "Provides a formal definition and a simulation result about efficiency; it supplies vocabulary for the assessment, not evidence about any deployed system.",
+      "method": "Read the abstract of arXiv:1805.06610 (retrieved 2026-11-04, content hash recorded).",
+      "limitations": "Simulation on a restricted class of systems.",
+      "reproducibility_notes": "Not applicable: no deployed artifact."
+    },
+    {
+      "id": "e-gemini4-argon",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-gemini4-argon",
+      "review_status": "unreviewed",
+      "claim_ids": [
+        "c-gemini4-argon"
+      ],
+      "capability_ids": [
+        "cap-l1"
+      ],
+      "evidence_type": "other",
+      "polarity": "contextualizes",
+      "observation": "A vendor announcement that a new frontier model exists. Recorded because it is a dated, first-party artifact; it cannot support any capability claim.",
+      "method": "Fetched the DeepMind blog post (retrieved 2026-11-04, content hash recorded).",
+      "limitations": "Developer-affiliated source: marketing claims are not evidence of capability.",
+      "reproducibility_notes": "Not applicable: an announcement."
+    },
+    {
+      "id": "e-gemini4-carbon",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-gemini4-carbon",
+      "review_status": "unreviewed",
+      "claim_ids": [
+        "c-gemini4-carbon"
+      ],
+      "capability_ids": [
+        "cap-l1"
+      ],
+      "evidence_type": "other",
+      "polarity": "contextualizes",
+      "observation": "A second vendor announcement two weeks later. Recorded for the timeline; not evidence of capability.",
+      "method": "Fetched the DeepMind blog post (retrieved 2026-11-04, content hash recorded).",
+      "limitations": "Developer-affiliated source.",
+      "reproducibility_notes": "Not applicable: an announcement."
+    },
+    {
+      "id": "e-repos-tooling",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "source_id": "s-repo-harnessevogym",
+      "review_status": "unreviewed",
+      "claim_ids": [
+        "c-repo-harnessevogym",
+        "c-repo-benchlab",
+        "c-repo-localeval"
+      ],
+      "capability_ids": [
+        "cap-l4"
+      ],
+      "evidence_type": "other",
+      "polarity": "contextualizes",
+      "observation": "Three small public repositories describe harness self-improvement orchestration, agent benchmarking, and nightly model evaluation, i.e. the tooling layer around these loops exists outside the papers.",
+      "method": "Read repository metadata through the GitHub API (retrieved 2026-11-04, content hashes recorded per repository).",
+      "limitations": "Self-descriptions only: no code was read and no repository reports results. Star counts are small (0–4).",
+      "reproducibility_notes": "Reading the code would be the next step before citing these as anything more than tooling."
+    }
+  ],
+  "assessments": [
+    {
+      "id": "a-l0-1",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "version": 1,
+      "taxonomy_version": "taxonomy-1",
+      "reviewer": "none — agent draft, not human-reviewed",
+      "reviewed_at": "2026-11-04",
+      "supersedes_assessment_id": null,
+      "capability_id": "cap-l0",
+      "status": "demonstrated-under-conditions",
+      "confidence": "moderate",
+      "rationale": "Human-led AI tooling is ordinary practice: the sources here were found, fetched, and hashed by a hand-supervised pipeline, and the managed dashboard itself is an example of AI assistance inside a human-owned workflow.",
+      "conditions": "Within any human-driven workflow where a person sets the plan and checks the output.",
+      "limitations": "This level says nothing about autonomy; it is recorded to anchor the scale, not to show progress.",
+      "supporting_evidence_ids": [
+        "e-repos-tooling"
+      ],
+      "counterevidence_ids": []
+    },
+    {
+      "id": "a-l1-1",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "version": 1,
+      "taxonomy_version": "taxonomy-1",
+      "reviewer": "none — agent draft, not human-reviewed",
+      "reviewed_at": "2026-11-04",
+      "supersedes_assessment_id": null,
+      "capability_id": "cap-l1",
+      "status": "unverified",
+      "confidence": "low",
+      "rationale": "Bounded multi-step task execution is widely reported, but the only material here that speaks to it is either a 2013 prototype or vendor announcements from a developer-affiliated source.",
+      "conditions": "Bounded tasks with defined success criteria.",
+      "limitations": "No accepted evidence: the developer announcements cannot support an independent claim.",
+      "supporting_evidence_ids": [
+        "e-bounded-blueprint"
+      ],
+      "counterevidence_ids": []
+    },
+    {
+      "id": "a-l2-1",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "version": 1,
+      "taxonomy_version": "taxonomy-1",
+      "reviewer": "none — agent draft, not human-reviewed",
+      "reviewed_at": "2026-11-04",
+      "supersedes_assessment_id": null,
+      "capability_id": "cap-l2",
+      "status": "unverified",
+      "confidence": "low",
+      "rationale": "Two papers describe research-workflow agents that run multi-day or multi-experiment loops and report outcomes, including failures; nothing has been independently replicated and no reviewer has accepted the evidence.",
+      "conditions": "On the authors' own benchmark suites and experimental harnesses.",
+      "limitations": "Single-group reports; failure reporting is author-curated.",
+      "supporting_evidence_ids": [
+        "e-aide2-loop",
+        "e-swarmrsi-sota"
+      ],
+      "counterevidence_ids": []
+    },
+    {
+      "id": "a-l3-1",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "version": 1,
+      "taxonomy_version": "taxonomy-1",
+      "reviewer": "none — agent draft, not human-reviewed",
+      "reviewed_at": "2026-11-04",
+      "supersedes_assessment_id": null,
+      "capability_id": "cap-l3",
+      "status": "unverified",
+      "confidence": "low",
+      "rationale": "Several systems generate and test strategies intended to improve themselves or their research process. Separating strategy contribution from compute and human intervention, which the criterion requires, is exactly what none of these papers does.",
+      "conditions": "Within each paper's own evaluation setup.",
+      "limitations": "Confounded by compute and by author-selected benchmarks; no ablation isolating the strategy.",
+      "supporting_evidence_ids": [
+        "e-aide2-loop",
+        "e-swarmrsi-sota",
+        "e-sahoo-gains"
+      ],
+      "counterevidence_ids": [
+        "e-rrsi-overfit"
+      ]
+    },
+    {
+      "id": "a-l4-1",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "version": 1,
+      "taxonomy_version": "taxonomy-1",
+      "reviewer": "none — agent draft, not human-reviewed",
+      "reviewed_at": "2026-11-04",
+      "supersedes_assessment_id": null,
+      "capability_id": "cap-l4",
+      "status": "unverified",
+      "confidence": "low",
+      "rationale": "Harness-level loops are reported to run repeatedly with measured outcomes and a cost side (fewer policy tokens), and tooling repositories exist. Reliability, validation, and rollback are not demonstrated anywhere in this record.",
+      "conditions": "Short evolutions over benchmark harnesses.",
+      "limitations": "No long-running production loop, no rollback story, no independent measurement.",
+      "supporting_evidence_ids": [
+        "e-rrsi-gains",
+        "e-repos-tooling"
+      ],
+      "counterevidence_ids": []
+    },
+    {
+      "id": "a-l5-1",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "version": 1,
+      "taxonomy_version": "taxonomy-1",
+      "reviewer": "none — agent draft, not human-reviewed",
+      "reviewed_at": "2026-11-04",
+      "supersedes_assessment_id": null,
+      "capability_id": "cap-l5",
+      "status": "insufficient-evidence",
+      "confidence": "low",
+      "rationale": "The strongest reports describe a research agent editing its own code and gaining on held-out benchmarks, which is close to the criterion. But the gains are author-run, the selection set is hidden, and an independent economic calibration finds present loops are not strong enough for self-sustaining acceleration.",
+      "conditions": "Only under each author's own hidden-evaluation selection regime.",
+      "limitations": "No independent replication, no third-party evaluation leakage check, and counterevidence on loop strength.",
+      "supporting_evidence_ids": [
+        "e-aide2-generalize",
+        "e-aide2-hacking",
+        "e-swarmrsi-repro"
+      ],
+      "counterevidence_ids": [
+        "e-econ-not-selfsustaining",
+        "e-sahoo-drift",
+        "e-rrsi-overfit"
+      ]
+    },
+    {
+      "id": "a-l6-1",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "version": 1,
+      "taxonomy_version": "taxonomy-1",
+      "reviewer": "none — agent draft, not human-reviewed",
+      "reviewed_at": "2026-11-04",
+      "supersedes_assessment_id": null,
+      "capability_id": "cap-l6",
+      "status": "insufficient-evidence",
+      "confidence": "low",
+      "rationale": "No source in this dataset reports a design–validate–deploy loop in physical R&D.",
+      "conditions": "Not applicable.",
+      "limitations": "Absence of evidence in a 13-source dataset is not evidence of absence.",
+      "supporting_evidence_ids": [],
+      "counterevidence_ids": []
+    },
+    {
+      "id": "a-l7-1",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "version": 1,
+      "taxonomy_version": "taxonomy-1",
+      "reviewer": "none — agent draft, not human-reviewed",
+      "reviewed_at": "2026-11-04",
+      "supersedes_assessment_id": null,
+      "capability_id": "cap-l7",
+      "status": "insufficient-evidence",
+      "confidence": "low",
+      "rationale": "Industrial-scale compounding under real-world constraints is not reported by any source here; the one model that addresses scale concludes current loops are too weak.",
+      "conditions": "Not applicable.",
+      "limitations": "Counterevidence is a calibration, not a measurement.",
+      "supporting_evidence_ids": [],
+      "counterevidence_ids": [
+        "e-econ-not-selfsustaining"
+      ]
+    }
+  ],
+  "proposals": [],
+  "events": [
+    {
+      "id": "ev-aide2-run",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "title": "Authors report an autonomous 8-day self-improvement run by AIDE^2",
+      "occurred_at": "2026-09-22",
+      "description": "Preprint reports seven successive accepted rewrites of a research agent's own code over one autonomous 8-day run, with gains on four held-out benchmarks and a drop in reward hacking.",
+      "capability_ids": [
+        "cap-l2",
+        "cap-l3",
+        "cap-l5"
+      ],
+      "evidence_ids": [
+        "e-aide2-loop",
+        "e-aide2-generalize",
+        "e-aide2-hacking"
+      ]
+    }
+  ],
+  "attributions": [
+    {
+      "id": "at-aide2",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "generated_by": {
+        "model": "deepseek-v4.1-flash",
+        "workflow_version": "curation-1"
+      },
+      "event_id": "ev-aide2-run",
+      "hypothesis": "The reported gains come from the self-editing loop finding genuinely reusable mechanisms, rather than from more compute or from selection pressure leaking into the held-out benchmarks.",
+      "mechanism": "Seven accepted rewrites (search policy, memory/context compression) change the agent's own research procedure, and the changed procedure is what is measured on held-out tasks.",
+      "supporting_evidence_ids": [
+        "e-aide2-generalize",
+        "e-aide2-hacking"
+      ],
+      "counterevidence_ids": [
+        "e-rrsi-overfit"
+      ],
+      "alternatives": [
+        "Additional compute or longer sampling budgets explain the gains.",
+        "The hidden evaluation set overlaps the held-out benchmarks, so 'generalisation' is leakage.",
+        "A single 8-day run is a lucky draw and the improvements do not recur."
+      ],
+      "assumptions": [
+        "The paper's description of the loop is accurate.",
+        "The four held-out benchmarks are not used during selection."
+      ],
+      "discriminating_tests": [
+        "Re-run the loop with compute held constant and report the compute delta per accepted rewrite.",
+        "Evaluate the discovered agents on benchmarks registered after the run.",
+        "Repeat the 8-day run several times from the same seed and report variance."
+      ],
+      "confidence": "low",
+      "status": "open"
+    }
+  ],
+  "forecasts": [
+    {
+      "id": "f-indep-replication",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "statement": "By 31 March 2027, a team unaffiliated with the systems' authors will publish an evaluation of a harness-level self-improvement loop that replicates at least 3 successive accepted improvements on benchmarks it did not select on.",
+      "resolution_date": "2027-03-31",
+      "resolution_criteria": "Resolves true if such an evaluation appears (preprint acceptable) with released code or checkpoints and a stated held-out protocol; false otherwise; ambiguous if the protocol cannot be inferred from the write-up.",
+      "probability": 0.25,
+      "rationale": "Two groups report harness-level loops within weeks of each other, but no third-party evaluation exists in this dataset, and reproduction of the loop (not just its artifacts) is expensive.",
+      "evidence_ids": [
+        "e-aide2-generalize",
+        "e-rrsi-gains",
+        "e-swarmrsi-repro"
+      ],
+      "status": "open",
+      "resolution_notes": null,
+      "resolved_at": null
+    },
+    {
+      "id": "f-ood-gap",
+      "provenance": "curated",
+      "created_at": "2026-11-04",
+      "statement": "By 31 December 2026, at least one peer-reviewed paper will report that a self-improvement loop's out-of-distribution gains exceed its in-distribution gains.",
+      "resolution_date": "2026-12-31",
+      "resolution_criteria": "Resolves true if a peer-reviewed paper reports OOD gains larger than in-distribution gains for a self-improvement loop; false if no such paper exists by the date.",
+      "probability": 0.1,
+      "rationale": "The one cautionary result found here (RRSI) and the economic calibration both point the other way: gains shrink off-distribution.",
+      "evidence_ids": [
+        "e-rrsi-overfit",
+        "e-econ-not-selfsustaining"
+      ],
+      "status": "open",
+      "resolution_notes": null,
+      "resolved_at": null
+    }
+  ],
+  "questions": [
+    {
+      "id": "q-ood-transfer",
+      "provenance": "curated",
+      "question": "Do harness-level self-improvement gains transfer to benchmarks that did not exist when the loop ran?",
+      "blocking": "Every reported gain is measured by the group that ran the loop, on benchmark suites that either fed selection or were chosen by the same group. No post-hoc benchmark set has been used.",
+      "capability_ids": [
+        "cap-l5"
+      ]
+    },
+    {
+      "id": "q-cost-per-point",
+      "provenance": "curated",
+      "question": "What does one point of held-out improvement cost in compute, and who pays it?",
+      "blocking": "Only one paper reports a cost side at all (30% fewer policy tokens), and none reports total compute per accepted rewrite or per benchmark point.",
+      "capability_ids": [
+        "cap-l4",
+        "cap-l5"
+      ]
+    }
+  ]
+}

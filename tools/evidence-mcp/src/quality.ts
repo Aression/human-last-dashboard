@@ -15,7 +15,6 @@ import { readdir } from "node:fs/promises";
 import path from "node:path";
 
 import type { Dataset } from "../../../lib/types";
-import { dataset as demoDataset } from "../../../data/demo/dataset";
 import {
   activeBottlenecks,
   assessmentHistory,
@@ -69,7 +68,7 @@ export interface QualityContext {
   config: ToolConfig;
   repoRoot: string;
   store: StorePaths;
-  /** The dataset under audit. Defaults to the demo dataset in data/demo/dataset.ts. */
+  /** The dataset under audit. Defaults to the records the dashboard renders. */
   dataset: Dataset;
   readCandidate: (id: string) => Promise<CandidateRecord | null>;
   listCandidates: () => Promise<CandidateRecord[]>;
@@ -99,7 +98,7 @@ export interface QualityRule {
 /**
  * `QualityOptions` is the frozen contract. These two optional fields are a
  * dev/test escape hatch: they let the test suite audit a synthetic dataset and a
- * deterministic config without touching data/demo/dataset.ts or the committed config.
+ * deterministic config without touching data/curated/records.json or the committed config.
  * Production callers (MCP server, daemon, CLI) pass a plain `QualityOptions`.
  */
 export type QualityRunOptions = QualityOptions & {
@@ -181,7 +180,7 @@ const datasetValid: QualityRule = {
         detail: violation,
         evidence: [{ kind: "value", value: violation }],
         remediation:
-          "Correct the offending record (lib/validate.ts names the field) in data/demo/dataset.ts or in the ingested JSON. The quality run reports the violation and never edits data.",
+          "Correct the offending record (lib/validate.ts names the field) in data/curated/records.json or in the ingested JSON, then republish. The quality run reports the violation and never edits data.",
       }),
     );
   },
@@ -189,7 +188,8 @@ const datasetValid: QualityRule = {
 
 /**
  * Probes the selector layer the dashboard renders through. `lib/data/index.ts`
- * binds the demo dataset at module load, so an injected dataset (dev-time only) is
+ * binds the published curated dataset at module load, so an injected dataset
+ * (dev-time only) is
  * replayed through probes that apply the same resolution contract locally.
  */
 function moduleSelectorProbes(): Array<{ name: string; run: () => void }> {
@@ -464,7 +464,7 @@ const candidateDuplicateHash: QualityRule = {
 
 const evidenceUnreviewed: QualityRule = {
   id: "evidence-unreviewed",
-  label: "Demo evidence left unreviewed past the configured age",
+  label: "Evidence left unreviewed past the configured age",
   severity: "warn",
   autoFixable: false,
   async run(ctx) {
@@ -474,19 +474,26 @@ const evidenceUnreviewed: QualityRule = {
     ctx.countInspected(batch.length);
     const findings: QualityFinding[] = [];
     for (const evidence of batch) {
-      if (evidence.provenance !== "demo") continue;
       if (evidence.review_status !== "unreviewed") continue;
       const age = ageDays(evidence.created_at, now);
       if (age <= maxAgeDays) continue;
+      const fictional = evidence.provenance === "demo";
       findings.push(
         makeFinding(evidenceUnreviewed, {
           subject: { kind: "evidence", id: evidence.id },
           title: "Unreviewed evidence is older than the review window",
-          detail: `demo evidence unreviewed for ${age} days (created_at ${evidence.created_at}), past the configured ${maxAgeDays}-day window. This record is fictional demo data; the finding exists to exercise the rule.`,
+          detail: `${evidence.provenance} evidence unreviewed for ${age} days (created_at ${evidence.created_at}), past the configured ${maxAgeDays}-day window.${
+            fictional
+              ? " This record is fictional demo data; the finding exists to exercise the rule."
+              : " The record is published but no human has set a review status, so the dashboard renders it as unreviewed."
+          }`,
           evidence: [
             { kind: "value", value: `review_status=${evidence.review_status}` },
             { kind: "value", value: `created_at=${evidence.created_at}` },
-            { kind: "value", value: `provenance=${evidence.provenance} (demo data, not a real observation)` },
+            {
+              kind: "value",
+              value: `provenance=${evidence.provenance}${fictional ? " (demo data, not a real observation)" : ""}`,
+            },
           ],
           remediation:
             "A human reviews the record and sets review_status (accepted / rejected / needs-follow-up). Review status is never set by this tool.",
@@ -789,7 +796,7 @@ export async function runQuality(
   const repoRoot = findRepoRoot();
   const store = storePaths(repoRoot);
   const config = options.config ?? (await loadConfig(defaultConfigPath()));
-  const dataset = options.dataset ?? demoDataset;
+  const dataset = options.dataset ?? selectorDataset;
 
   const selected = options.rules ? resolveRules(options.rules) : RULES;
   const { readCandidate, listCandidates } = await candidateReader(store);
