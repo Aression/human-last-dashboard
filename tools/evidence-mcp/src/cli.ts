@@ -9,11 +9,28 @@
  *   node --import tsx tools/evidence-mcp/src/cli.ts report
  *   node --import tsx tools/evidence-mcp/src/cli.ts validate
  *   node --import tsx tools/evidence-mcp/src/cli.ts snapshot
+ *   node --import tsx tools/evidence-mcp/src/cli.ts curation
+ *   node --import tsx tools/evidence-mcp/src/cli.ts publish
  *
  * `--json` prints the structured payload instead of the summary block.
+ *
+ * `./tools` is imported lazily: it binds `lib/data`, which validates the
+ * committed curated dataset at module load, and the curation commands must keep
+ * working while that dataset is being edited.
  */
+import {
+  curationPaths,
+  curationSummary,
+  publishCuration,
+  readCuration,
+  readPublishedState,
+  repoRelative,
+  type CurationCounts,
+  type CuratedRecords,
+} from "./curation";
 import { buildAutomationSnapshot } from "./snapshot";
-import { dispatchTool, toolDefinitions, type Args } from "./tools";
+import { findRepoRoot, readJson } from "./store";
+import type { Args } from "./tools";
 
 function parseArgs(argv: string[]): { command: string; flags: Args; json: boolean } {
   const [command = "help", ...rest] = argv;
@@ -55,16 +72,36 @@ commands:
   report [--run_id id] [--max_findings n]
   validate                   validate the dashboard dataset
   snapshot [--limit n]       publish the store into data/automation/snapshot.json
+  curation                   summary of the working copy and the published records
+  publish                    validate the working copy, then write data/curated/records.json
   runs [--task discovery] [--limit n]
   tools                      list tool names
 
 All commands accept --json.`;
+
+/** One line of counts, so `curation` and `publish` describe the same shape. */
+function formatCounts(counts: CurationCounts): string {
+  const parts: Array<[string, number]> = [
+    ["sources", counts.sources],
+    ["claims", counts.claims],
+    ["evidence", counts.evidence],
+    ["capabilities", counts.capabilities],
+    ["assessments", counts.assessments],
+    ["proposals", counts.proposals],
+    ["events", counts.events],
+    ["attributions", counts.attributions],
+    ["forecasts", counts.forecasts],
+    ["questions", counts.questions],
+  ];
+  return `${counts.total} records: ${parts.map(([name, count]) => `${count} ${name}`).join(", ")}`;
+}
 
 async function main(): Promise<void> {
   const { command, flags, json } = parseArgs(process.argv.slice(2));
   const positional = process.argv.slice(3).filter((a) => !a.startsWith("--"));
 
   const call = async (tool: string, args: Args = {}) => {
+    const { dispatchTool } = await import("./tools");
     const result = await dispatchTool(tool, args);
     process.stdout.write(`${json ? JSON.stringify(result.data, null, 2) : result.summary}\n`);
     return result;
@@ -100,6 +137,7 @@ async function main(): Promise<void> {
       await call("quality_findings", flags);
       return;
     case "report": {
+      const { dispatchTool } = await import("./tools");
       const result = await dispatchTool("quality_report", flags);
       const data = result.data as { markdown: string | null };
       process.stdout.write(`${data.markdown ?? "no audit stored yet"}\n`);
@@ -144,11 +182,76 @@ async function main(): Promise<void> {
     case "runs":
       await call("runs_history", flags);
       return;
-    case "tools":
+    case "curation": {
+      const root = findRepoRoot();
+      const paths = curationPaths(root);
+      const working = await readCuration(root);
+      const committedRecords = await readJson<CuratedRecords>(paths.outPath);
+      // The published file has no capabilities (they stay in data/capabilities.ts),
+      // so summarise it as a dataset with none to keep the counts comparable.
+      const committed = committedRecords ? { ...committedRecords, capabilities: [] } : null;
+      const state = await readPublishedState(root);
+      const data = {
+        working_copy: {
+          path: repoRelative(root, paths.records),
+          present: working !== null,
+          counts: working ? curationSummary(working) : null,
+        },
+        published_file: {
+          path: repoRelative(root, paths.outPath),
+          present: committed !== null,
+          counts: committed ? curationSummary(committed) : null,
+        },
+        last_publish: state,
+      };
+      if (json) {
+        process.stdout.write(`${JSON.stringify(data, null, 2)}\n`);
+        return;
+      }
+      const lines = [
+        `working copy  ${data.working_copy.path}  ${
+          working ? formatCounts(curationSummary(working)) : "absent (no working copy yet)"
+        }`,
+        `published     ${data.published_file.path}  ${
+          committed ? formatCounts(curationSummary(committed)) : "absent (never published)"
+        }`,
+      ];
+      lines.push(
+        state
+          ? `last publish  ${state.published_at}  ${state.out_path}  hash ${state.content_hash.slice(0, 12)}`
+          : "last publish  never (no state in data/curated/published.json)",
+      );
+      process.stdout.write(`${lines.join("\n")}\n`);
+      return;
+    }
+    case "publish": {
+      const root = findRepoRoot();
+      const result = await publishCuration({ root });
+      if (json) {
+        process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+      } else if (!result.ok) {
+        process.stdout.write(
+          `publish refused: ${result.violations.length} violation(s), nothing written\n`,
+        );
+        for (const violation of result.violations) process.stdout.write(` - ${violation}\n`);
+      } else {
+        process.stdout.write(
+          `published ${repoRelative(root, result.outPath)} at ${result.publishedAt}\n` +
+            `  ${formatCounts(result.counts)}\n` +
+            `  capabilities are not published: data/capabilities.ts stays their single source\n` +
+            `  review the diff and commit it; the dashboard renders only what is committed\n`,
+        );
+      }
+      if (!result.ok) process.exitCode = 1;
+      return;
+    }
+    case "tools": {
+      const { toolDefinitions } = await import("./tools");
       for (const tool of toolDefinitions()) {
         process.stdout.write(`${tool.name.padEnd(22)} ${tool.mutating ? "writes" : "read  "}  ${tool.title}\n`);
       }
       return;
+    }
     default:
       process.stdout.write(`${USAGE}\n`);
       process.exitCode = command === "help" ? 0 : 1;
