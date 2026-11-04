@@ -56,7 +56,7 @@ What the site publishes is **public material only**: the curated records cite pu
 
 ## 6. Deployment history
 
-| Commit | Deployment | State |
+| Commit | Commit | Deployment | State |
 | --- | --- | --- |
 | `8ec9ebe` (initial dashboard) | `dpl_56NxTQDLUXBy2diM4psmNTL2zLwa` | READY, alias assigned |
 | `80edd41` (validation, tests, URL filters, provenance panel) | `dpl_AdMG8wu5XpcB61ZqXsTVHVKHRpxC` | READY, production alias, `meta.githubCommitSha` matches the pushed commit |
@@ -65,9 +65,21 @@ What the site publishes is **public material only**: the curated records cite pu
 | `1dd3678`, `e8a9417` (deployment notes, daemon fixes) | `dpl_3ffQoud3tTudLtBWFaeZq5oe46pg`, `dpl_GU1CNN4mUe4vq1Ee91qU9MLBmPBC` | READY, production alias, sha matches `HEAD` |
 | `f09b14b`, `a68688d` (the `/automation` page and its docs) | `dpl_Bdm1Sf1gNzz3w4xFWDoX7soqGpe4` | READY, production alias, sha matches `HEAD` |
 | `8762c25` (timestamp formatting fix) | `dpl_FZEqpV8es7Li8FMb8Kh1mHKMEyVr` | READY, production alias, sha matches `HEAD` |
+| `de8bef9` (deployment notes) | `dpl_DeURyBNUucnvT2oQAe7kTC4KBCuz` | READY, production alias, sha matches `HEAD` |
+| `fcc7e16` (curated records, bilingual routes, translation overlays) | `dpl_8zpyPJgtUcqYnBg4EwR7QtFXVMhs` | READY, `target: production`, `githubCommitSha: fcc7e16b9652519ad146f50e0c51c5e6f761e827` equal to `git rev-parse HEAD`, both production aliases assigned |
 
-Verified for the `8762c25` entry: `readyState: READY`, `target: production`, aliases `human-last-dashboard.vercel.app` and `human-last-dashboard-lvdifine-3768s-projects.vercel.app`, `githubCommitSha: 8762c2557ae1b21dc189d2cea1722426c1082c9a` equal to `git rev-parse HEAD`. `*.vercel.app` is unreachable from the workstation that deploys, so the live body was rendered through a third-party fetch service instead: `/automation` returned a 222,481-character body containing "Discovered leads are not evidence" twice and dated lead rows, with zero occurrences of "Invalid Date" — the defect that deploy fixed, found by rendering the page rather than by reading the build log.
+Verified for the `fcc7e16` entry through `GET https://api.vercel.com/v13/deployments/…`: `readyState: READY`, `target: production`, aliases `human-last-dashboard.vercel.app` and `human-last-dashboard-lvdifine-3768s-projects.vercel.app`. `*.vercel.app` is still unreachable from the workstation that deploys, so the live bodies were rendered through a third-party fetch service (`api.microlink.io`):
 
-The same check applied earlier to `/evidence/s-01` (deployment `d013f4f`) returned 28,501 characters containing "Not observed — no URL is stored for this source." twice, "What this record does not establish." twice, and "Fictional demonstration record" six times.
+| Path | Body characters | What it shows |
+| --- | --- | --- |
+| `/` | 31,105 | English, 2 CJK characters — middleware redirected the unprefixed path to `/en` |
+| `/en/automation` | 222,265 | English, 2 CJK characters, no demo-data banner |
+| `/zh/automation` | 214,769 | 4,367 CJK characters; failure reasons render as `触发限流（HTTP 429）`, `请求超时`, `其他抓取错误` |
+| `/zh/evidence` | 78,656 | `复制链接` once, `Copy link` zero times |
+| `/zh/evidence/s-aide2` | 29,457 | `此记录不能确立什么` twice — the provenance panel in Chinese |
+
+The fetching service rate-limited further checks (`HTTP 429`), so `/en/evidence` was confirmed against the local prerender instead: `.next/server/app/en/evidence.html` contains `Copy link` once and `复制链接` zero times, and `.next/server/app/en/evidence/s-aide2.html` contains `What this record does not establish` twice.
+
+Earlier deployments were verified the same way. `8762c25`'s live `/automation` body was 222,481 characters with zero occurrences of `Invalid Date` — the defect that deploy fixed, found by rendering the page rather than by reading the build log. `d013f4f`'s `/evidence/s-01` returned 28,501 characters with `Not observed — no URL is stored for this source.` twice and `Fictional demonstration record` six times; that wording describes the demo era and no longer appears, because the demo fixture is no longer rendered.
 
 The table names the commit whose built output a deployment serves. A documentation-only commit after it does not change that output, but the site is redeployed anyway so the live deployment's commit sha always equals `HEAD`.
