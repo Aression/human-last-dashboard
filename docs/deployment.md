@@ -60,7 +60,12 @@ The project had Vercel's SSO deployment protection enabled, which makes every pr
 | `80edd41` (validation, tests, URL filters, provenance panel) | `dpl_AdMG8wu5XpcB61ZqXsTVHVKHRpxC` | READY, production alias, `meta.githubCommitSha` matches the pushed commit |
 | `bcc4eac` (deployment docs) | `dpl_3HGwGWt6FqygCMvZ8xEhbFBNmiHd` | READY, production alias, `source: cli`, sha matches |
 | `d013f4f` (discovery and audit automation, docs) | `dpl_2Cd6AZKhk2oK3QGp2J2Qov62qWGc` | READY, production alias, sha matches `HEAD` |
+| `1dd3678`, `e8a9417` (deployment notes, daemon fixes) | `dpl_3ffQoud3tTudLtBWFaeZq5oe46pg`, `dpl_GU1CNN4mUe4vq1Ee91qU9MLBmPBC` | READY, production alias, sha matches `HEAD` |
+| `f09b14b`, `a68688d` (the `/automation` page and its docs) | `dpl_Bdm1Sf1gNzz3w4xFWDoX7soqGpe4` | READY, production alias, sha matches `HEAD` |
+| `8762c25` (timestamp formatting fix) | `dpl_FZEqpV8es7Li8FMb8Kh1mHKMEyVr` | READY, production alias, sha matches `HEAD` |
 
-Verified for the `d013f4f` entry: `readyState: READY`, `target: production`, aliases `human-last-dashboard.vercel.app` and `human-last-dashboard-lvdifine-3768s-projects.vercel.app`, `githubCommitSha: d013f4fe833acec52d50518f40f8f57f0cc32597` equal to `git rev-parse HEAD`. `*.vercel.app` is unreachable from the workstation that deploys, so the live body was rendered through a third-party fetch service instead: `/evidence/s-01` returned 28,501 characters containing "Not observed — no URL is stored for this source." twice, "What this record does not establish." twice, and "Fictional demonstration record" six times.
+Verified for the `8762c25` entry: `readyState: READY`, `target: production`, aliases `human-last-dashboard.vercel.app` and `human-last-dashboard-lvdifine-3768s-projects.vercel.app`, `githubCommitSha: 8762c2557ae1b21dc189d2cea1722426c1082c9a` equal to `git rev-parse HEAD`. `*.vercel.app` is unreachable from the workstation that deploys, so the live body was rendered through a third-party fetch service instead: `/automation` returned a 222,481-character body containing "Discovered leads are not evidence" twice and dated lead rows, with zero occurrences of "Invalid Date" — the defect that deploy fixed, found by rendering the page rather than by reading the build log.
+
+The same check applied earlier to `/evidence/s-01` (deployment `d013f4f`) returned 28,501 characters containing "Not observed — no URL is stored for this source." twice, "What this record does not establish." twice, and "Fictional demonstration record" six times.
 
 The table names the commit whose built output a deployment serves. A documentation-only commit after it does not change that output, but the site is redeployed anyway so the live deployment's commit sha always equals `HEAD`.
