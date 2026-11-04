@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { getDictionary, type Locale } from "@/lib/i18n";
 import type { ClaimType } from "@/lib/types";
 
 export type StatementKind = "fact" | "interp" | "spec" | "forecast";
@@ -8,13 +9,6 @@ export const kindFromClaimType: Record<ClaimType, StatementKind> = {
   "author-interpretation": "interp",
   speculation: "spec",
   forecast: "forecast",
-};
-
-export const kindName: Record<StatementKind, string> = {
-  fact: "Observed fact",
-  interp: "Interpretation",
-  spec: "Speculation or hypothesis",
-  forecast: "Forecast",
 };
 
 const kindClass: Record<StatementKind, string> = {
@@ -31,19 +25,22 @@ const kindClass: Record<StatementKind, string> = {
 export function Statement({
   kind,
   model = false,
+  locale = "en",
   children,
   className = "",
 }: {
   kind: StatementKind;
   model?: boolean;
+  locale?: Locale;
   children: ReactNode;
   className?: string;
 }) {
+  const dict = getDictionary(locale);
   return (
     <div className={`ep ${kindClass[kind]} ${model ? "ep-model" : ""} py-0.5 ${className}`}>
       <span className="sr-only">
-        {kindName[kind]}
-        {model ? ", model-generated" : ""}:{" "}
+        {dict.statement[kind]}
+        {model ? dict.statement.modelSuffix : ""}:{" "}
       </span>
       {children}
     </div>

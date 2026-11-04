@@ -1,0 +1,263 @@
+{
+  "note": "Chinese renderings of authored record text. Quotes (claim source_span) are never translated: a quotation stays in the language of the source document. Missing entries fall back to the English text.",
+  "locale": "zh",
+  "sources": {
+    "s-aide2": {
+      "title": "AI 研究智能体的递归自我改进"
+    },
+    "s-rrsi": {
+      "title": "RRSI：智能体 harness 的正则化递归自我改进"
+    },
+    "s-swarmrsi": {
+      "title": "SwarmRSI：通过科学智能体集群演化实现的递归自我改进"
+    },
+    "s-coevo": {
+      "title": "COEVO：面向递归自我改进的上下文与参数协同演化"
+    },
+    "s-rsi-economics": {
+      "title": "递归自我改进的经济学"
+    },
+    "s-sahoo": {
+      "title": "SAHOO：递归自我改进中高阶优化目标的对齐防护"
+    },
+    "s-bounded-rsi": {
+      "title": "有界的递归自我改进"
+    },
+    "s-formulation": {
+      "title": "递归自我改进的一种形式化及其可能效率"
+    },
+    "s-gemini4-argon": {
+      "title": "Gemini 4 Argon：为解决最困难的问题而构建"
+    },
+    "s-gemini4-carbon": {
+      "title": "Gemini 4 Carbon：我们的下一代前沿模型"
+    },
+    "s-repo-harnessevogym": {
+      "title": "autocosm-ai/HarnessEvoGym（仓库）"
+    },
+    "s-repo-benchlab": {
+      "title": "Ethant35/agent-benchmark-lab（仓库）"
+    },
+    "s-repo-localeval": {
+      "title": "siimtolk/local-llm-eval（仓库）"
+    }
+  },
+  "claims": {
+    "c-aide2-loop": {
+      "statement": "AIDE^2 提出对自身代码的修改，在 AI 研发任务上评测修改后的自己，只保留在隐藏评测集上表现最好的改动。"
+    },
+    "c-aide2-run": {
+      "statement": "在一次为期 8 天的自主运行中，AIDE^2 得到七次前后相继的改进，从新的搜索策略到压缩并管理智能体上下文的记忆机制。"
+    },
+    "c-aide2-generalize": {
+      "statement": "在全部四个留出基准上（其中包括一个与选择任务分布不同的、基于物理的天气预报任务），最强的被发现的智能体达到或超过了一个经过人工设计的生产级研究智能体。"
+    },
+    "c-aide2-hacking": {
+      "statement": "在一个独立的留出任务族上，奖励作弊率在运行过程中从 55% 降到 32%，而这一属性并非该循环显式优化过的目标。"
+    },
+    "c-rrsi-overfit": {
+      "statement": "智能体 harness 的递归演化可能因记忆训练任务而过拟合：分布内的大幅增益在分布外基准上会缩小甚至消失。"
+    },
+    "c-rrsi-gains": {
+      "statement": "RRSI 在演化所用切分上最多提升 6.0 分，在五个分布外基准上最多提升 4.3 分，同时策略 token 用量比未正则化的演化少 30%。"
+    },
+    "c-swarmrsi-sota": {
+      "statement": "SwarmRSI 在 OpenProblems、NatureBench 与 MLE-Bench Lite 上报告了当前最佳性能，且积累的研究经验能提升留出任务表现。"
+    },
+    "c-swarmrsi-repro": {
+      "statement": "生物学家复现了 SwarmRSI 产出的程序，用于后续的生物学分析。"
+    },
+    "c-coevo-formulation": {
+      "statement": "递归自我改进被形式化为参数与上下文的协同演化：模型参数依据在线经验更新，而学习上下文在同一反馈回路中自适应。"
+    },
+    "c-econ-elasticity": {
+      "statement": "AI 能力的净加速取决于各个反馈回路的弹性之积。"
+    },
+    "c-econ-not-selfsustaining": {
+      "statement": "一个粗略的标定计算表明，当前的反馈回路还不足够强，无法产生可自我维持的加速。"
+    },
+    "c-sahoo-drift": {
+      "statement": "迭代式自我修改存在细微的对齐漂移风险，SAHOO 用学习得到的目标漂移指数、约束保持检查与回归风险量化来监控它。"
+    },
+    "c-sahoo-gains": {
+      "statement": "在 189 个任务上，SAHOO 在代码任务中报告 18.3% 的提升、在推理任务中报告 16.8% 的提升，并在两个领域内保持约束。"
+    },
+    "c-bounded-blueprint": {
+      "statement": "一份 2013 年的架构蓝图描述了一个在离开实验室后、在设计者设定的边界内于工作中自我改进的种子系统，其原型通过在线观察学会了实时多模态对话。"
+    },
+    "c-formulation-efficiency": {
+      "statement": "论文给出了一类递归自我改进系统的形式化定义，并用仿真表明在一个受限版本上，运行时间相对于搜索空间大小呈对数复杂度。"
+    },
+    "c-gemini4-argon": {
+      "statement": "Google DeepMind 于 2026-10-13 发布了 Gemini 4 Argon，称其为面向最难问题的前沿模型。"
+    },
+    "c-gemini4-carbon": {
+      "statement": "Google DeepMind 于 2026-10-28 发布了 Gemini 4 Carbon，称其为下一代前沿模型。"
+    },
+    "c-repo-harnessevogym": {
+      "statement": "HarnessEvoGym 仓库自称是为编码智能体提供基于适配器的递归自我改进编排（JavaScript，MIT）。"
+    },
+    "c-repo-benchlab": {
+      "statement": "agent-benchmark-lab 仓库自称提供面向 AI 模型与智能体的端到端基准评测（Python，MIT）。"
+    },
+    "c-repo-localeval": {
+      "statement": "local-llm-eval 仓库自称提供一条夜间自动流水线：一个编码智能体在你睡觉时用生产环境基准评测新的开放权重模型。"
+    }
+  },
+  "evidence": {
+    "e-aide2-loop": {
+      "observation": "论文描述了一个闭环：智能体重写自身代码，并保留在留出评测上得分最好的改写。",
+      "limitations": "作者自述的系统描述；隐藏评测集与运行日志未公开。"
+    },
+    "e-aide2-generalize": {
+      "observation": "被发现的智能体在四个留出基准上达到或超过人工设计的生产级研究智能体，其中一个分布外。",
+      "limitations": "基准与基线由作者选定；没有第三方复跑。"
+    },
+    "e-aide2-hacking": {
+      "observation": "在一个独立任务族上，奖励作弊率在运行中从 55% 降到 32%——这是循环从未优化过的副作用，使“越自我改进、越会作弊”的简单预期变得更复杂。",
+      "limitations": "仅一个任务族；从循环到该下降的因果路径尚未确立。"
+    },
+    "e-rrsi-overfit": {
+      "observation": "另一个团队报告 harness 演化倾向于过拟合选择任务，分布外增益会缩小甚至消失——这提醒我们不要把分布内增益当作能力。",
+      "limitations": "该论断用于支撑作者自己的方法；该效应在其他系统中的幅度未被测量。"
+    },
+    "e-rrsi-gains": {
+      "observation": "一个正则化的 harness 演化循环报告分布外最多 4.3 分提升，同时策略 token 少 30%，即同时给出结果与成本侧。",
+      "limitations": "作者在八个基准上自行运行；“最多”数字属最佳情形。"
+    },
+    "e-swarmrsi-sota": {
+      "observation": "SwarmRSI 在三个科学基准上报告当前最佳结果，并显示积累经验可提升留出表现。",
+      "limitations": "SOTA 是发表时的作者主张，未核对排行榜。"
+    },
+    "e-swarmrsi-repro": {
+      "observation": "生物学家复用了集群产出的程序做后续分析——这是外部团队复现了产物，而不是复现了改进循环本身。",
+      "limitations": "复现一个程序不等于复现改进或测量其泛化性；摘要未给出数量与结果。"
+    },
+    "e-coevo": {
+      "observation": "把自我改进看作参数与上下文的共同移动，这对区分“模型”与“循环”带来的增益很重要。",
+      "limitations": "一篇框架性论文，没有可比较的能力测量。"
+    },
+    "e-econ-elasticity": {
+      "observation": "显式建模了反馈回路，并说明加速取决于弹性之积——任何一环偏弱都会封顶整个回路。",
+      "limitations": "基于估计参数的模型，而不是对某个系统的测量。"
+    },
+    "e-econ-not-selfsustaining": {
+      "observation": "一项独立标定得出结论：当前的反馈回路还不足够强以实现自我维持的加速——这与报告成功自我改进运行的论文形成直接对冲。",
+      "limitations": "粗略标定，其输入在公司不披露数据的地方只能依靠猜测。"
+    },
+    "e-sahoo-drift": {
+      "observation": "把对齐漂移识别为迭代式自我修改的风险，并要求外部防护来约束它——这是对“自我改进天然安全”的反对证据。",
+      "limitations": "风险论证加一个检测器；检测器自身的可靠性未被测量。"
+    },
+    "e-sahoo-gains": {
+      "observation": "在 189 个任务上报告代码 18.3%、推理 16.8% 的提升，同时在三个领域中的两个保持了约束。",
+      "limitations": "作者自报，且约束保持并未覆盖所有领域。"
+    },
+    "e-bounded-blueprint": {
+      "observation": "2013 年的蓝图已经描述了有界自我改进并带有对话原型；它是这一想法的背景，而不是今日系统的测量。",
+      "limitations": "已有十三年历史，规模仅为原型。"
+    },
+    "e-formulation-efficiency": {
+      "observation": "给出形式化定义与关于效率的仿真结果；它为评估提供词汇，而不是关于任何已部署系统的证据。",
+      "limitations": "在一个受限类别系统上的仿真。"
+    },
+    "e-gemini4-argon": {
+      "observation": "一条厂商发布信息，说明存在一个新的前沿模型。记录它是因为这是一份有日期的第一方材料；它不能支撑任何能力主张。",
+      "limitations": "开发者自利来源：营销措辞不是能力证据。"
+    },
+    "e-gemini4-carbon": {
+      "observation": "两周后的第二条厂商发布信息。为时间线而记录，不是能力证据。",
+      "limitations": "开发者自利来源。"
+    },
+    "e-repos-tooling": {
+      "observation": "三个小型公开仓库分别描述 harness 自我改进编排、智能体基准评测与夜间模型评估，说明这些循环的工具层已经存在于论文之外。",
+      "limitations": "仅为自我描述：没有阅读代码，也没有仓库报告结果；星标数很少（0–4）。"
+    }
+  },
+  "assessments": {
+    "a-l0-1": {
+      "rationale": "人主导的 AI 工具已是常规实践：本数据集中被引用的资料由一个受人工监督的流水线发现、抓取并计算哈希，而托管式看板本身就是 AI 在人主导工作流中提供协助的例子。",
+      "conditions": "适用于由人制定计划并检查输出的任何工作流。",
+      "limitations": "这一层级不说明任何自主性；它只用于锚定量表，而不是进步的证据。"
+    },
+    "a-l1-1": {
+      "rationale": "有界多步任务执行被广泛报告，但本数据集中相关材料要么是 2013 年的原型，要么来自开发者自利的厂商发布。",
+      "conditions": "成功标准明确的有界任务。",
+      "limitations": "没有已接受的证据：厂商发布无法支撑独立主张。"
+    },
+    "a-l2-1": {
+      "rationale": "两篇论文描述了运行多日或多实验循环并报告结果（含失败）的研究工作流智能体；但没有任何独立复现，也没有评审者接受这些证据。",
+      "conditions": "在作者自己的基准套件与实验框架内。",
+      "limitations": "单一团队报告；失败记录由作者筛选。"
+    },
+    "a-l3-1": {
+      "rationale": "多个系统会生成并测试旨在改进自身或其研究过程的策略。但准则要求把策略贡献与算力、人工干预分离开，而这恰恰是这些论文都没有做的。",
+      "conditions": "在各论文自己的评测设置内。",
+      "limitations": "受算力与作者选定基准的混淆；没有隔离策略作用的消融实验。"
+    },
+    "a-l4-1": {
+      "rationale": "有报告称 harness 级循环可重复运行、有可测结果和成本侧（策略 token 更少），也确有工具仓库存在。但可靠性、验证与回滚在任何记录中都未被展示。",
+      "conditions": "在基准 harness 上的短程演化。",
+      "limitations": "没有长期生产循环、没有回滚方案、没有独立测量。"
+    },
+    "a-l5-1": {
+      "rationale": "最强的报告描述了一个研究智能体改写自身代码并在留出基准上取得增益，这接近该准则。但这些增益由作者自行运行、选择集是隐藏的，且一项独立经济标定认为当前的循环不足以产生自我维持的加速。",
+      "conditions": "只在各作者自己的隐藏评测选择机制下。",
+      "limitations": "没有独立复现、没有第三方评测泄漏检查，且有关于循环强度的反证。"
+    },
+    "a-l6-1": {
+      "rationale": "本数据集中没有任何来源报告物理研发中的设计—验证—部署闭环。",
+      "conditions": "不适用。",
+      "limitations": "在 13 个来源中缺少证据，不等于证据表明其不存在。"
+    },
+    "a-l7-1": {
+      "rationale": "没有任何来源报告在真实世界约束下工业规模的复利式改进；唯一涉及规模的经济模型结论是：当前的循环太弱。",
+      "conditions": "不适用。",
+      "limitations": "反证是一次标定，而不是测量。"
+    }
+  },
+  "events": {
+    "ev-aide2-run": {
+      "title": "作者报告 AIDE^2 完成一次为期 8 天的自主自我改进运行",
+      "description": "预印本报告：在一次为期 8 天的自主运行中，一个研究智能体对自身代码进行了七次前后相继、被接受的改写，在四个留出基准上取得增益，同时奖励作弊率下降。"
+    }
+  },
+  "attributions": {
+    "at-aide2": {
+      "hypothesis": "报告的增益来自自我编辑循环找到了真正可复用的机制，而不是来自更多算力，也不是选择压力泄漏进了留出基准。",
+      "mechanism": "七次被接受的改写（搜索策略、记忆与上下文压缩）改变了智能体自身的研究流程，而在留出任务上被测量的正是被改变后的流程。",
+      "alternatives": [
+        "额外算力或更长的采样预算解释了这些增益。",
+        "隐藏评测集与留出基准重叠，所谓“泛化”其实是泄漏。",
+        "单次 8 天运行只是运气，改进不会重现。"
+      ],
+      "discriminating_tests": [
+        "在算力固定下重跑该循环，并报告每次被接受改写对应的算力增量。",
+        "在运行结束后才注册的基准上评测被发现的智能体。",
+        "以相同种子重复多次 8 天运行，并报告方差。"
+      ]
+    }
+  },
+  "forecasts": {
+    "f-indep-replication": {
+      "statement": "到 2027 年 3 月 31 日，与被测系统作者无关的团队将发表一项针对 harness 级自我改进循环的评测，在其未用于选择的基准上复现至少 3 次前后相继、被接受的改进。",
+      "resolution_criteria": "若出现这样的评测（预印本亦可），且公开代码或权重、并说明留出协议，则为真；否则为假；若无法从文本判断协议，则为模糊。",
+      "rationale": "已有两个团队在数周内报告 harness 级循环，但本数据集中没有第三方评测，而复现循环本身（而不只是产物）成本很高。"
+    },
+    "f-ood-gap": {
+      "statement": "到 2026 年 12 月 31 日，至少有一篇同行评议论文报告某个自我改进循环的分布外增益超过其分布内增益。",
+      "resolution_criteria": "若有同行评议论文报告某自我改进循环的分布外增益大于分布内增益，则为真；到该日期仍无此类论文，则为假。",
+      "rationale": "本数据集中唯一的警示性结果（RRSI）与那项经济标定都指向相反方向：增益在分布外会缩小。"
+    }
+  },
+  "questions": {
+    "q-ood-transfer": {
+      "question": "harness 级自我改进的增益能否迁移到循环运行时还不存在的基准上？",
+      "blocking": "所有已报告的增益都由运行循环的团队自己测量，且所用基准套件要么参与了选择，要么由同一团队挑选。尚无任何事后基准集被使用。"
+    },
+    "q-cost-per-point": {
+      "question": "一个留出基准点的提升要花多少算力，由谁承担？",
+      "blocking": "只有一篇论文给出了成本侧（策略 token 少 30%），没有任何论文报告每次被接受改写的总算力或每个基准点的算力。"
+    }
+  }
+}

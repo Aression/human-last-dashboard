@@ -4,6 +4,8 @@ import { test } from "node:test";
 import rawSnapshot from "../data/automation/snapshot.json";
 import {
   loadAutomationSnapshot,
+  localizeNote,
+  localizeReason,
   skippedChecks,
   statusCount,
   validateAutomationSnapshot,
@@ -90,4 +92,25 @@ test("skippedChecks only returns rules that inspected nothing", () => {
   for (const check of skipped) assert.equal(check.inspected, 0);
   const total = snapshot.audit?.checks.length ?? 0;
   assert.equal(skipped.length + (snapshot.audit?.checks ?? []).filter((c) => c.inspected > 0).length, total);
+});
+
+test("failure reasons are translated without dropping the HTTP status", () => {
+  assert.equal(localizeReason("rate limited", "zh"), "触发限流");
+  assert.equal(localizeReason("rate limited (HTTP 429)", "zh"), "触发限流（HTTP 429）");
+  assert.equal(localizeReason("fetch timed out", "zh"), "请求超时");
+  assert.equal(localizeReason("other fetch error", "zh"), "其他抓取错误");
+  assert.equal(localizeReason("rate limited (HTTP 429)", "en"), "rate limited (HTTP 429)");
+  assert.equal(localizeReason("HTTP 503", "zh"), "HTTP 503");
+});
+
+test("a lead note keeps the machine detail and translates only its label", () => {
+  const note = "retrieval failed: fetch failed: read ECONNRESET";
+  assert.equal(localizeNote(note, "en"), note);
+  assert.equal(localizeNote(note, "zh"), "抓取失败： fetch failed: read ECONNRESET");
+  assert.equal(
+    localizeNote("response body could not be read: timeout", "zh"),
+    "无法读取响应正文： timeout",
+  );
+  assert.equal(localizeNote("HTTP 429 Too Many Requests", "zh"), "HTTP 429 请求过多");
+  assert.equal(localizeNote("retrieval: HTTP 429 Too Many Requests", "zh"), "retrieval: HTTP 429 Too Many Requests");
 });

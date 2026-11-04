@@ -322,3 +322,44 @@ export function skippedChecks(audit: AutomationAudit | null): AutomationAuditChe
   if (!audit) return [];
   return audit.checks.filter((check) => check.inspected === 0);
 }
+
+type PageLocale = "en" | "zh";
+
+/**
+ * Failure reasons are produced by the tooling in English and stored in the
+ * snapshot. Only the three fixed phrases are translated; an HTTP status line
+ * stays as it came back from the server.
+ */
+const REASON_ZH: Record<string, string> = {
+  "rate limited": "触发限流",
+  "fetch timed out": "请求超时",
+  "other fetch error": "其他抓取错误",
+};
+
+export function localizeReason(reason: string, locale: PageLocale): string {
+  if (locale === "en") return reason;
+  const match = /^(.*?)(?:\s*\(HTTP (\d+)\))?$/.exec(reason);
+  const phrase = match?.[1] ?? reason;
+  const status = match?.[2];
+  const translated = REASON_ZH[phrase];
+  if (!translated) return reason;
+  return status ? `${translated}（HTTP ${status}）` : translated;
+}
+
+/**
+ * A lead's note records what the fetcher hit, in the tooling's English. The
+ * label is translated and the machine detail is kept verbatim so it stays
+ * checkable — an error string that was paraphrased would no longer be evidence.
+ */
+export function localizeNote(note: string, locale: PageLocale): string {
+  if (locale === "en") return note;
+  const prefix: Record<string, string> = {
+    "retrieval failed:": "抓取失败：",
+    "response body could not be read:": "无法读取响应正文：",
+  };
+  for (const [en, zh] of Object.entries(prefix)) {
+    if (note.startsWith(en)) return `${zh} ${note.slice(en.length).trim()}`;
+  }
+  if (/^HTTP \d+ Too Many Requests$/.test(note)) return note.replace("Too Many Requests", "请求过多");
+  return note;
+}

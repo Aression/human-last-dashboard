@@ -1,21 +1,31 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { EvidenceExplorer } from "@/components/EvidenceExplorer";
 import { Legend } from "@/components/Legend";
 import { PageHeader } from "@/components/PageHeader";
-import { ds } from "@/lib/data";
+import { selectorsFor } from "@/lib/data";
+import { getDictionary, isLocale } from "@/lib/i18n";
 
-export const metadata: Metadata = { title: "Evidence Explorer" };
+type Params = { params: Promise<{ locale: string }> };
 
-export default function EvidencePage() {
+export async function generateMetadata({ params }: Params): Promise<Metadata> {
+  const { locale: raw } = await params;
+  if (!isLocale(raw)) return {};
+  return { title: getDictionary(raw).meta.titles.evidence };
+}
+
+export default async function EvidencePage({ params }: Params) {
+  const { locale: raw } = await params;
+  if (!isLocale(raw)) notFound();
+  const locale = raw;
+  const dict = getDictionary(locale);
+  const { ds } = selectorsFor(locale);
+
   return (
     <div className="space-y-8">
-      <PageHeader title="Evidence Explorer">
-        Browse sources, the claims extracted from them, and the evidence that bears on each
-        capability. A claim records what a source asserts; it is not a finding until evidence has
-        been reviewed.
-      </PageHeader>
-      <EvidenceExplorer sources={ds.sources} claims={ds.claims} evidence={ds.evidence} />
-      <Legend />
+      <PageHeader title={dict.meta.titles.evidence}>{dict.explorer.intro}</PageHeader>
+      <EvidenceExplorer sources={ds.sources} claims={ds.claims} evidence={ds.evidence} locale={locale} />
+      <Legend locale={locale} />
     </div>
   );
 }

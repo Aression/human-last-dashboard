@@ -1,3 +1,4 @@
+import { getDictionary, type Locale } from "./i18n";
 import type {
   AssessmentStatus,
   ClaimType,
@@ -80,15 +81,15 @@ export const forecastStatusLabel: Record<ForecastStatus, string> = {
   expired: "Expired",
 };
 
-export function formatDate(iso: string | null): string {
-  if (!iso) return "unknown";
+export function formatDate(iso: string | null, locale: Locale = "en"): string {
+  if (!iso) return getDictionary(locale).common.unknownDate;
   // Dataset fields are date-only ("2026-03-01"); automation records carry full
   // timestamps ("2026-11-04T10:18:07.957Z"). Appending a time to the latter
   // produced "Invalid Date" on the automation page, so both shapes are parsed
   // and an unparseable value is reported as unknown rather than rendered raw.
   const d = new Date(iso.includes("T") ? iso : `${iso}T00:00:00Z`);
-  if (Number.isNaN(d.getTime())) return "unknown";
-  return d.toLocaleDateString("en-GB", {
+  if (Number.isNaN(d.getTime())) return getDictionary(locale).common.unknownDate;
+  return d.toLocaleDateString(locale === "zh" ? "zh-CN" : "en-GB", {
     day: "numeric",
     month: "short",
     year: "numeric",

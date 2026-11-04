@@ -5,13 +5,13 @@ import { useEffect, useId, useMemo, useRef, useState } from "react";
 import type { Claim, Evidence, Source } from "@/lib/types";
 import {
   claimTypeLabel,
-  evidenceTypeLabel,
   formatDate,
   polarityLabel,
   reviewStatusLabel,
   sourceTierLabel,
   sourceTypeLabel,
 } from "@/lib/labels";
+import { fill, getDictionary, localePath, type Locale } from "@/lib/i18n";
 import { DemoTag, ModelTag, PolarityChip, ReviewChip, TierChip } from "./chips";
 import { Statement, kindFromClaimType } from "./Statement";
 
@@ -21,6 +21,7 @@ interface Props {
   sources: Source[];
   claims: Claim[];
   evidence: Evidence[];
+  locale?: Locale;
 }
 
 const ALL = "all";
@@ -93,11 +94,13 @@ function writeState(params: URLSearchParams, state: ExplorerState): URLSearchPar
 
 function Select<T extends string>({
   label,
+  allLabel,
   value,
   onChange,
   options,
 }: {
   label: string;
+  allLabel: string;
   value: string;
   onChange: (v: string) => void;
   options: Record<T, string>;
@@ -114,7 +117,7 @@ function Select<T extends string>({
         onChange={(e) => onChange(e.target.value)}
         className="mt-1 w-full rounded-md border border-line bg-surface px-2.5 py-1.5 text-sm text-ink"
       >
-        <option value={ALL}>All</option>
+        <option value={ALL}>{allLabel}</option>
         {(Object.entries(options) as [T, string][]).map(([k, v]) => (
           <option key={k} value={k}>
             {v}
@@ -125,7 +128,10 @@ function Select<T extends string>({
   );
 }
 
-export function EvidenceExplorer({ sources, claims, evidence }: Props) {
+export function EvidenceExplorer({ sources, claims, evidence, locale = "en" }: Props) {
+  const dict = getDictionary(locale);
+  const t = dict.explorer;
+  const labels = dict.labels;
   const [state, setState] = useState<ExplorerState>(DEFAULT_STATE);
   const [copied, setCopied] = useState<"idle" | "copied" | "failed">("idle");
   const copyTimer = useRef<number | undefined>(undefined);
@@ -230,9 +236,9 @@ export function EvidenceExplorer({ sources, claims, evidence }: Props) {
     sources: sourceRows.length,
   };
   const tabs: { id: Tab; label: string }[] = [
-    { id: "evidence", label: "Evidence" },
-    { id: "claims", label: "Claims" },
-    { id: "sources", label: "Sources" },
+    { id: "evidence", label: t.tabEvidence },
+    { id: "claims", label: t.tabClaims },
+    { id: "sources", label: t.tabSources },
   ];
 
   const clear = () => commit({ ...DEFAULT_STATE, tab });
@@ -240,22 +246,23 @@ export function EvidenceExplorer({ sources, claims, evidence }: Props) {
 
   return (
     <div>
-      <div role="tablist" aria-label="Record type" className="flex gap-1 border-b border-line">
-        {tabs.map((t) => (
+      <div role="tablist" aria-label={t.tablistLabel} className="flex gap-1 border-b border-line">
+        {tabs.map((tabItem) => (
           <button
-            key={t.id}
+            key={tabItem.id}
             role="tab"
-            id={`tab-${t.id}`}
-            aria-selected={tab === t.id}
+            id={`tab-${tabItem.id}`}
+            aria-selected={tab === tabItem.id}
             aria-controls="explorer-panel"
-            onClick={() => commit({ ...state, tab: t.id })}
+            onClick={() => commit({ ...state, tab: tabItem.id })}
             className={`-mb-px border-b-2 px-4 py-2 text-sm transition-colors ${
-              tab === t.id
+              tab === tabItem.id
                 ? "border-accent text-ink"
                 : "border-transparent text-muted hover:text-ink"
             }`}
           >
-            {t.label} <span className="tabular-nums text-xs text-muted">{counts[t.id]}</span>
+            {tabItem.label}{" "}
+            <span className="tabular-nums text-xs text-muted">{counts[tabItem.id]}</span>
           </button>
         ))}
       </div>
@@ -263,90 +270,91 @@ export function EvidenceExplorer({ sources, claims, evidence }: Props) {
       <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(0,2fr)_repeat(3,minmax(0,1fr))]">
         <div>
           <label htmlFor={searchId} className="block text-xs text-muted">
-            Search
+            {t.search}
           </label>
           <input
             id={searchId}
             type="search"
             value={q}
             onChange={(e) => commit({ ...state, q: e.target.value })}
-            placeholder="Observation, method, source, id"
+            placeholder={t.searchPlaceholder}
             className="mt-1 w-full rounded-md border border-line bg-surface px-2.5 py-1.5 text-sm placeholder:text-muted/70"
           />
         </div>
         <Select
-          label="Source tier"
+          label={t.sourceTier}
+          allLabel={t.all}
           value={tier}
           onChange={(v) => commit({ ...state, tier: v })}
-          options={sourceTierLabel}
+          options={labels.sourceTier}
         />
         {tab === "evidence" && (
           <>
             <Select
-              label="Polarity"
+              label={t.polarity}
+              allLabel={t.all}
               value={polarity}
               onChange={(v) => commit({ ...state, polarity: v })}
-              options={polarityLabel}
+              options={labels.polarity}
             />
             <Select
-              label="Review status"
+              label={t.reviewStatus}
+              allLabel={t.all}
               value={review}
               onChange={(v) => commit({ ...state, review: v })}
-              options={reviewStatusLabel}
+              options={labels.reviewStatus}
             />
           </>
         )}
         {tab === "claims" && (
           <Select
-            label="Claim type"
+            label={t.claimType}
+            allLabel={t.all}
             value={claimType}
             onChange={(v) => commit({ ...state, claimType: v })}
-            options={claimTypeLabel}
+            options={labels.claimType}
           />
         )}
       </div>
 
       <div className="mt-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-2 text-xs text-muted">
         <span aria-live="polite">
-          {counts[tab]} of{" "}
-          {tab === "evidence" ? evidence.length : tab === "claims" ? claims.length : sources.length} shown
+          {fill(t.shown, {
+            count: counts[tab],
+            total:
+              tab === "evidence" ? evidence.length : tab === "claims" ? claims.length : sources.length,
+          })}
         </span>
         <span className="flex items-center gap-3">
           <span role="status" aria-live="polite" className="text-accent">
-            {copied === "copied"
-              ? "Link copied"
-              : copied === "failed"
-                ? "Copy failed — copy the address bar instead"
-                : ""}
+            {copied === "copied" ? t.linkCopied : copied === "failed" ? t.copyFailed : ""}
           </span>
           <button
             type="button"
             onClick={copyLink}
-            title="Copy a link that restores these filters"
+            title={t.copyLinkTitle}
             className="rounded-md border border-line bg-surface px-2.5 py-1 text-xs text-muted hover:text-ink"
           >
-            Copy link
+            {t.copyLink}
           </button>
           {filtered && (
             <button onClick={clear} className="underline underline-offset-4 hover:text-ink">
-              Clear filters
+              {t.clearFilters}
             </button>
           )}
         </span>
       </div>
 
-      <p className="mt-1 text-xs text-muted">
-        A shared link carries its filters in the URL; they are applied once the page has loaded.
-      </p>
+      <p className="mt-1 text-xs text-muted">{t.sharedLinkNote}</p>
 
       <div id="explorer-panel" role="tabpanel" aria-labelledby={`tab-${tab}`} className="mt-4 space-y-3">
         {counts[tab] === 0 && (
           <p className="rounded-lg border border-dashed border-line px-4 py-8 text-center text-sm text-muted">
-            Nothing matches these filters.{" "}
+            {t.emptyLead}{" "}
             <button onClick={clear} className="underline underline-offset-4 hover:text-ink">
-              Clear filters
+              {t.clearFilters}
             </button>{" "}
-            to see every record.
+            {t.emptyTail}
           </p>
         )}
 
@@ -356,28 +364,34 @@ export function EvidenceExplorer({ sources, claims, evidence }: Props) {
             return (
               <article key={e.id} className="rounded-lg border border-line bg-surface p-4">
                 <div className="flex flex-wrap items-center gap-2">
-                  <Link href={`/evidence/${e.id}`} className="font-mono text-xs text-accent underline-offset-4 hover:underline">
+                  <Link
+                    href={localePath(locale, `/evidence/${e.id}`)}
+                    className="font-mono text-xs text-accent underline-offset-4 hover:underline"
+                  >
                     {e.id}
                   </Link>
-                  <PolarityChip polarity={e.polarity} />
-                  <ReviewChip status={e.review_status} />
-                  <span className="text-xs text-muted">{evidenceTypeLabel[e.evidence_type]}</span>
-                  {e.provenance === "demo" && <DemoTag />}
+                  <PolarityChip polarity={e.polarity} locale={locale} />
+                  <ReviewChip status={e.review_status} locale={locale} />
+                  <span className="text-xs text-muted">{labels.evidenceType[e.evidence_type]}</span>
+                  {e.provenance === "demo" && <DemoTag locale={locale} />}
                 </div>
-                <Statement kind="fact" className="mt-3 text-[15px] leading-6">
+                <Statement kind="fact" locale={locale} className="mt-3 text-[15px] leading-6">
                   {e.observation}
                 </Statement>
                 <p className="mt-2 text-[13px] leading-5 text-muted">
-                  <span className="text-ink">Method.</span> {e.method}
+                  <span className="text-ink">{t.method}</span> {e.method}
                 </p>
                 <p className="mt-1 text-[13px] leading-5 text-muted">
-                  <span className="text-ink">Limitations.</span> {e.limitations}
+                  <span className="text-ink">{t.limitations}</span> {e.limitations}
                 </p>
                 <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 border-t border-line pt-3 text-xs text-muted">
-                  <Link href={`/evidence/${s.id}`} className="underline-offset-4 hover:text-ink hover:underline">
+                  <Link
+                    href={localePath(locale, `/evidence/${s.id}`)}
+                    className="underline-offset-4 hover:text-ink hover:underline"
+                  >
                     {s.title}
                   </Link>
-                  <TierChip source={s} />
+                  <TierChip source={s} locale={locale} />
                 </div>
               </article>
             );
@@ -389,29 +403,38 @@ export function EvidenceExplorer({ sources, claims, evidence }: Props) {
             return (
               <article key={c.id} className="rounded-lg border border-line bg-surface p-4">
                 <div className="flex flex-wrap items-center gap-2 text-xs">
-                  <Link href={`/evidence/${c.id}`} className="font-mono text-accent underline-offset-4 hover:underline">
+                  <Link
+                    href={localePath(locale, `/evidence/${c.id}`)}
+                    className="font-mono text-xs text-accent underline-offset-4 hover:underline"
+                  >
                     {c.id}
                   </Link>
-                  <span className="text-muted">{claimTypeLabel[c.claim_type]}</span>
-                  <span className="text-muted">· {c.extraction_status.replace("-", " ")}</span>
-                  {c.generated_by && <ModelTag model={c.generated_by.model} />}
-                  {c.provenance === "demo" && <DemoTag />}
+                  <span className="text-muted">{labels.claimType[c.claim_type]}</span>
+                  <span className="text-muted">· {labels.extractionStatus[c.extraction_status]}</span>
+                  {c.generated_by && (
+                    <ModelTag model={c.generated_by.model} locale={locale} />
+                  )}
+                  {c.provenance === "demo" && <DemoTag locale={locale} />}
                 </div>
                 <Statement
                   kind={kindFromClaimType[c.claim_type]}
                   model={Boolean(c.generated_by)}
+                  locale={locale}
                   className="mt-3 text-[15px] leading-6"
                 >
                   {c.statement}
                 </Statement>
                 <p className="mt-2 text-[13px] leading-5 text-muted">
-                  <span className="text-ink">Limitations.</span> {c.limitations}
+                  <span className="text-ink">{t.limitations}</span> {c.limitations}
                 </p>
                 <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 border-t border-line pt-3 text-xs text-muted">
-                  <Link href={`/evidence/${s.id}`} className="underline-offset-4 hover:text-ink hover:underline">
+                  <Link
+                    href={localePath(locale, `/evidence/${s.id}`)}
+                    className="underline-offset-4 hover:text-ink hover:underline"
+                  >
                     {s.title}
                   </Link>
-                  <TierChip source={s} />
+                  <TierChip source={s} locale={locale} />
                 </div>
               </article>
             );
@@ -421,16 +444,23 @@ export function EvidenceExplorer({ sources, claims, evidence }: Props) {
           sourceRows.map((s) => (
             <article key={s.id} className="rounded-lg border border-line bg-surface p-4">
               <div className="flex flex-wrap items-center gap-2 text-xs">
-                <Link href={`/evidence/${s.id}`} className="font-mono text-accent underline-offset-4 hover:underline">
+                <Link
+                  href={localePath(locale, `/evidence/${s.id}`)}
+                  className="font-mono text-xs text-accent underline-offset-4 hover:underline"
+                >
                   {s.id}
                 </Link>
-                <span className="text-muted">{sourceTypeLabel[s.source_type]}</span>
-                <TierChip source={s} />
-                {s.provenance === "demo" && <DemoTag />}
+                <span className="text-muted">{labels.sourceType[s.source_type]}</span>
+                <TierChip source={s} locale={locale} />
+                {s.provenance === "demo" && <DemoTag locale={locale} />}
               </div>
               <h3 className="mt-2 font-serif text-base">{s.title}</h3>
               <p className="mt-1 text-[13px] text-muted">
-                {s.publisher} · published {formatDate(s.published_at)} · status {s.status}
+                {fill(t.sourceMeta, {
+                  publisher: s.publisher,
+                  date: formatDate(s.published_at, locale),
+                  status: labels.sourceStatus[s.status],
+                })}
               </p>
             </article>
           ))}

@@ -1,0 +1,127 @@
+{
+  "note": "Chinese renderings of the capability taxonomy (L0-L7) in data/capabilities.ts. Level markers ('L3'), record ids and numbers are never translated. 'criteria' is keyed by criterion id and translates only the criterion text; 'nonCriteria' is an order-matched array whose length must equal the English one, because the order carries the argument. Every capability must be present: the taxonomy is small and fully translated, so a missing entry is a build error rather than a silent English fallback. The English file stays the source of truth; this overlay only renders it in Chinese.",
+  "locale": "zh",
+  "capabilities": {
+    "cap-l0": {
+      "name": "人类主导的 AI 工具",
+      "description": "AI 在有边界的任务上提供支持，而计划由人类推动、产出由人类校验、工作流由人类协调。",
+      "nonCriteria": [
+        "工作流中出现 AI 辅助，本身并不表明具备任何自主性。"
+      ]
+    },
+    "cap-l1": {
+      "name": "任务执行自主性",
+      "description": "系统使用工具并借助过程中的中间决策，完成一项有边界的多步任务；成功标准事先定义，人类介入有限且有记录。",
+      "nonCriteria": [
+        "没有定义成功标准的单次成功运行。",
+        "依赖未经记录的人类纠正才得以完成。"
+      ],
+      "knownBottlenecks": [
+        "把自主步骤与人类介入、隐藏的脚手架区分开。"
+      ]
+    },
+    "cap-l2": {
+      "name": "研究工作流自主性",
+      "description": "系统能够规划并执行一条研究工作流：操作工具、评估中间结果，并产出一份可追溯的报告。",
+      "nonCriteria": [
+        "只给出挑选出的成功案例，既没有失败记录，也没有说明任务是如何选取的。"
+      ],
+      "knownBottlenecks": [
+        "任务选择效应，以及所报告案例中的幸存者偏差。",
+        "核实报告能否追溯到实际的工作流。"
+      ]
+    },
+    "cap-l3": {
+      "name": "改进策略自主性",
+      "description": "系统生成并检验旨在改进某个模型或研究系统的策略。",
+      "nonCriteria": [
+        "无法与额外算力、数据或人力投入相区分的改进。"
+      ],
+      "knownBottlenecks": [
+        "把收益归因于所提策略，而不是混杂因素。"
+      ]
+    },
+    "cap-l4": {
+      "name": "自主的数据／模型更新",
+      "description": "系统能够可靠地运行数据或模型更新回路，具备校验与回滚，并可度量性能结果。",
+      "nonCriteria": [
+        "仅有一条脚本化的流水线，并不构成普遍的自主改进。"
+      ],
+      "knownBottlenecks": [
+        "把自主回路与固定的、由人设计的流水线区分开。"
+      ]
+    },
+    "cap-l5": {
+      "name": "自主改进机制",
+      "description": "系统改进了用于改进自身的机制中的某一部分，并且该改进在受控对比下产生可复现的净收益。",
+      "nonCriteria": [
+        "忽略成本或性能回退的收益，或未经独立核查的收益。"
+      ],
+      "knownBottlenecks": [
+        "评估泄漏与不受控的对比。",
+        "对自我改进主张的独立复现。"
+      ]
+    },
+    "cap-l6": {
+      "name": "物理研发回路",
+      "description": "AI 在物理研发中实质性闭合了设计、验证与部署的回路，可能涵盖芯片设计、实验、制造与硬件验证。",
+      "nonCriteria": [
+        "仅有仿真的结果——除非明确标注为仿真，且不计为物理回路。"
+      ],
+      "knownBottlenecks": [
+        "物理验证与制造周期不属于纯数字证据。"
+      ]
+    },
+    "cap-l7": {
+      "name": "工业规模的递归自我改进",
+      "description": "在真实的算力、能源、硬件、供应链、安全与运营约束下，改进回路随时间在工业规模上复利累积。",
+      "nonCriteria": [
+        "一份看似可行的路线图，或一次孤立的演示。"
+      ],
+      "knownBottlenecks": [
+        "算力、能源、硬件、供应链、安全与运营约束。"
+      ]
+    }
+  },
+  "criteria": {
+    "crit-l0-1": {
+      "text": "AI 在有边界的任务上提供辅助，由人类制定计划并校验产出。"
+    },
+    "crit-l1-1": {
+      "text": "使用工具并借助过程中的中间决策，完成有边界的多步任务。"
+    },
+    "crit-l1-2": {
+      "text": "成功标准事先定义，人类介入有限且有记录。"
+    },
+    "crit-l2-1": {
+      "text": "规划并执行研究工作流，操作工具并评估中间结果。"
+    },
+    "crit-l2-2": {
+      "text": "产出可追溯的报告；评估包含失败案例，而不只是挑选出的成功案例。"
+    },
+    "crit-l3-1": {
+      "text": "生成并检验旨在改进某个模型或研究系统的策略。"
+    },
+    "crit-l3-2": {
+      "text": "证据能把该策略的贡献与额外增加的算力、数据和人类介入区分开。"
+    },
+    "crit-l4-1": {
+      "text": "可靠地运行数据或模型更新回路，并具备校验与回滚。"
+    },
+    "crit-l4-2": {
+      "text": "该回路的性能结果可被度量。"
+    },
+    "crit-l5-1": {
+      "text": "改进了用于改进该系统自身的机制中的一部分。"
+    },
+    "crit-l5-2": {
+      "text": "净收益在受控对比下可复现，并通过独立核查；同时计入成本、性能回退与评估泄漏。"
+    },
+    "crit-l6-1": {
+      "text": "在物理研发中闭合设计、验证与部署的回路。"
+    },
+    "crit-l7-1": {
+      "text": "在现实约束下，改进回路随时间在工业规模上复利累积。"
+    }
+  }
+}
