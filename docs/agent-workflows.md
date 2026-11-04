@@ -94,5 +94,6 @@ Human review is required for material stage changes, contested claims, high-impa
 - `discovery_triage` records `accept-for-review`, `reject`, or `duplicate` with a reason. It changes candidate status only.
 - Promoting an accepted candidate into the dashboard stays a reviewed edit to `data/`, citing the stored candidate id. No tool performs it.
 - `quality_audit` reports bookkeeping problems in the dataset and the candidate store with a remediation each. It never edits either.
+- `npm run automation:snapshot` publishes the store to `data/automation/snapshot.json`, which is what `/automation` renders. Publishing is a separate, reviewed commit: the store is local and gitignored, so the site shows what was published, not what exists on one machine.
 
 The tool takes no view on whether a page's content is true, and a passing audit is not a verification of any claim. See [automation.md](automation.md) for the tools, the store layout, and the schedule.

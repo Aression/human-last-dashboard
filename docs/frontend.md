@@ -8,6 +8,8 @@ The UI renders a **fictional demonstration dataset** from `data/demo/dataset.ts`
 
 The dataset is checked at two levels: `lib/types.ts` for compile-time shapes, and `lib/validate.ts` for runtime integrity (unique prefixed ids, resolving references, one unbroken assessment version chain per capability, demo records that claim no observed URL or content hash, assessments pinned to the dataset's taxonomy version, forecast resolutions that record when and why). Validation runs on every build and in `npm run validate:data`; the gate, selectors, and validator have behavioural tests in `npm test`.
 
+`/automation` renders a second, separate input: `data/automation/snapshot.json`, a committed snapshot of the leads the local evidence automation discovered. Those leads are not dataset records and never appear in a claim, evidence tally, or assessment — no page merges the two, and the dataset's own gates do not look at them.
+
 ## 2. Routes
 
 | Route | View | Purpose |
@@ -18,12 +20,19 @@ The dataset is checked at two levels: `lib/types.ts` for compile-time shapes, an
 | `/evidence` | Evidence Explorer | Tabs for evidence, claims, and sources with search and facet filters; state is kept in the URL. |
 | `/evidence/[id]` | Record detail | A source (`s-`), claim (`c-`), or evidence (`e-`) record, resolved by id, with cross-links and a provenance panel. |
 | `/research` | Research & Attribution | Observed events with competing explanations, forecasts, unresolved questions. |
+| `/automation` | Automation | Discovered leads from the local evidence automation, the last audit run rule by rule, and what none of it establishes. |
 
 All routes are statically generated. `/evidence` is the only route with client-side state (search and filters); it receives its data as props so the dataset is not imported into the client bundle separately.
 
 **Explorer state in the URL.** The explorer mirrors `tab`, `q`, `tier`, `polarity`, `review`, and `claimType` into the query string — `?tab=claims&tier=independent&q=benchmark` — and omits defaults, so a copied link carries only what was chosen. Writes use `window.history.replaceState`, not the router, because the page is prerendered: there is no server state to refetch, and one soft navigation per keystroke would be wasted work. Replacing rather than pushing keeps Back pointing at the previous page instead of walking through filter states. Because the URL can only be read in the browser, a shared link renders the unfiltered list for one frame before the filter applies; the page says so next to the filters. Unrelated query keys and the hash are preserved.
 
 **Provenance panel.** Record detail pages end with `components/ProvenancePanel.tsx`, which lists only fields the record actually stores — id, provenance, creation date, model/workflow attribution, and for sources the canonical URL, retrieval time, content hash, snapshot, status, type, tier, and developer affiliation. A field with no value reads "not observed" or "not recorded" rather than being omitted or shown as unavailable, and every panel closes with what that kind of record does not establish. This is the UI counterpart of the rule that a record must never imply a retrieval, snapshot, or verification it does not have (AGENTS.md rules 2, 3, 4).
+
+**Automation page.** `/automation` renders `data/automation/snapshot.json`, a committed snapshot that `npm run automation:snapshot` writes from the local discovery store. The site never reads the store itself: `.evidence-mcp/` is gitignored, absent from any deployment, and would require a server to read. Publishing is therefore an explicit step, and the page shows the snapshot's `generated_at` so a reader can tell how old the view is.
+
+What the page shows: totals for leads stored, awaiting triage, and without a fetched page; the newest leads with the page the tool actually fetched, its HTTP status, and whether a content hash was recorded; leads per adapter, per query, and per day; retrieval failures by reason; recent runs; and the last audit reproduced rule by rule with `pass`, `fail`, and `skipped` kept distinct. A lead is labelled a lead everywhere, the boundary statement sits above the table, and the closing section lists what the page does not establish. Wording shared with the tool lives in `lib/automation-copy.ts`.
+
+`lib/automation.ts` validates the snapshot — schema version, date shapes, unique ids, http(s) urls, and every aggregate summing to the stored total — and `npm run validate:data` runs it, so `npm run build` fails on a truncated or hand-edited snapshot instead of rendering a half-empty page.
 
 ## 3. Visual grammar
 
@@ -50,8 +59,11 @@ data/capabilities.ts ─┐
 data/demo/dataset.ts ─┴─> lib/data/index.ts ─> lib/selectors.ts ──> server components (pages)
    (loadDataset)            createSelectors(ds)      │                     │
                                                      └─> lib/gate.ts       └─> components/EvidenceExplorer.tsx (client, via props)
+
+data/automation/snapshot.json ─> lib/automation.ts (validate + load) ─> app/automation/page.tsx
 ```
 
+- `data/automation/snapshot.json` is written by `npm run automation:snapshot` and read by `lib/automation.ts`. It is the only path by which automation output reaches the UI; the page is a static render of that file, with no request-time fetch.
 - `lib/types.ts` mirrors [evidence-model.md](evidence-model.md) in TypeScript.
 - `data/capabilities.ts` is framework content (L0–L7 definitions with stable criterion ids such as `crit-l3-2`). It is not demo data and is the source of truth for capability definitions. It carries `TAXONOMY_VERSION`; each assessment pins the version it was made under, and `data/capabilities.test.ts` fails on any edit to the definitions until the version and a content hash are updated together.
 - `data/demo/dataset.ts` exports one `dataset` object. `lib/data/index.ts` (`loadDataset`) is the only module that chooses which dataset the pages render; pages import selectors from `@/lib/data` and never from a concrete dataset. See [data/README.md](../data/README.md).
@@ -93,10 +105,10 @@ The demo proposal `p-01` (L3) is blocked on purpose: its only support is a devel
 
 ## 8. Known limitations
 
-- Data is static and in-repo. Filters run in the browser and are reflected in the URL, but a shared link applies them after load, and search is a substring match over rendered fields — there is no index, ranking, or server-side query.
+- Data is static and in-repo. Filters run in the browser and are reflected in the URL, but a shared link applies them after load, and search is a substring match over rendered fields — there is no index, ranking, or server-side query. The automation page is the same shape: it renders a committed snapshot, so its numbers are as old as the last publish, not live.
 - No numeric calibration is displayed for forecasts. The page states that two resolved forecasts are too few; add a calibration view only when the sample supports it.
 - Pages are English only.
 - The gate runs in the UI layer. It demonstrates the rules but does not enforce them.
-- There is no persistence, no review queue, and no authentication: nothing writes a record, so the audit trail exists only as far as the dataset itself.
-- Tests cover the pure functions (`lib/gate.ts`, `lib/selectors.ts`, `lib/validate.ts`). There is no browser or rendering test; UI verification is a production build plus review of the generated HTML at desktop (1360 px) and phone (390 px) widths.
+- There is no persistence, no review queue, and no authentication: nothing writes a record, so the audit trail exists only as far as the dataset itself. Triage decisions live in the local store (`.evidence-mcp/`), which is gitignored and never deployed, so a triaged lead still shows as untriaged on the site until the snapshot is regenerated.
+- Tests cover the pure functions (`lib/gate.ts`, `lib/selectors.ts`, `lib/validate.ts`, `lib/automation.ts`). There is no browser or rendering test; UI verification is a production build plus review of the generated HTML at desktop (1360 px) and phone (390 px) widths.
 - Automated checks are local only. There is no CI configuration in the repository, so lint, type checks, tests, and validation run only when someone runs them or when a deployment builds.

@@ -113,7 +113,28 @@ The shipped schedule is `17 */6 * * *` for discovery and `42 3 * * *` for the au
 
 `scripts\evidence-daemon-start.ps1` creates the process through `Win32_Process.Create` rather than `Start-Process`. With `Start-Process`, the detached daemon kept the caller's output pipe open for its entire life, so anything capturing the script's output blocked until the daemon exited — measured here as a start script that never returned while the daemon itself was healthy.
 
-## 7. Registering it in DeepSeek Harness
+## 7. Publishing to the dashboard
+
+The dashboard is a static site: it reads `data/demo/dataset.ts` and, for leads, one committed JSON file. The store itself (`.evidence-mcp/`) is gitignored and never deployed, so publishing is an explicit step:
+
+```bash
+npm run automation:snapshot                 # writes data/automation/snapshot.json
+git diff data/automation/snapshot.json      # review before committing
+```
+
+The file holds aggregates covering every stored record (leads per adapter, per query, per day, and retrieval failures by reason) plus at most 60 rows of the newest leads. `generated_at` is stored in the file and printed on the page, because a reader has to be able to tell how old the view is.
+
+`/automation` renders it read-only: each lead title links to the page the tool fetched, each row shows `HTTP <status>` and whether a content hash was recorded, and the newest audit is reproduced rule by rule with the `skipped` state preserved. Above the table the page states that a discovered lead is not evidence; that wording lives in `lib/automation-copy.ts` so the tool and the page cannot drift apart.
+
+`npm run validate:data` — and therefore `npm run build` — validates the snapshot through `lib/automation.ts`, so a hand-edited or truncated file fails the build instead of rendering a half-empty page:
+
+```
+Automation snapshot OK: 233 lead(s) stored, 60 published as rows, newest audit quality-20261103T194203Z-b7aaa1.
+```
+
+The numbers on the page only move when the snapshot is regenerated and committed. That is deliberate: it makes the page a record of a published run rather than a view that shifts under the reader.
+
+## 8. Registering it in DeepSeek Harness
 
 The plugin entry lives in `cordis.patch.yml` of the active DSH profile (here `C:\Users\Administrator\.dsh\profiles\desktop\cordis.patch.yml`):
 
@@ -135,7 +156,7 @@ The plugin entry lives in `cordis.patch.yml` of the active DSH profile (here `C:
 
 After a DSH restart the tools appear as `mcp__evidence_automation__*`. `failOnStartupError: false` keeps a broken bridge from taking the session down; the tools then simply are not listed.
 
-## 8. Verifying it
+## 9. Verifying it
 
 ```bash
 npm test                                   # includes tools/evidence-mcp/tests/**
@@ -152,7 +173,13 @@ What was measured when this was added, on this workstation:
 - A daemon started with `scripts\evidence-daemon-start.ps1` returns in under two seconds, survives the launching shell, and reports `process: running` with a live heartbeat; a one-minute test cron fired a scheduled audit exactly one tick after start and wrote its run record, report, and state.
 - The MCP server answered a real SDK client over stdio with 11 tools and `server: {"name":"evidence-automation","version":"0.1.0"}`.
 
-## 9. Limits
+When the dashboard page was added:
+
+- `npm test` → 120 tests, 0 failures (10 of them cover the snapshot: shape, sums, duplicated ids, non-http urls, and the guarantee that every published row is still an untriaged lead).
+- `npm run validate:data` → `Dataset OK: 54 records …` plus `Automation snapshot OK: 233 lead(s) stored, 60 published as rows, newest audit quality-20261103T194203Z-b7aaa1.`
+- `npm run build` → `Generating static pages (41/41)` with `/automation` prerendered at 103 kB, and the rendered HTML contains the boundary statement, the leads table, the per-rule table, and the limits list.
+
+## 10. Limits
 
 - **The demo dataset stays demo.** Nothing here promotes a candidate; every promotion is a reviewed edit.
 - **No snapshots.** A candidate stores a content hash and a bounded summary, not the page body. A page can change after retrieval; the hash says what was seen, not what is there now.
