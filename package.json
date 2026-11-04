@@ -12,7 +12,8 @@
     "validate:data": "node --import tsx scripts/validate-data.ts",
     "mcp:evidence": "node --import tsx tools/evidence-mcp/src/server.ts",
     "evidence:daemon": "node --import tsx tools/evidence-mcp/src/daemon.ts",
-    "evidence:run": "node --import tsx tools/evidence-mcp/src/cli.ts"
+    "evidence:run": "node --import tsx tools/evidence-mcp/src/cli.ts",
+    "automation:snapshot": "node --import tsx tools/evidence-mcp/src/cli.ts snapshot"
   },
   "dependencies": {
     "next": "^15.5.0",

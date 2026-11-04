@@ -1,4 +1,5 @@
 import { dataset } from "../data/demo/dataset";
+import { loadAutomationSnapshot } from "../lib/automation";
 import { validateDataset } from "../lib/validate";
 
 /**
@@ -31,6 +32,16 @@ if (violations.length > 0) {
   process.exit(1);
 }
 
+// The automation snapshot is rendered verbatim on /automation, so it is data too:
+// a stale or hand-edited file must fail the build rather than ship a broken page.
+let snapshot;
+try {
+  snapshot = loadAutomationSnapshot();
+} catch (error) {
+  console.error(error instanceof Error ? error.message : String(error));
+  process.exit(1);
+}
+
 console.log(`Dataset: ${dataset.label}`);
 const width = Math.max(...counts.map(([name]) => name.length));
 for (const [name, count] of counts) {
@@ -38,4 +49,9 @@ for (const [name, count] of counts) {
 }
 console.log(
   `Dataset OK: ${counts.reduce((sum, [, count]) => sum + count, 0)} records across ${counts.length} collections, no violations.`,
+);
+console.log(
+  `Automation snapshot OK: ${snapshot.candidates.total} lead(s) stored, ${snapshot.candidates.items.length} published as rows, newest audit ${
+    snapshot.audit?.run_id ?? "none"
+  }.`,
 );

@@ -8,9 +8,11 @@
  *   node --import tsx tools/evidence-mcp/src/cli.ts audit --rule dataset-valid
  *   node --import tsx tools/evidence-mcp/src/cli.ts report
  *   node --import tsx tools/evidence-mcp/src/cli.ts validate
+ *   node --import tsx tools/evidence-mcp/src/cli.ts snapshot
  *
  * `--json` prints the structured payload instead of the summary block.
  */
+import { buildAutomationSnapshot } from "./snapshot";
 import { dispatchTool, toolDefinitions, type Args } from "./tools";
 
 function parseArgs(argv: string[]): { command: string; flags: Args; json: boolean } {
@@ -52,6 +54,7 @@ commands:
   findings [--severity error] [--rule id] [--limit n]
   report [--run_id id] [--max_findings n]
   validate                   validate the dashboard dataset
+  snapshot [--limit n]       publish the store into data/automation/snapshot.json
   runs [--task discovery] [--limit n]
   tools                      list tool names
 
@@ -105,6 +108,39 @@ async function main(): Promise<void> {
     case "validate":
       await call("dataset_validate");
       return;
+    case "snapshot": {
+      const built = await buildAutomationSnapshot({
+        maxItems: typeof flags.limit === "number" ? flags.limit : undefined,
+      });
+      if (json) {
+        process.stdout.write(
+          `${JSON.stringify(
+            {
+              out: built.outPath,
+              bytes: built.bytes,
+              stored_records: built.storedRecords,
+              unreadable_records: built.unreadableRecords,
+              total: built.snapshot.candidates.total,
+              published_rows: built.snapshot.candidates.items.length,
+              audit: built.snapshot.audit?.run_id ?? null,
+            },
+            null,
+            2,
+          )}\n`,
+        );
+      } else {
+        process.stdout.write(
+          `snapshot written: ${built.outPath} (${built.bytes} bytes)\n` +
+            `  ${built.snapshot.candidates.total} lead(s) stored, ${built.snapshot.candidates.items.length} published as rows\n` +
+            `  newest audit: ${built.snapshot.audit?.run_id ?? "none"}\n` +
+            `  review the diff and commit it; the dashboard renders only what is committed\n`,
+        );
+        if (built.unreadableRecords.length > 0) {
+          process.stdout.write(`  unreadable records: ${built.unreadableRecords.join(", ")}\n`);
+        }
+      }
+      return;
+    }
     case "runs":
       await call("runs_history", flags);
       return;

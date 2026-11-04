@@ -120,6 +120,12 @@ export interface CandidateRecord {
     content_hash: string | null;
     bytes: number | null;
     content_type: string | null;
+    /**
+     * Set when the fetch was attempted and produced no usable bytes (timeout,
+     * HTTP 4xx/5xx, DNS failure). Discovery records the error verbatim and never
+     * extracts a summary from an error page, so this is the record of "we tried".
+     */
+    error?: string | null;
   };
   status: CandidateStatus;
   /** Adapter-supplied summary, verbatim. Never rewritten into a claim. */
