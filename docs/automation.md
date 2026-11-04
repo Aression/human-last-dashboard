@@ -16,7 +16,7 @@ It **can**:
 
 It **cannot**, by construction:
 
-- add a source, claim, evidence record, assessment, or forecast to the dashboard. A candidate is stored with `provenance: "discovered"` and `source_tier: "lead"`; promoting it into `data/` is a reviewed edit to `data/demo/dataset.ts` (or a future curated store) citing the stored record;
+- add a source, claim, evidence record, assessment, or forecast to the dashboard. A candidate is stored with `provenance: "discovered"` and `source_tier: "lead"`; promoting it into the dataset is a reviewed edit to `data/curated/records.json` citing the stored record. `npm run evidence:run -- publish` can write that file from the store, but it publishes records an agent already curated — it never turns a candidate into a record;
 - assert that a page's content is true. A `content_hash` proves which bytes were fetched, not that they are correct, and no tool marks a claim as verified;
 - run a model. There is no LLM call anywhere in `tools/evidence-mcp/`; the agent is the reader, the tool is the retriever and the checker. This is deliberate — see AGENTS.md rules 2–4 and 10;
 - rewrite the dataset. The audit reports findings with a remediation sentence; applying one is a separate, reviewed edit.
@@ -115,7 +115,7 @@ The shipped schedule is `17 */6 * * *` for discovery and `42 3 * * *` for the au
 
 ## 7. Publishing to the dashboard
 
-The dashboard is a static site: it reads `data/demo/dataset.ts` and, for leads, one committed JSON file. The store itself (`.evidence-mcp/`) is gitignored and never deployed, so publishing is an explicit step:
+The dashboard is a static site: it reads `data/curated/records.json` (composed with `data/capabilities.ts`) and, for leads, one committed JSON file. The store itself (`.evidence-mcp/`) is gitignored and never deployed, so publishing is an explicit step:
 
 ```bash
 npm run automation:snapshot                 # writes data/automation/snapshot.json
@@ -133,6 +133,18 @@ Automation snapshot OK: 233 lead(s) stored, 60 published as rows, newest audit q
 ```
 
 The numbers on the page only move when the snapshot is regenerated and committed. That is deliberate: it makes the page a record of a published run rather than a view that shifts under the reader.
+
+### Publishing curated records
+
+The dashboard's records come from the same store. A curation working copy lives at `.evidence-mcp/curation/records.json`; the tool reads it, validates it, and writes the committed dataset:
+
+```bash
+npm run evidence:run -- curation              # counts per collection + every record that would be published
+npm run evidence:run -- publish               # validates, then writes data/curated/records.json + data/curated/published.json
+git diff data/curated/                         # review the diff, then commit it
+```
+
+`publish` refuses, writing nothing, when `lib/validate.ts` reports any violation, when a record is not `provenance: "curated"`, when a source has no observed `canonical_url`, `retrieved_at` or `content_hash`, or when an assessment's `taxonomy_version` disagrees with `data/capabilities.ts`. `data/curated/published.json` records the counts and the sha256 of the exact bytes written, so a later reader can tell whether the file on disk is the one the tool produced. Translation overlays (`data/i18n/records.zh.json`) are checked against the published records by `lib/records-i18n.ts` when the app module loads, so a record added without a translation still renders — in English — while an overlay entry for a record that no longer exists fails the build.
 
 ## 8. Registering it in DeepSeek Harness
 
@@ -181,7 +193,7 @@ When the dashboard page was added:
 
 ## 10. Limits
 
-- **The demo dataset stays demo.** Nothing here promotes a candidate; every promotion is a reviewed edit.
+- **The dataset and the leads stay separate.** Nothing here promotes a candidate into a record; the only write path into the dataset is `publish`, and it refuses a record that is not `curated`, a source without an observed URL, retrieval time and content hash, or a taxonomy version that disagrees with the data.
 - **No snapshots.** A candidate stores a content hash and a bounded summary, not the page body. A page can change after retrieval; the hash says what was seen, not what is there now.
 - **Network-dependent, and filtered.** Adapters only cover hosts reachable from this workstation. Hugging Face, OpenAI, Anthropic, and Hacker News timed out here, so no adapter targets them: a broken adapter would report coverage this tool does not have.
 - **Not durable.** The scheduler is a local process with a state file, not a queue. A run interrupted by shutdown is reported as a failed run, not resumed.

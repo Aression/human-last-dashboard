@@ -46,7 +46,11 @@ Each level must be assessed against explicit criteria, operational evidence, lim
 
 ## Repository status
 
-The dashboard frontend is implemented over a **fictional demonstration dataset**. It has five views (Overview, Progress, Evidence Explorer, Automation, Research & Attribution) plus capability and record detail pages. The Evidence Explorer keeps its filters in the URL, and record pages show a provenance panel that reports only what each record stores. Ingestion and persistence are not implemented. Scheduled source discovery and the quality audit are: `tools/evidence-mcp/` finds candidate sources, stores them as leads, and audits the dataset on a cron schedule — it never promotes a lead into the dataset. What it finds reaches the site through the `/automation` page, which renders a committed snapshot of the store rather than reading it live. See [Evidence automation](docs/automation.md). Model calls, authentication, and a durable workflow queue are not implemented. Demo records are labeled on every page and must not be read as evidence about real systems. See [Frontend](docs/frontend.md).
+The dashboard renders **agent-curated records, not fiction**: `data/curated/records.json` holds 13 real sources (eight arXiv papers, two vendor posts, three repositories) with the URL, retrieval time and sha256 of the page each record came from, plus 20 claims, 17 evidence records, 8 assessments, an event, an attribution, 2 forecasts and 2 questions. Every evidence record is `review_status: "unreviewed"` and every assessment records that no human reviewed it, so the pages state plainly that these are unreviewed agent drafts — a curation agent can publish a record, but it cannot accept its own evidence or lift a stage.
+
+The interface ships in **English and Chinese** on one static build: English at `/…`, Chinese at `/zh/…`, with a switch in the sidebar (`middleware.ts` redirects unprefixed paths to `/en`). Record prose is translated through `data/i18n/records.zh.json` and the L0–L7 framework through `data/i18n/capabilities.zh.json`; quotations are never translated.
+
+It has five views (Overview, Progress, Evidence Explorer, Automation, Research & Attribution) plus capability and record detail pages. The Evidence Explorer keeps its filters in the URL, and record pages show a provenance panel that reports only what each record stores. Persistence and authentication are not implemented. Scheduled source discovery and the quality audit are: `tools/evidence-mcp/` finds candidate sources, stores them as leads, audits the dataset on a cron schedule, and can publish the curated dataset — it never promotes a lead into the dataset and never edits a record. What discovery finds reaches the site through the `/automation` page, which renders a committed snapshot of the store rather than reading it live. See [Evidence automation](docs/automation.md) and [Frontend](docs/frontend.md). Model calls and a durable workflow queue are not implemented.
 
 A production build is deployed at https://human-last-dashboard.vercel.app; see [Deployment](docs/deployment.md).
 
@@ -68,9 +72,11 @@ Other scripts:
 | `npm run build` | Validates the dataset, then builds all routes as static pages. |
 | `npm run typecheck` | `tsc --noEmit`. |
 | `npm run lint` | ESLint over the whole repository. |
-| `npm test` | Behavioural tests for `lib/gate.ts`, `lib/selectors.ts`, `lib/validate.ts`, `lib/automation.ts`, the pinned capability taxonomy in `data/`, and the automation tools in `tools/evidence-mcp/`. |
-| `npm run validate:data` | Runs `lib/validate.ts` against the demo dataset (requiring demo provenance on every record) and `lib/automation.ts` against the published snapshot; prints counts and every violation. |
+| `npm test` | Behavioural tests for `lib/gate.ts`, `lib/selectors.ts`, `lib/validate.ts`, `lib/automation.ts`, `lib/records-i18n.ts`, the i18n dictionaries and helpers, the pinned capability taxonomy and curated dataset in `data/`, and the automation tools in `tools/evidence-mcp/`. |
+| `npm run validate:data` | Runs `lib/validate.ts` against `data/curated/records.json` composed with the capability taxonomy (requiring curated provenance on every record), `lib/records-i18n.ts` against the Chinese overlay, and `lib/automation.ts` against the published snapshot; prints counts and every violation. |
 | `npm run automation:snapshot` | Rewrites `data/automation/snapshot.json` from the local discovery store, for the `/automation` page. Review the diff before committing it. |
+| `npm run evidence:run -- curation` | Prints the curation working copy the store holds: counts and every record that would be published. |
+| `npm run evidence:run -- publish` | Validates the curation working copy and writes `data/curated/records.json` plus `data/curated/published.json`. Refuses on any violation and writes nothing. |
 | `npm run evidence:run -- <cmd>` | Source discovery, candidate triage, and the quality audit from the command line; see [Evidence automation](docs/automation.md). |
 | `npm run evidence:daemon` | Runs the discovery and audit scheduler in the foreground (cron schedule in `tools/evidence-mcp/config/discovery.json`). |
 | `npm run mcp:evidence` | Runs the evidence automation MCP server over stdio, for a local agent. |
