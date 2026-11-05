@@ -13,7 +13,7 @@ import { DISCOVERED_LEAD_NOTE as leadNote } from "./automation-copy";
  *
  * Nothing in this module can promote a lead. A candidate keeps
  * `provenance: "discovered"` and `source_tier: "lead"` forever; turning one into
- * a source or a claim is a separate, reviewed edit to `data/demo/dataset.ts`
+ * a source or a claim is a separate, reviewed edit to `data/curated/records.json`
  * (see docs/automation.md).
  */
 

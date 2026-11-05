@@ -65,3 +65,122 @@ Sources
 8. Scheduled ingestion and durable workflows. *(Half started: a local daemon runs discovery every six hours and the quality audit nightly, with a heartbeat, run log, single-flight locks, and a Windows logon task. It is a scheduler over a state file, not a durable queue: an interrupted run is recorded as failed, not resumed, and there is no database to ingest into.)*
 
 The list does not name internationalisation, which arrived as a cross-cutting change: every route is now under `/en` or `/zh`, chrome strings live in `lib/i18n/`, and record prose plus the L0–L7 taxonomy are translated by validated overlays in `data/i18n/`. Quotations are never translated. See [frontend.md](frontend.md) §2.
+
+
+## 7. How the pieces connect
+
+Three diagrams: what the build reads, what the daemon produces, and where the
+promotion boundaries sit. Everything they name is committed and checked by
+`npm run validate:data` / `npm test`; nothing in the store is read at runtime.
+
+### 7.1 Build-time rendering
+
+```mermaid
+flowchart TD
+  subgraph DATA["Committed data — the only inputs"]
+    D1["data/curated/records.json<br/>provenance: curated"]
+    D2["data/capabilities.ts<br/>L0–L7 + TAXONOMY_VERSION"]
+    D3["data/i18n/records.zh.json"]
+    D4["data/i18n/capabilities.zh.json"]
+    D5["data/automation/snapshot.json<br/>provenance: discovered"]
+  end
+
+  subgraph LOAD["Validation at module load"]
+    L1["lib/data/index.ts<br/>assertValidDataset(expectedProvenance: curated)"]
+    L2["lib/records-i18n.ts<br/>validateOverlay → localizeDataset"]
+    L3["selectorsFor(locale)<br/>one memoised selector set per locale"]
+    L4["lib/automation.ts<br/>validateAutomationSnapshot"]
+  end
+
+  subgraph CHROME["Locale chrome"]
+    C1["lib/i18n/en.ts · zh.ts"]
+    C2["middleware.ts<br/>unprefixed path → /en"]
+  end
+
+  subgraph PAGES["Static pages — 129 prerendered"]
+    P1["/[locale] overview"]
+    P2["/[locale]/progress + [id]"]
+    P3["/[locale]/evidence + [id]"]
+    P4["/[locale]/research"]
+    P5["/[locale]/automation"]
+  end
+
+  D1 --> L1
+  D2 --> L1
+  D3 --> L2
+  D4 --> L2
+  L1 --> L2
+  L2 --> L3
+  D5 --> L4
+  C1 --> PAGES
+  C2 --> PAGES
+  L3 --> P1
+  L3 --> P2
+  L3 --> P3
+  L3 --> P4
+  L4 --> P5
+```
+
+### 7.2 The scheduled loop
+
+```mermaid
+flowchart LR
+  subgraph DAEMON["tools/evidence-mcp/src/daemon.ts"]
+    T1["cron 17 */6 * * * → discovery"]
+    T2["cron 42 3 * * * → quality"]
+    T3["state/daemon.json<br/>heartbeat every 15 s"]
+  end
+
+  subgraph ADAPTERS["src/adapters — only hosts measured reachable"]
+    A1["arxiv.ts — Atom API"]
+    A2["github.ts — search API"]
+    A3["rss.ts — configured feeds"]
+  end
+
+  subgraph DISCOVERY["src/discovery.ts"]
+    S1["fetch page → http_status / bytes / sha256"]
+    S2["dedupe: normalised URL + content_hash"]
+    S3[".evidence-mcp/candidates/DATE/ID.json"]
+  end
+
+  subgraph QUALITY["src/quality.ts"]
+    Q1["10 rules: dataset-valid … provenance-gaps"]
+    Q2[".evidence-mcp/quality/ + reports/*.md"]
+  end
+
+  subgraph PUBLISH["Explicit, reviewed publish"]
+    O1["src/curation.ts publish<br/>writes data/curated/records.json"]
+    O2["src/snapshot.ts<br/>writes data/automation/snapshot.json"]
+  end
+
+  T1 --> A1
+  T1 --> A2
+  T1 --> A3
+  A1 --> S1
+  A2 --> S1
+  A3 --> S1
+  S1 --> S2
+  S2 --> S3
+  T2 --> Q1
+  Q1 --> Q2
+  S3 --> O1
+  S3 --> O2
+  Q2 --> O2
+```
+
+`.evidence-mcp/` is gitignored: the daemon runs on one machine and the site
+never reads it. Only the two JSON files above cross into the repository, and
+each one is written by a command somebody ran on purpose.
+
+### 7.3 Trust boundaries
+
+```mermaid
+flowchart LR
+  L["Lead — provenance: discovered<br/>source_tier: lead"] -->|"publish: validateDataset must pass"| R["Record — provenance: curated<br/>real URL, retrieved_at, sha256"]
+  R -->|"human sets review_status<br/>all 17 are unreviewed today"| E["Evidence usable by the gate"]
+  E -->|"lib/gate.ts"| G["Verdict ≤ ready-for-review<br/>reviewer-decision: awaiting-human"]
+```
+
+Nothing crosses a boundary by itself. A lead never becomes a record inside the
+tool, a record never becomes accepted evidence without a human `review_status`,
+and the gate never returns `accepted` — it stops at `ready-for-review`.
