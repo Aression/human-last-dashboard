@@ -84,7 +84,6 @@ const sharedByDesign = [
   "automation.leadHttpStatus",
   "capability.versionNumber",
   "capability.historyMeta",
-  "progress.none",
 ];
 
 function isSharedByDesign(key: string): boolean {

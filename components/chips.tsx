@@ -50,6 +50,20 @@ const statusStyle: Record<AssessmentStatus, { glyph: string; cls: string }> = {
   "insufficient-evidence": { glyph: "◌", cls: "border-dashed border-line text-muted" },
 };
 
+/**
+ * The colour a status is drawn in where a chip would be too heavy (the edge of a
+ * board tile). Colour is never the only cue: the chip beside it carries a glyph
+ * and a word.
+ */
+export const statusColor: Record<AssessmentStatus, string> = {
+  unverified: "var(--muted)",
+  partial: "var(--warning)",
+  "demonstrated-under-conditions": "var(--accent)",
+  "independently-reproduced": "var(--accent)",
+  contradicted: "var(--danger)",
+  "insufficient-evidence": "var(--border)",
+};
+
 export function StatusChip({
   status,
   locale = "en",
@@ -168,13 +182,18 @@ export function ForecastChip({
   );
 }
 
-/** One evidence record as a small square: filled when accepted, hollow otherwise. */
+/**
+ * One evidence record as a small square: filled when accepted, hollow otherwise.
+ * `md` is the size charts use; `sm` is the original size for inline use.
+ */
 export function EvidenceSquare({
   e,
   locale = "en",
+  size = "sm",
 }: {
   e: Pick<Evidence, "id" | "polarity" | "review_status">;
   locale?: Locale;
+  size?: "sm" | "md";
 }) {
   const dict = getDictionary(locale);
   const color = polarityColor[e.polarity];
@@ -185,7 +204,7 @@ export function EvidenceSquare({
       role="img"
       aria-label={label}
       title={label}
-      className="inline-block size-3 rounded-[3px] border-2"
+      className={`inline-block rounded-[3px] border-2 ${size === "md" ? "size-4" : "size-3"}`}
       style={{
         borderColor: color,
         background: accepted ? color : "transparent",
