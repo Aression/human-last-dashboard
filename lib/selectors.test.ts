@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 import { dataset as demoDataset } from "../data/demo/dataset";
-import { createSelectors } from "./selectors";
+import { POLARITY_ORDER, TIER_ORDER, createSelectors } from "./selectors";
 
 /**
  * Selectors are the only read path the pages use, so their invariants matter:
@@ -118,4 +118,104 @@ test("recentActivity is ordered newest first, spans events/assessments/forecasts
 
   assert.equal(recentActivity(3).length, 3);
   assert.equal(recentActivity(0).length, 0);
+});
+
+// ------------------------------------------------------------------ chart data
+
+test("evidenceByCapability draws one unit per linked record, grouped by direction", () => {
+  const rows = createSelectors(demoDataset).evidenceByCapability();
+  assert.equal(rows.length, demoDataset.capabilities.length);
+
+  for (const row of rows) {
+    const linked = evidenceForCapability(row.capability.id);
+    assert.equal(row.items.length, linked.length, `${row.capability.id}: unit count`);
+    assert.deepEqual(
+      new Set(row.items.map((i) => i.id)),
+      new Set(linked.map((e) => e.id)),
+      `${row.capability.id}: same records`,
+    );
+
+    const ranks = row.items.map((i) => POLARITY_ORDER.indexOf(i.polarity));
+    assert.deepEqual(ranks, [...ranks].sort((a, b) => a - b), `${row.capability.id}: ordered`);
+
+    const counted = POLARITY_ORDER.reduce((sum, p) => sum + row.counts[p], 0);
+    assert.equal(counted, row.items.length, `${row.capability.id}: counts match units`);
+  }
+});
+
+test("a record linked to two capabilities is drawn in both rows but counted once in the mix", () => {
+  const custom = structuredClone(demoDataset);
+  const shared = custom.evidence[0];
+  const [a, b] = custom.capabilities;
+  shared.capability_ids = [a.id, b.id];
+
+  const selectors = createSelectors(custom);
+  const rows = selectors.evidenceByCapability();
+  const inRow = (id: string) => rows.find((r) => r.capability.id === id)?.items.map((i) => i.id) ?? [];
+  assert.ok(inRow(a.id).includes(shared.id));
+  assert.ok(inRow(b.id).includes(shared.id));
+
+  const mix = selectors.evidenceMix();
+  assert.equal(mix.units.filter((u) => u.id === shared.id).length, 1);
+  assert.equal(mix.total, custom.evidence.length);
+});
+
+test("evidenceMix counts every record once and reports review state without inventing acceptance", () => {
+  const mix = createSelectors(demoDataset).evidenceMix();
+  assert.equal(mix.total, demoDataset.evidence.length);
+  assert.equal(
+    POLARITY_ORDER.reduce((sum, p) => sum + mix.polarity[p], 0),
+    mix.total,
+  );
+  assert.equal(
+    Object.values(mix.review).reduce((sum, n) => sum + n, 0),
+    mix.total,
+  );
+  assert.equal(
+    mix.largestGroup,
+    Math.max(...POLARITY_ORDER.map((p) => mix.polarity[p])),
+  );
+
+  const custom = structuredClone(demoDataset);
+  for (const e of custom.evidence) e.review_status = "unreviewed";
+  assert.equal(createSelectors(custom).evidenceMix().review.accepted, 0);
+
+  custom.evidence[0].review_status = "accepted";
+  const after = createSelectors(custom).evidenceMix();
+  assert.equal(after.review.accepted, 1);
+  assert.equal(after.review.unreviewed, custom.evidence.length - 1);
+});
+
+test("evidenceMix on an empty dataset has no largest group instead of NaN", () => {
+  const custom = structuredClone(demoDataset);
+  custom.evidence = [];
+  const mix = createSelectors(custom).evidenceMix();
+  assert.equal(mix.total, 0);
+  assert.equal(mix.largestGroup, 0);
+});
+
+test("sourceBase splits sources by tier and keeps developer affiliation separate", () => {
+  const base = createSelectors(demoDataset).sourceBase();
+  assert.equal(base.total, demoDataset.sources.length);
+  assert.deepEqual(
+    base.tiers.map((t) => t.tier),
+    [...TIER_ORDER],
+  );
+  assert.equal(
+    base.tiers.reduce((sum, t) => sum + t.units.length, 0),
+    base.total,
+  );
+  assert.equal(
+    base.independentTier,
+    demoDataset.sources.filter((s) => s.source_tier === "independent").length,
+  );
+  assert.equal(
+    base.developerAffiliated,
+    demoDataset.sources.filter((s) => s.developer_affiliated).length,
+  );
+
+  for (const { units } of base.tiers) {
+    const flags = units.map((u) => Number(u.developerAffiliated));
+    assert.deepEqual(flags, [...flags].sort((a, b) => a - b), "independent of developer first");
+  }
 });

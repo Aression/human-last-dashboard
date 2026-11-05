@@ -3,6 +3,9 @@ import { notFound } from "next/navigation";
 import { Legend } from "@/components/Legend";
 import { PageHeader, SectionTitle } from "@/components/PageHeader";
 import { StatusChip } from "@/components/chips";
+import { CapabilityBoard } from "@/components/charts/CapabilityBoard";
+import { EvidenceMix } from "@/components/charts/EvidenceMix";
+import { SourceBase } from "@/components/charts/SourceBase";
 import { selectorsFor } from "@/lib/data";
 import { fill, getDictionary, isLocale, localePath } from "@/lib/i18n";
 import { formatDate } from "@/lib/labels";
@@ -53,7 +56,7 @@ export default async function OverviewPage({
   ];
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-10">
       <PageHeader title={dict.overview.title}>{dict.overview.intro}</PageHeader>
 
       <dl className="grid grid-cols-2 divide-x divide-line border-y border-line lg:grid-cols-4">
@@ -65,6 +68,30 @@ export default async function OverviewPage({
           </div>
         ))}
       </dl>
+
+      <section aria-labelledby="board" className="space-y-4">
+        <SectionTitle
+          id="board"
+          title={dict.overview.boardTitle}
+          aside={
+            <>
+              {dict.overview.boardAside} ·{" "}
+              <Link
+                href={localePath(locale, "/progress")}
+                className="text-ink underline underline-offset-4"
+              >
+                {dict.overview.boardAllLink}
+              </Link>
+            </>
+          }
+        />
+        <CapabilityBoard locale={locale} selectors={selectors} />
+      </section>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <EvidenceMix locale={locale} selectors={selectors} />
+        <SourceBase locale={locale} selectors={selectors} />
+      </div>
 
       <div className="grid gap-12 xl:grid-cols-2">
         <section aria-labelledby="needs-review" className="space-y-4">
@@ -105,19 +132,30 @@ export default async function OverviewPage({
             title={dict.overview.bottlenecks}
             aside={dict.overview.bottlenecksAside}
           />
-          <ul className="space-y-2 text-[13px]">
-            {bottlenecks.map(({ capability, bottleneck }) => (
-              <li key={`${capability.id}-${bottleneck}`} className="flex gap-3">
-                <Link
-                  href={localePath(locale, `/progress/${capability.id}`)}
-                  className="w-8 shrink-0 font-mono text-xs text-accent hover:underline"
-                >
-                  {capability.level}
-                </Link>
-                <span className="text-muted">{bottleneck}</span>
-              </li>
-            ))}
-          </ul>
+          <details className="group reveal-details">
+            <summary className="flex items-center gap-2 text-[13px] text-muted hover:text-ink">
+              <span aria-hidden="true" className="transition-transform group-open:rotate-90">
+                ▸
+              </span>
+              {fill(dict.overview.bottlenecksSummary, {
+                count: bottlenecks.length,
+                levels: new Set(bottlenecks.map((b) => b.capability.level)).size,
+              })}
+            </summary>
+            <ul className="reveal-body mt-3 space-y-2 text-[13px]">
+              {bottlenecks.map(({ capability, bottleneck }) => (
+                <li key={`${capability.id}-${bottleneck}`} className="flex gap-3">
+                  <Link
+                    href={localePath(locale, `/progress/${capability.id}`)}
+                    className="w-8 shrink-0 font-mono text-xs text-accent hover:underline"
+                  >
+                    {capability.level}
+                  </Link>
+                  <span className="text-muted">{bottleneck}</span>
+                </li>
+              ))}
+            </ul>
+          </details>
         </section>
 
         <section aria-labelledby="recent" className="space-y-4">
@@ -145,7 +183,7 @@ export default async function OverviewPage({
         </section>
       </div>
 
-      <Legend evidence locale={locale} />
+      <Legend evidence collapsible locale={locale} />
 
       <p className="max-w-3xl text-[13px] leading-6 text-muted">
         {fill(dict.overview.footerLead, { count: selectors.ds.capabilities.length })}{" "}

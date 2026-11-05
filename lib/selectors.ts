@@ -6,8 +6,47 @@ import type {
   Dataset,
   Evidence,
   Forecast,
+  Polarity,
+  ReviewStatus,
   Source,
+  SourceTier,
 } from "./types";
+
+/**
+ * Order in which evidence is drawn wherever it is grouped by direction, so the
+ * same pattern reads the same way on every chart: what supports a capability
+ * and what contradicts it sit next to each other, and context comes last.
+ */
+export const POLARITY_ORDER: readonly Polarity[] = [
+  "supports",
+  "contradicts",
+  "qualifies",
+  "contextualizes",
+];
+
+export const REVIEW_ORDER: readonly ReviewStatus[] = [
+  "accepted",
+  "unreviewed",
+  "needs-follow-up",
+  "rejected",
+];
+
+export const TIER_ORDER: readonly SourceTier[] = ["primary", "independent", "lead"];
+
+/** One evidence record as a chart needs it: enough to draw and label a unit. */
+export interface EvidenceUnit {
+  id: string;
+  polarity: Polarity;
+  review_status: ReviewStatus;
+}
+
+/** One source as a chart needs it. */
+export interface SourceUnit {
+  id: string;
+  title: string;
+  tier: SourceTier;
+  developerAffiliated: boolean;
+}
 
 /**
  * Read path over a `Dataset`. Nothing here imports a concrete dataset: pages get
@@ -157,6 +196,81 @@ export function createSelectors(ds: Dataset) {
     }));
   }
 
+  // ---------------------------------------------------------------- charts
+  //
+  // Everything below returns plain counts and units. None of it maps a count to
+  // a percentage or a score: a chart built on it draws one mark per record.
+
+  const toUnit = (e: Evidence): EvidenceUnit => ({
+    id: e.id,
+    polarity: e.polarity,
+    review_status: e.review_status,
+  });
+
+  const polarityRank = (p: Polarity) => POLARITY_ORDER.indexOf(p);
+
+  function emptyPolarityCounts(): Record<Polarity, number> {
+    return { supports: 0, contradicts: 0, qualifies: 0, contextualizes: 0 };
+  }
+
+  /**
+   * Evidence per capability, ordered by direction. A record linked to several
+   * capabilities appears in each of their rows, so the rows do not sum to the
+   * number of records; `evidenceMix` is the once-per-record view.
+   */
+  function evidenceByCapability() {
+    return ds.capabilities.map((capability) => {
+      const items = evidenceForCapability(capability.id)
+        .map(toUnit)
+        .sort((a, b) => polarityRank(a.polarity) - polarityRank(b.polarity) || a.id.localeCompare(b.id));
+      const counts = emptyPolarityCounts();
+      for (const item of items) counts[item.polarity] += 1;
+      return { capability, items, counts };
+    });
+  }
+
+  /** Every evidence record once, grouped by direction, plus how many are accepted. */
+  function evidenceMix() {
+    const units = ds.evidence
+      .map(toUnit)
+      .sort((a, b) => polarityRank(a.polarity) - polarityRank(b.polarity) || a.id.localeCompare(b.id));
+    const polarity = emptyPolarityCounts();
+    const review: Record<ReviewStatus, number> = {
+      accepted: 0,
+      unreviewed: 0,
+      "needs-follow-up": 0,
+      rejected: 0,
+    };
+    for (const unit of units) {
+      polarity[unit.polarity] += 1;
+      review[unit.review_status] += 1;
+    }
+    const largestGroup = Math.max(0, ...POLARITY_ORDER.map((p) => polarity[p]));
+    return { total: units.length, units, polarity, review, largestGroup };
+  }
+
+  /** Sources by tier, keeping developer affiliation, because the two answer different questions. */
+  function sourceBase() {
+    const units: SourceUnit[] = ds.sources.map((s) => ({
+      id: s.id,
+      title: s.title,
+      tier: s.source_tier,
+      developerAffiliated: s.developer_affiliated,
+    }));
+    const tiers = TIER_ORDER.map((tier) => {
+      const inTier = units
+        .filter((u) => u.tier === tier)
+        .sort((a, b) => Number(a.developerAffiliated) - Number(b.developerAffiliated) || a.id.localeCompare(b.id));
+      return { tier, units: inTier };
+    });
+    return {
+      total: units.length,
+      tiers,
+      independentTier: units.filter((u) => u.tier === "independent").length,
+      developerAffiliated: units.filter((u) => u.developerAffiliated).length,
+    };
+  }
+
   return {
     ds,
     sourcesById,
@@ -179,6 +293,9 @@ export function createSelectors(ds: Dataset) {
     activeBottlenecks,
     evidenceStats,
     tallyFor,
+    evidenceByCapability,
+    evidenceMix,
+    sourceBase,
   };
 }
 

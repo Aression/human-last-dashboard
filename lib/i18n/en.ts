@@ -359,8 +359,10 @@ export const en = {
     evidenceRecordsOne: "{count} evidence record",
     evidenceRecordsOther: "{count} evidence records",
     noEvidenceLinked: "No evidence linked",
-    version: "Version {version}",
-    none: "—",
+    columnCapability: "Capability",
+    columnAssessment: "Assessment",
+    columnEvidence: "Linked evidence",
+    keyTitle: "How to read the squares",
   },
 
   // ------------------------------------------------------------ capability
@@ -401,7 +403,7 @@ export const en = {
   overview: {
     title: "What changed, and what it rests on",
     intro:
-      "Each capability is assessed against written criteria and linked to the records behind it. Counts below describe the demonstration dataset only.",
+      "Each capability is assessed against written criteria and linked to the records behind it. Counts describe the curated records, which are agent-assembled drafts until a reviewer accepts them.",
     figureEvidenceRecords: "evidence records",
     figureNotYetAccepted: "{count} not yet accepted",
     figureClaimsAwaitingSupport: "claims awaiting support",
@@ -411,6 +413,23 @@ export const en = {
     figureForecasts: "forecasts",
     figureOpenForecasts: "{count} open",
     figureResolvedForecasts: "{count} resolved",
+    boardTitle: "Where each capability stands",
+    boardAside: "one tile per level; levels are not a ladder",
+    boardAllLink: "Capability by capability →",
+    boardNoEvidence: "No evidence linked",
+    mixTitle: "What the evidence says",
+    mixAside: "{count} records, one square each",
+    mixReviewState: "Review state",
+    mixNoneAccepted:
+      "No record has been accepted by a reviewer yet, so none of these counts is a finding.",
+    mixEmpty: "No evidence records.",
+    sourcesTitle: "Who the evidence comes from",
+    sourcesAside: "{count} sources, one dot each",
+    sourcesSummary:
+      "{independent} of {total} sources are independent-tier; {developer} are developer-affiliated.",
+    sourcesKeyIndependentOfDeveloper: "Not developer-affiliated",
+    sourcesKeyDeveloper: "Developer-affiliated",
+    sourcesLink: "Browse sources →",
     waitingOnReview: "Waiting on review",
     proposedChangeCount: "{count} proposed change",
     noProposals:
@@ -420,6 +439,7 @@ export const en = {
     readyForReview: "Ready for human review.",
     bottlenecks: "Bottlenecks in view",
     bottlenecksAside: "from capability criteria",
+    bottlenecksSummary: "{count} known bottlenecks across {levels} levels",
     recentChanges: "Recent changes",
     recentAside: "newest first",
     kindEvent: "Event",
@@ -484,6 +504,7 @@ export const en = {
     figureNoAudit: "no audit yet",
     snapshotNote:
       "Snapshot generated {date} by {by}. The tool runs every six hours (discovery) and daily (audit) on the machine that holds the store; {runs} runs are on record, {discovery} of them discovery and {quality} audit. The numbers on this page stop moving until that snapshot is published and committed.",
+    showMoreLeads: "Show {count} more leads",
     leadsTitle: "Leads, newest first",
     leadsAside: "{shown} of {total} · {withBytes} with fetched bytes",
     leadsCaption: "Discovered candidate sources with the retrieval facts observed for each.",

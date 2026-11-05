@@ -18,6 +18,21 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 const chip =
   "inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs leading-5 whitespace-nowrap";
 
+/** Leads shown before the rest fold away; the table is long and the charts below are the summary. */
+const LEADS_SHOWN = 10;
+
+/** A count drawn as a bar, relative to the largest count in the same table. */
+function Bar({ value, max }: { value: number; max: number }) {
+  const width = max === 0 ? 0 : Math.round((value / max) * 100);
+  return (
+    <span
+      aria-hidden="true"
+      className="block h-1.5 rounded-full bg-accent/50"
+      style={{ width: `${width}%` }}
+    />
+  );
+}
+
 function percent(count: number, total: number): string {
   if (total === 0) return "0%";
   return `${Math.round((count / total) * 100)}%`;
@@ -34,11 +49,81 @@ export default async function AutomationPage({ params }: Params) {
   const { candidates, audit, store } = snapshot;
   const items = candidates.items;
   const maxDay = Math.max(...candidates.by_day.map((day) => day.count), 1);
+  const maxAdapter = Math.max(...candidates.by_adapter.map((row) => row.count), 1);
+  const maxQuery = Math.max(...candidates.by_query.map((row) => row.count), 1);
   const skipped = skippedChecks(audit);
   const newest = statusCount(snapshot, "new");
   const triaged = candidates.total - newest;
   const withHash = candidates.retrieval.with_content_hash;
   const withBytes = items.filter((item) => item.content_hash).length;
+
+  const leadsTable = (rows: typeof items) => (
+    <div className="overflow-x-auto">
+      <table className="w-full min-w-[52rem] border-collapse text-left text-[13px]">
+        <caption className="sr-only">{copy.leadsCaption}</caption>
+        <thead>
+          <tr className="border-b border-line text-xs text-muted">
+            <th scope="col" className="py-2 pr-4 font-normal">{copy.columnSource}</th>
+            <th scope="col" className="py-2 pr-4 font-normal">{copy.columnPublished}</th>
+            <th scope="col" className="py-2 pr-4 font-normal">{copy.columnFoundVia}</th>
+            <th scope="col" className="py-2 pr-4 font-normal">{copy.columnRetrieved}</th>
+            <th scope="col" className="py-2 font-normal">{copy.columnStatus}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((lead) => (
+            <tr key={lead.id} className="border-b border-line/60 align-top">
+              <td className="py-2.5 pr-4">
+                <a
+                  href={lead.url}
+                  rel="noopener noreferrer nofollow"
+                  target="_blank"
+                  className="block max-w-[26rem] text-ink underline-offset-4 hover:underline"
+                >
+                  {lead.title}
+                </a>
+                <div className="mt-0.5 text-xs text-muted">
+                  {lead.publisher}
+                  {lead.note ? ` · ${localizeNote(lead.note, locale)}` : ""}
+                </div>
+              </td>
+              <td className="py-2.5 pr-4 whitespace-nowrap text-muted">
+                {lead.published_at ? formatDate(lead.published_at, locale) : copy.leadNotRecorded}
+              </td>
+              <td className="py-2.5 pr-4 whitespace-nowrap text-muted">
+                <span className="font-mono text-xs">{lead.adapter}</span>
+                <div className="text-xs text-muted/80">{lead.query_id}</div>
+              </td>
+              <td className="py-2.5 pr-4 whitespace-nowrap font-mono text-xs text-muted">
+                {lead.http_status === null
+                  ? copy.leadNoResponse
+                  : fill(copy.leadHttpStatus, { status: lead.http_status })}
+                <div className="text-muted/80">
+                  {lead.content_hash
+                    ? fill(copy.leadHash, { hash: lead.content_hash.slice(0, 8) })
+                    : copy.leadNoHash}
+                </div>
+              </td>
+              <td className="py-2.5">
+                <span
+                  className={`${chip} ${
+                    lead.status === "new"
+                      ? "border-dashed border-warn/40 text-warn"
+                      : "border-line text-muted"
+                  }`}
+                >
+                  {dict.labels.candidateStatus[lead.status]}
+                </span>
+                <div className="mt-1 text-xs text-muted/80">
+                  {fill(copy.leadFound, { date: formatDate(lead.created_at, locale) })}
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 
   return (
     <div className="space-y-10">
@@ -106,71 +191,18 @@ export default async function AutomationPage({ params }: Params) {
             withBytes,
           })}
         />
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[52rem] border-collapse text-left text-[13px]">
-            <caption className="sr-only">{copy.leadsCaption}</caption>
-            <thead>
-              <tr className="border-b border-line text-xs text-muted">
-                <th scope="col" className="py-2 pr-4 font-normal">{copy.columnSource}</th>
-                <th scope="col" className="py-2 pr-4 font-normal">{copy.columnPublished}</th>
-                <th scope="col" className="py-2 pr-4 font-normal">{copy.columnFoundVia}</th>
-                <th scope="col" className="py-2 pr-4 font-normal">{copy.columnRetrieved}</th>
-                <th scope="col" className="py-2 font-normal">{copy.columnStatus}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((lead) => (
-                <tr key={lead.id} className="border-b border-line/60 align-top">
-                  <td className="py-2.5 pr-4">
-                    <a
-                      href={lead.url}
-                      rel="noopener noreferrer nofollow"
-                      target="_blank"
-                      className="block max-w-[26rem] text-ink underline-offset-4 hover:underline"
-                    >
-                      {lead.title}
-                    </a>
-                    <div className="mt-0.5 text-xs text-muted">
-                      {lead.publisher}
-                      {lead.note ? ` · ${localizeNote(lead.note, locale)}` : ""}
-                    </div>
-                  </td>
-                  <td className="py-2.5 pr-4 whitespace-nowrap text-muted">
-                    {lead.published_at ? formatDate(lead.published_at, locale) : copy.leadNotRecorded}
-                  </td>
-                  <td className="py-2.5 pr-4 whitespace-nowrap text-muted">
-                    <span className="font-mono text-xs">{lead.adapter}</span>
-                    <div className="text-xs text-muted/80">{lead.query_id}</div>
-                  </td>
-                  <td className="py-2.5 pr-4 whitespace-nowrap font-mono text-xs text-muted">
-                    {lead.http_status === null
-                      ? copy.leadNoResponse
-                      : fill(copy.leadHttpStatus, { status: lead.http_status })}
-                    <div className="text-muted/80">
-                      {lead.content_hash
-                        ? fill(copy.leadHash, { hash: lead.content_hash.slice(0, 8) })
-                        : copy.leadNoHash}
-                    </div>
-                  </td>
-                  <td className="py-2.5">
-                    <span
-                      className={`${chip} ${
-                        lead.status === "new"
-                          ? "border-dashed border-warn/40 text-warn"
-                          : "border-line text-muted"
-                      }`}
-                    >
-                      {dict.labels.candidateStatus[lead.status]}
-                    </span>
-                    <div className="mt-1 text-xs text-muted/80">
-                      {fill(copy.leadFound, { date: formatDate(lead.created_at, locale) })}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        {leadsTable(items.slice(0, LEADS_SHOWN))}
+        {items.length > LEADS_SHOWN && (
+          <details className="group reveal-details">
+            <summary className="flex items-center gap-2 text-[13px] text-muted hover:text-ink">
+              <span aria-hidden="true" className="transition-transform group-open:rotate-90">
+                ▸
+              </span>
+              {fill(copy.showMoreLeads, { count: items.length - LEADS_SHOWN })}
+            </summary>
+            <div className="reveal-body mt-3">{leadsTable(items.slice(LEADS_SHOWN))}</div>
+          </details>
+        )}
         <p className="text-xs leading-6 text-muted">{copy.tableNote}</p>
       </section>
 
@@ -195,8 +227,15 @@ export default async function AutomationPage({ params }: Params) {
                 <tr key={row.adapter} className="border-b border-line/60">
                   <td className="py-2 pr-4 font-mono text-xs">{row.adapter}</td>
                   <td className="py-2 pr-4 text-right tabular-nums">{row.count}</td>
-                  <td className="py-2 text-right tabular-nums text-muted">
-                    {percent(row.count, candidates.total)}
+                  <td className="py-2">
+                    <div className="flex items-center justify-end gap-3 text-muted">
+                      <span className="w-24">
+                        <Bar value={row.count} max={maxAdapter} />
+                      </span>
+                      <span className="w-10 text-right tabular-nums">
+                        {percent(row.count, candidates.total)}
+                      </span>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -208,14 +247,18 @@ export default async function AutomationPage({ params }: Params) {
             <thead>
               <tr className="border-b border-line text-xs text-muted">
                 <th scope="col" className="py-2 pr-4 font-normal">{copy.columnQuery}</th>
-                <th scope="col" className="py-2 text-right font-normal">{copy.columnLeads}</th>
+                <th scope="col" className="py-2 pr-4 text-right font-normal">{copy.columnLeads}</th>
+                <th scope="col" className="w-28 py-2 font-normal">{copy.columnRelative}</th>
               </tr>
             </thead>
             <tbody>
               {candidates.by_query.map((row) => (
                 <tr key={row.query_id} className="border-b border-line/60">
                   <td className="py-2 pr-4 font-mono text-xs">{row.query_id}</td>
-                  <td className="py-2 text-right tabular-nums">{row.count}</td>
+                  <td className="py-2 pr-4 text-right tabular-nums">{row.count}</td>
+                  <td className="py-2">
+                    <Bar value={row.count} max={maxQuery} />
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -262,11 +305,7 @@ export default async function AutomationPage({ params }: Params) {
                   <td className="py-2 pr-4 font-mono text-xs">{day.date}</td>
                   <td className="py-2 pr-4 tabular-nums">{day.count}</td>
                   <td className="py-2">
-                    <span
-                      aria-hidden="true"
-                      className="block h-1.5 rounded-full bg-accent/50"
-                      style={{ width: `${Math.round((day.count / maxDay) * 100)}%` }}
-                    />
+                    <Bar value={day.count} max={maxDay} />
                   </td>
                 </tr>
               ))}
