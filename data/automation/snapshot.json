@@ -1,20 +1,21 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-12T16:31:55.286Z",
+  "generated_at": "2026-11-12T16:34:31.021Z",
   "generated_by": "node --import tsx tools/evidence-mcp/src/cli.ts snapshot",
   "disclaimer": "A discovered lead is a pointer to a page that exists, with the retrieval facts that were actually observed. It is not evidence, it is not part of the dataset, and it is not shown on the Evidence Explorer.",
   "store": {
-    "runs": 72,
-    "discovery_runs": 53,
+    "runs": 74,
+    "discovery_runs": 54,
     "quality_runs": 18,
     "first_run_at": "2026-10-29T01:53:23.443Z",
-    "last_run_at": "2026-11-12T16:28:40.550Z"
+    "last_run_at": "2026-11-12T16:33:49.503Z"
   },
   "candidates": {
     "total": 510,
     "stored_records": 510,
     "by_status": {
-      "new": 510
+      "new": 509,
+      "rejected": 1
     },
     "by_adapter": [
       {
@@ -488,7 +489,7 @@
         "adapter": "rss",
         "query_id": "q-governance-signals",
         "created_at": "2026-11-12T04:17:14.176Z",
-        "status": "new",
+        "status": "rejected",
         "http_status": 429,
         "content_hash": null,
         "note": "HTTP 429 Too Many Requests"
@@ -1121,6 +1122,20 @@
   },
   "runs": [
     {
+      "run_id": "discovery-20261112T163349Z-44d5af",
+      "task": "discovery",
+      "started_at": "2026-11-12T16:33:49.503Z",
+      "ok": true,
+      "summary": "0 candidates, 0 duplicates, 0 adapter failures"
+    },
+    {
+      "run_id": "release-20261112T163155Z-4d981d",
+      "task": "release",
+      "started_at": "2026-11-12T16:31:55.286Z",
+      "ok": false,
+      "summary": "release failed at deploy: vercel deploy failed: spawn EINVAL"
+    },
+    {
       "run_id": "release-20261112T162840Z-45c8f3",
       "task": "release",
       "started_at": "2026-11-12T16:28:40.550Z",
@@ -1187,20 +1202,6 @@
       "run_id": "discovery-20261110T221718Z-184211",
       "task": "discovery",
       "started_at": "2026-11-10T22:17:18.153Z",
-      "ok": true,
-      "summary": "11 candidates, 0 duplicates, 0 adapter failures"
-    },
-    {
-      "run_id": "quality-20261110T194213Z-f4248f",
-      "task": "quality",
-      "started_at": "2026-11-10T19:42:13.962Z",
-      "ok": true,
-      "summary": "quality run quality-20261110T194213Z-f4248f: 0 finding(s); 0 error / 0 warn / 0 info; 10/10 rule check(s) ok; 1797 subject(s) inspected; skipped (nothing to inspect): source-integrity"
-    },
-    {
-      "run_id": "discovery-20261110T161708Z-d88432",
-      "task": "discovery",
-      "started_at": "2026-11-10T16:17:08.312Z",
       "ok": true,
       "summary": "11 candidates, 0 duplicates, 0 adapter failures"
     }
