@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-12T16:24:25.715Z",
+  "generated_at": "2026-11-12T16:28:40.550Z",
   "generated_by": "node --import tsx tools/evidence-mcp/src/cli.ts snapshot",
   "disclaimer": "A discovered lead is a pointer to a page that exists, with the retrieval facts that were actually observed. It is not evidence, it is not part of the dataset, and it is not shown on the Evidence Explorer.",
   "store": {
