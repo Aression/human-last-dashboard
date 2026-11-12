@@ -25,6 +25,7 @@ import { describeCron, nextRun, parseCron, type CronSpec } from "./schedule";
 import { loadConfig } from "./config";
 import { runDiscovery } from "./discovery";
 import { runQuality } from "./quality";
+import { runRelease, summarizeRelease } from "./release";
 import { renderQualityReport } from "./report";
 import {
   appendJsonl,
@@ -35,11 +36,11 @@ import {
   writeJson,
   type StorePaths,
 } from "./store";
-import type { RunRecord, ScheduleEntry, ToolConfig } from "./contracts";
+import type { RunRecord, ScheduledTask, ScheduleEntry, ToolConfig } from "./contracts";
 
-type TaskName = "discovery" | "quality";
+type TaskName = ScheduledTask;
 
-interface ScheduledTask {
+interface ScheduledJob {
   entry: ScheduleEntry;
   spec: CronSpec;
   next: Date;
@@ -81,7 +82,7 @@ async function writeState(paths: StorePaths, state: DaemonState): Promise<void> 
   await writeJson(path.join(paths.state, "daemon.json"), state);
 }
 
-function buildState(pid: number, mode: DaemonState["mode"], tasks: ScheduledTask[], paths: StorePaths, startedAt: string): DaemonState {
+function buildState(pid: number, mode: DaemonState["mode"], tasks: ScheduledJob[], paths: StorePaths, startedAt: string): DaemonState {
   return {
     pid,
     running: mode === "scheduler",
@@ -104,7 +105,23 @@ async function runTask(task: TaskName, config: ToolConfig, paths: StorePaths): P
   const runId = newRunId(task, started);
   let record: RunRecord;
   try {
-    if (task === "discovery") {
+    if (task === "release") {
+      const result = await runRelease({ root: paths.root });
+      record = {
+        run_id: runId,
+        task: "release",
+        started_at: result.started_at,
+        finished_at: result.finished_at,
+        ok: result.ok,
+        summary: summarizeRelease(result),
+        counts: {
+          steps: result.steps.length,
+          failed_steps: result.steps.filter((s) => !s.ok).length,
+        },
+        ...(result.reason ? { error: result.reason } : {}),
+      };
+      await appendJsonl(path.join(paths.runs, "index.jsonl"), record);
+    } else if (task === "discovery") {
       const outcome = await runDiscovery({});
       record = {
         run_id: outcome.run_id,
@@ -172,7 +189,7 @@ async function main(): Promise<void> {
     return;
   }
 
-  const tasks: ScheduledTask[] = config.schedule
+  const tasks: ScheduledJob[] = config.schedule
     .filter((entry) => entry.enabled)
     .map((entry) => {
       const spec = parseCron(entry.cron);

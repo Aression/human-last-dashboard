@@ -239,10 +239,13 @@ export interface QualityOutcome {
   checks: QualityCheck[];
 }
 
+/** Tasks the scheduler knows how to run. `release` publishes and deploys. */
+export type ScheduledTask = "discovery" | "quality" | "release";
+
 /** A scheduled job as stored in the run index. */
 export interface RunRecord {
   run_id: string;
-  task: "discovery" | "quality" | "source-integrity" | "manual";
+  task: ScheduledTask | "source-integrity" | "manual";
   started_at: string;
   finished_at: string;
   ok: boolean;
@@ -252,10 +255,34 @@ export interface RunRecord {
 }
 
 export interface ScheduleEntry {
-  task: "discovery" | "quality";
+  task: ScheduledTask;
   /** Five-field cron: minute hour day-of-month month day-of-week. */
   cron: string;
   enabled: boolean;
+}
+
+/** One step of a publish release, with the detail a human needs to see what happened. */
+export interface ReleaseStep {
+  name: "branch" | "status" | "snapshot" | "commit" | "push" | "deploy";
+  ok: boolean;
+  /** Already redacted: no token value ever appears here. */
+  detail: string;
+}
+
+/**
+ * The outcome of a release run. `reason` is set to the moment it stopped, so a
+ * partial release (committed but not pushed, say) is visible rather than implied.
+ */
+export interface ReleaseResult {
+  ok: boolean;
+  dry_run: boolean;
+  started_at: string;
+  finished_at: string;
+  steps: ReleaseStep[];
+  pushed: boolean;
+  commit: string | null;
+  deployment: { url: string | null; output: string } | null;
+  reason?: string;
 }
 
 export interface ToolConfig {

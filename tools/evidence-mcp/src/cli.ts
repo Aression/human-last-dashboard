@@ -72,6 +72,8 @@ commands:
   report [--run_id id] [--max_findings n]
   validate                   validate the dashboard dataset
   snapshot [--limit n]       publish the store into data/automation/snapshot.json
+  release [--dry-run] [--no-deploy]
+                             refresh the snapshot, commit data/, push, deploy to Vercel
   curation                   summary of the working copy and the published records
   publish                    validate the working copy, then write data/curated/records.json
   runs [--task discovery] [--limit n]
@@ -177,6 +179,23 @@ async function main(): Promise<void> {
           process.stdout.write(`  unreadable records: ${built.unreadableRecords.join(", ")}\n`);
         }
       }
+      return;
+    }
+    case "release": {
+      const { runRelease, summarizeRelease } = await import("./release");
+      const result = await runRelease({
+        dryRun: flags.dry_run === true,
+        deploy: flags.no_deploy !== true,
+      });
+      if (json) {
+        process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+      } else {
+        for (const step of result.steps) {
+          process.stdout.write(`  ${step.ok ? "ok  " : "FAIL"} ${step.name}: ${step.detail}\n`);
+        }
+        process.stdout.write(`${summarizeRelease(result)}\n`);
+      }
+      process.exitCode = result.ok ? 0 : 1;
       return;
     }
     case "runs":

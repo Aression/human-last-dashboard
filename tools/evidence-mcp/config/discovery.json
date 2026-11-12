@@ -51,7 +51,8 @@
   ],
   "schedule": [
     { "task": "discovery", "cron": "17 */6 * * *", "enabled": true },
-    { "task": "quality", "cron": "42 3 * * *", "enabled": true }
+    { "task": "quality", "cron": "42 3 * * *", "enabled": true },
+    { "task": "release", "cron": "7 4 */5 * *", "enabled": true }
   ],
   "quality": {
     "candidate_max_age_days": 30,

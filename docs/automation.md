@@ -146,7 +146,34 @@ git diff data/curated/                         # review the diff, then commit it
 
 `publish` refuses, writing nothing, when `lib/validate.ts` reports any violation, when a record is not `provenance: "curated"`, when a source has no observed `canonical_url`, `retrieved_at` or `content_hash`, or when an assessment's `taxonomy_version` disagrees with `data/capabilities.ts`. `data/curated/published.json` records the counts and the sha256 of the exact bytes written, so a later reader can tell whether the file on disk is the one the tool produced. Translation overlays (`data/i18n/records.zh.json`) are checked against the published records by `lib/records-i18n.ts` when the app module loads, so a record added without a translation still renders — in English — while an overlay entry for a record that no longer exists fails the build.
 
+### The scheduled release
+
+`release` is the same publish step without a human at the keyboard: it rebuilds `data/automation/snapshot.json` from the store, commits whatever changed under `data/`, pushes, and deploys to Vercel.
+
+```bash
+npm run evidence:run -- release                 # publish, commit, push, deploy
+npm run evidence:run -- release --dry-run       # rebuild into .evidence-mcp/tmp/ and stop
+npm run evidence:run -- release --no-deploy     # commit and push, do not deploy
+```
+
+The daemon runs it every five days (`{ "task": "release", "cron": "7 4 */5 * *" }` in `tools/evidence-mcp/config/discovery.json`), which puts it on the 1st, 6th, 11th, 16th, 21st, 26th and 31st at 04:07 local — after the 03:42 audit, so a release publishes that night's audit result.
+
+What it refuses, because an unattended release is the one job that can make the repository dirty or the site wrong:
+
+| Condition | Behaviour |
+| --- | --- |
+| Any modified path outside `data/` | Refuses before building anything; lists the paths. |
+| `HEAD` not on a branch (detached) | Refuses: it would not know where to push. |
+| No change under `data/` after the rebuild | Stops after the snapshot: no commit, no push, no deploy. |
+| No git token | Keeps the commit it already made, reports `no git token`, does not push. |
+| No Vercel token | Pushes, then reports `no Vercel token`, does not deploy. |
+
+Tokens are read from the environment (`HLD_GIT_TOKEN` / `GITHUB_TOKEN` / `GITHUB_DEV_TOKEN`, `HLD_VERCEL_TOKEN` / `VERCEL_TOKEN`) or, failing that, from a local env file (`HLD_ENV_FILE`, default `D:\devspace\.env`, keys `GITHUB-DEV-TOKEN` and `VERCEL_KEY`). The git token is passed in a one-shot `-c http.extraheader=…` argument, never written into the remote URL, and both tokens are redacted from every string the run records — `tools/evidence-mcp/tests/release.test.ts` asserts that.
+
+What a release does not establish: that the published data is good. It publishes what the store held and what the last audit said at that moment; the page keeps saying so, and every lead stays `status: "new"` until a human triages it.
+
 ## 8. Registering it in DeepSeek Harness
+
 
 The plugin entry lives in `cordis.patch.yml` of the active DSH profile (here `C:\Users\Administrator\.dsh\profiles\desktop\cordis.patch.yml`):
 
@@ -198,3 +225,4 @@ When the dashboard page was added:
 - **Network-dependent, and filtered.** Adapters only cover hosts reachable from this workstation. Hugging Face, OpenAI, Anthropic, and Hacker News timed out here, so no adapter targets them: a broken adapter would report coverage this tool does not have.
 - **Not durable.** The scheduler is a local process with a state file, not a queue. A run interrupted by shutdown is reported as a failed run, not resumed.
 - **`source-integrity` needs curated URLs.** It is skipped until the dataset stores real `canonical_url` values.
+

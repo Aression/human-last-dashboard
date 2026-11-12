@@ -34,6 +34,18 @@ curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
 
 The checks that count: `readyState: READY`, the production alias points at the new deployment, and the deployment's `meta.githubCommitSha` matches the commit intended to be live.
 
+### Deploying on a schedule
+
+The daemon also deploys, so the site does not depend on someone remembering to run the command. Every five days it runs the `release` task (`tools/evidence-mcp/config/discovery.json`, cron `7 4 */5 * *`), which is:
+
+```bash
+npm run evidence:run -- release
+```
+
+Rebuild `data/automation/snapshot.json` from the store → commit whatever changed under `data/` → `git push origin <branch>` → `npx vercel@latest deploy --prod --yes`. It refuses when any path outside `data/` is modified, when `HEAD` is detached, when `data/` has no change after the rebuild (nothing to publish, so no deploy), and when the git or Vercel token is missing — in that last case it reports exactly which step stopped, so a commit that was created but not pushed is visible rather than inferred.
+
+Tokens come from the environment (`HLD_GIT_TOKEN`/`GITHUB_TOKEN`/`GITHUB_DEV_TOKEN`, `HLD_VERCEL_TOKEN`/`VERCEL_TOKEN`) or from `HLD_ENV_FILE` (default `D:\devspace\.env`, keys `GITHUB-DEV-TOKEN` and `VERCEL_KEY`). They are redacted from everything the run records. Details and the refusal table: [Evidence automation §7](automation.md).
+
 ## 3. Verifying what is live
 
 Two independent sources of truth, because one of them is not reachable from every network:

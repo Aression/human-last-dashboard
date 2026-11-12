@@ -9,7 +9,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
-import type { AdapterId, DiscoverQuery, ScheduleEntry, ToolConfig } from "./contracts";
+import type { AdapterId, DiscoverQuery, ScheduleEntry, ScheduledTask, ToolConfig } from "./contracts";
 
 export const ADAPTER_IDS: AdapterId[] = ["arxiv", "github", "rss"];
 
@@ -118,15 +118,16 @@ function parseQuery(value: unknown, where: string, cap: number): DiscoverQuery {
 function parseSchedule(value: unknown, where: string): ScheduleEntry[] {
   if (value === undefined) return [];
   if (!Array.isArray(value)) throw new Error(`${where}: must be an array`);
+  const tasks: ScheduledTask[] = ["discovery", "quality", "release"];
   return value.map((entry, i) => {
     const e = entry as Partial<ScheduleEntry>;
-    if (e.task !== "discovery" && e.task !== "quality") {
-      throw new Error(`${where}[${i}]: task must be "discovery" or "quality"`);
+    if (!e.task || !tasks.includes(e.task as ScheduledTask)) {
+      throw new Error(`${where}[${i}]: task must be one of ${tasks.map((t) => `"${t}"`).join(", ")}`);
     }
     if (typeof e.cron !== "string" || e.cron.trim().split(/\s+/).length !== 5) {
       throw new Error(`${where}[${i}]: cron must have five fields`);
     }
-    return { task: e.task, cron: e.cron, enabled: e.enabled !== false };
+    return { task: e.task as ScheduledTask, cron: e.cron, enabled: e.enabled !== false };
   });
 }
 

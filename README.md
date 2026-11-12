@@ -77,8 +77,9 @@ Other scripts:
 | `npm run automation:snapshot` | Rewrites `data/automation/snapshot.json` from the local discovery store, for the `/automation` page. Review the diff before committing it. |
 | `npm run evidence:run -- curation` | Prints the curation working copy the store holds: counts and every record that would be published. |
 | `npm run evidence:run -- publish` | Validates the curation working copy and writes `data/curated/records.json` plus `data/curated/published.json`. Refuses on any violation and writes nothing. |
+| `npm run evidence:run -- release` | The unattended publish step: rebuilds the snapshot, commits what changed under `data/`, pushes, and deploys to Vercel. Refuses on any modified path outside `data/`, on a detached HEAD, and without tokens (`--dry-run`, `--no-deploy`). |
 | `npm run evidence:run -- <cmd>` | Source discovery, candidate triage, and the quality audit from the command line; see [Evidence automation](docs/automation.md). |
-| `npm run evidence:daemon` | Runs the discovery and audit scheduler in the foreground (cron schedule in `tools/evidence-mcp/config/discovery.json`). |
+| `npm run evidence:daemon` | Runs the discovery, audit and release scheduler in the foreground (cron schedule in `tools/evidence-mcp/config/discovery.json`). |
 | `npm run mcp:evidence` | Runs the evidence automation MCP server over stdio, for a local agent. |
 
 `npm run build` refuses to build a dataset whose ids, references, assessment version chains, provenance, or forecast resolutions are inconsistent, and refuses an inconsistent published snapshot.
