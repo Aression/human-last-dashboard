@@ -19,6 +19,7 @@
  */
 import { execFile } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
+import { readFile, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { promisify } from "node:util";
 
@@ -71,12 +72,15 @@ interface Tokens {
 }
 
 const defaultRunner: CommandRunner = async (command, args, options) => {
-  // npx is a .cmd shim on Windows. Resolve it directly instead of going through a
-  // shell: passing arguments to a shell re-concatenates them (DEP0190) and would
-  // hand the shell a string we did not quote.
-  const executable = process.platform === "win32" && command === "npx" ? "npx.cmd" : command;
+  // A .cmd/.bat shim cannot be spawned directly on Windows (spawn EINVAL), and
+  // passing a shell a pre-joined argv is exactly the DEP0190 hazard. The one
+  // command that needs it here is npx, whose arguments are static tokens set by
+  // this module, so joining them ourselves cannot smuggle in user input.
+  const needsCmdShim = process.platform === "win32" && command === "npx";
+  const executable = needsCmdShim ? (process.env.ComSpec ?? "cmd.exe") : command;
+  const argv = needsCmdShim ? ["/d", "/s", "/c", ["npx", ...args].join(" ")] : args;
   try {
-    const { stdout, stderr } = await execFileAsync(executable, args, {
+    const { stdout, stderr } = await execFileAsync(executable, argv, {
       cwd: options.cwd,
       env: options.env ? { ...process.env, ...options.env } : process.env,
       windowsHide: true,
@@ -224,15 +228,31 @@ async function runReleaseUnlocked(options: ReleaseOptions = {}): Promise<Release
   const snapshotPath = dryRun
     ? join(root, ".evidence-mcp", "tmp", "snapshot-dry-run.json")
     : join(root, "data", "automation", "snapshot.json");
+  const previous = dryRun ? null : await readFile(snapshotPath, "utf8").catch(() => null);
   const built = await buildAutomationSnapshot({
     storeRoot: root,
     outPath: snapshotPath,
     now: () => now,
   });
+  // `generated_at` must not be the only difference: a release that rewrote the
+  // timestamp every run would commit and deploy without new information.
+  const withoutTimestamp = (value: unknown): string =>
+    JSON.stringify({ ...(value as Record<string, unknown>), generated_at: "" });
+  let unchanged = false;
+  if (previous !== null) {
+    try {
+      unchanged = withoutTimestamp(JSON.parse(previous)) === withoutTimestamp(built.snapshot);
+    } catch {
+      unchanged = false;
+    }
+    if (unchanged) await writeFile(snapshotPath, previous, "utf8");
+  }
   record(
     "snapshot",
     true,
-    `${built.storedRecords} record(s) in the store, ${built.snapshot.candidates.items.length} published as rows, ${built.bytes} bytes`,
+    unchanged
+      ? `${built.snapshot.candidates.total} lead(s) and the same audit as the published file; kept the previous bytes so the timestamp does not churn`
+      : `${built.storedRecords} record(s) in the store, ${built.snapshot.candidates.items.length} published as rows, ${built.bytes} bytes`,
   );
   if (built.unreadableRecords.length > 0) {
     record("snapshot", true, `${built.unreadableRecords.length} stored record(s) could not be read and were skipped: ${built.unreadableRecords.slice(0, 5).join(", ")}`);

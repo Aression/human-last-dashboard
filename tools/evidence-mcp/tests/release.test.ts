@@ -17,6 +17,7 @@ import { after, before, describe, it } from "node:test";
 import "./support/isolate";
 import type { CommandRunner } from "../src/release";
 import { deploymentUrl, runRelease, summarizeRelease } from "../src/release";
+import { buildAutomationSnapshot } from "../src/snapshot";
 
 const FAKE_GIT_TOKEN = "gh-token-value-that-must-never-be-logged";
 const FAKE_VERCEL_TOKEN = "vercel-token-value-that-must-never-be-logged";
@@ -176,6 +177,30 @@ describe("runRelease", () => {
     } finally {
       await rm(lock, { force: true });
     }
+  });
+  it("keeps the published bytes when only generated_at would change", async () => {
+    const { runner, calls } = makeRunner({
+      "symbolic-ref": () => ({ stdout: "main\n" }),
+      status: cleanStatus,
+    });
+    const outPath = join(root, "data", "automation", "snapshot.json");
+    const seeded = await buildAutomationSnapshot({
+      storeRoot: root,
+      outPath,
+      now: () => new Date("2020-01-01T00:00:00.000Z"),
+    });
+    const before = await readFile(outPath, "utf8");
+    assert.match(before, /"generated_at": "2020-01-01T00:00:00.000Z"/);
+
+    const result = await runRelease({ root, run: runner, ...tokens() });
+
+    const after = await readFile(outPath, "utf8");
+    assert.equal(after, before, "the file must keep the timestamp it was published with");
+    assert.equal(result.ok, true);
+    assert.match(result.reason ?? "", /no change under data\//);
+    assert.equal(result.steps.some((s) => /kept the previous bytes/.test(s.detail)), true);
+    assert.equal(calls.some((c) => c.args.includes("commit")), false);
+    assert.equal(seeded.snapshot.candidates.total, 0);
   });
 });
 
