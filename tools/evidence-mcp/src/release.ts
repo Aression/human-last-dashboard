@@ -71,13 +71,16 @@ interface Tokens {
 }
 
 const defaultRunner: CommandRunner = async (command, args, options) => {
+  // npx is a .cmd shim on Windows. Resolve it directly instead of going through a
+  // shell: passing arguments to a shell re-concatenates them (DEP0190) and would
+  // hand the shell a string we did not quote.
+  const executable = process.platform === "win32" && command === "npx" ? "npx.cmd" : command;
   try {
-    const { stdout, stderr } = await execFileAsync(command, args, {
+    const { stdout, stderr } = await execFileAsync(executable, args, {
       cwd: options.cwd,
       env: options.env ? { ...process.env, ...options.env } : process.env,
       windowsHide: true,
       maxBuffer: 16 * 1024 * 1024,
-      shell: process.platform === "win32" && command === "npx",
     });
     return { code: 0, stdout: String(stdout), stderr: String(stderr) };
   } catch (error) {
