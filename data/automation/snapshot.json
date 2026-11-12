@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-12T16:28:40.550Z",
+  "generated_at": "2026-11-12T16:31:55.286Z",
   "generated_by": "node --import tsx tools/evidence-mcp/src/cli.ts snapshot",
   "disclaimer": "A discovered lead is a pointer to a page that exists, with the retrieval facts that were actually observed. It is not evidence, it is not part of the dataset, and it is not shown on the Evidence Explorer.",
   "store": {
-    "runs": 71,
+    "runs": 72,
     "discovery_runs": 53,
     "quality_runs": 18,
     "first_run_at": "2026-10-29T01:53:23.443Z",
-    "last_run_at": "2026-11-12T16:17:16.193Z"
+    "last_run_at": "2026-11-12T16:28:40.550Z"
   },
   "candidates": {
     "total": 510,
@@ -1121,6 +1121,13 @@
   },
   "runs": [
     {
+      "run_id": "release-20261112T162840Z-45c8f3",
+      "task": "release",
+      "started_at": "2026-11-12T16:28:40.550Z",
+      "ok": true,
+      "summary": "release ok: commit f1b90a7, pushed, deployed https://human-last-dashboard-93p1qby4w-lvdifine-3768s-projects.vercel.app"
+    },
+    {
       "run_id": "discovery-20261112T161716Z-daa9c6",
       "task": "discovery",
       "started_at": "2026-11-12T16:17:16.193Z",
@@ -1196,13 +1203,6 @@
       "started_at": "2026-11-10T16:17:08.312Z",
       "ok": true,
       "summary": "11 candidates, 0 duplicates, 0 adapter failures"
-    },
-    {
-      "run_id": "discovery-20261110T101712Z-b02001",
-      "task": "discovery",
-      "started_at": "2026-11-10T10:17:12.800Z",
-      "ok": true,
-      "summary": "9 candidates, 0 duplicates, 0 adapter failures"
     }
   ]
 }
