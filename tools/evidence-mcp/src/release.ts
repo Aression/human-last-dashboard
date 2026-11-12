@@ -24,7 +24,7 @@ import { promisify } from "node:util";
 
 import type { ReleaseResult, ReleaseStep } from "./contracts";
 import { buildAutomationSnapshot } from "./snapshot";
-import { findRepoRoot } from "./store";
+import { findRepoRoot, withLock } from "./store";
 
 const execFileAsync = promisify(execFile);
 
@@ -162,7 +162,7 @@ export function deploymentUrl(output: string): string | null {
   return match ? match[0] : null;
 }
 
-export async function runRelease(options: ReleaseOptions = {}): Promise<ReleaseResult> {
+async function runReleaseUnlocked(options: ReleaseOptions = {}): Promise<ReleaseResult> {
   const now = options.now ?? new Date();
   const startedAt = now.toISOString();
   const env = options.env ?? process.env;
@@ -313,6 +313,33 @@ export async function runRelease(options: ReleaseOptions = {}): Promise<ReleaseR
     pushed: true,
     deployment: { url, output: redact(output).slice(0, 4000) },
   });
+}
+
+/**
+ * Run a release under a lock, so a scheduled run and a manual one cannot both
+ * commit: two concurrent releases would produce two commits and two deployments.
+ */
+export async function runRelease(options: ReleaseOptions = {}): Promise<ReleaseResult> {
+  const root = resolve(options.root ?? findRepoRoot());
+  const lockFile = join(root, ".evidence-mcp", "state", "release.lock");
+  try {
+    return await withLock(lockFile, () => runReleaseUnlocked({ ...options, root }));
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (!/holds the lock/.test(message)) throw error;
+    const at = new Date().toISOString();
+    return {
+      ok: false,
+      dry_run: options.dryRun === true,
+      started_at: at,
+      finished_at: at,
+      steps: [{ name: "status", ok: false, detail: message }],
+      pushed: false,
+      commit: null,
+      deployment: null,
+      reason: "another release is already running",
+    };
+  }
 }
 
 /** One-line summary for the CLI and the daemon log. */

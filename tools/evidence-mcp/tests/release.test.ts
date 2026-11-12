@@ -9,7 +9,7 @@
  * real repository or the Vercel API.
  */
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import { join } from "node:path";
 import { after, before, describe, it } from "node:test";
@@ -161,6 +161,21 @@ describe("runRelease", () => {
     assert.equal(result.commit, "def5678");
     assert.equal(result.pushed, false);
     assert.match(result.reason ?? "", /no git token/);
+  });
+  it("refuses while another release holds the lock", async () => {
+    const lockDir = join(root, ".evidence-mcp", "state");
+    await mkdir(lockDir, { recursive: true });
+    const lock = join(lockDir, "release.lock");
+    await writeFile(lock, JSON.stringify({ pid: process.pid, at: new Date().toISOString() }), "utf8");
+    const { runner, calls } = makeRunner({});
+    try {
+      const result = await runRelease({ root, run: runner, ...tokens() });
+      assert.equal(result.ok, false);
+      assert.match(result.reason ?? "", /already running/);
+      assert.equal(calls.length, 0, "a locked release must not run a single command");
+    } finally {
+      await rm(lock, { force: true });
+    }
   });
 });
 
